@@ -1,0 +1,706 @@
+# Cloud-Native Distributed Poll Automation System
+# Kubernetes Deployment Configuration
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: poll-automation
+  labels:
+    name: poll-automation
+    version: "2024.1"
+
+---
+# ConfigMap for application configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: poll-automation-config
+  namespace: poll-automation
+data:
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  REDIS_URL: "redis://redis-service:6379"
+  POSTGRES_URL: "postgresql://postgres-service:5432/poll_automation"
+  AI_SERVICE_URL: "http://ai-service:8080"
+  CAPTCHA_SOLVER_URL: "http://captcha-solver:8080"
+  FINGERPRINT_SERVICE_URL: "http://fingerprint-service:8080"
+  BEHAVIORAL_SERVICE_URL: "http://behavioral-service:8080"
+  BROWSER_POOL_SIZE: "5"
+  MAX_CONCURRENT_SESSIONS: "50"
+  RATE_LIMIT_RPM: "100"
+  ADAPTATION_ENABLED: "true"
+  FINGERPRINT_CONSISTENCY: "high"
+
+---
+# Secret for sensitive configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: poll-automation-secrets
+  namespace: poll-automation
+type: Opaque
+data:
+  # Base64 encoded values
+  OPENAI_API_KEY: ""
+  ANTHROPIC_API_KEY: ""
+  POSTGRES_PASSWORD: ""
+  REDIS_PASSWORD: ""
+  JWT_SECRET: ""
+  ENCRYPTION_KEY: ""
+
+---
+# Redis deployment for task queue and caching
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: poll-automation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: poll-automation
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+
+---
+# PostgreSQL deployment for persistent data
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: poll-automation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: poll_automation
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: poll-automation-secrets
+              key: POSTGRES_PASSWORD
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: poll-automation
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: poll-automation
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+
+---
+# AI Service for intelligent decision making
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-service
+  namespace: poll-automation
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ai-service
+  template:
+    metadata:
+      labels:
+        app: ai-service
+    spec:
+      containers:
+      - name: ai-service
+        image: poll-automation/ai-service:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: poll-automation-secrets
+              key: OPENAI_API_KEY
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: poll-automation-secrets
+              key: ANTHROPIC_API_KEY
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-service
+  namespace: poll-automation
+spec:
+  selector:
+    app: ai-service
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+---
+# CAPTCHA Solver Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: captcha-solver
+  namespace: poll-automation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: captcha-solver
+  template:
+    metadata:
+      labels:
+        app: captcha-solver
+    spec:
+      containers:
+      - name: captcha-solver
+        image: poll-automation/captcha-solver:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        volumeMounts:
+        - name: model-cache
+          mountPath: /app/models
+      volumes:
+      - name: model-cache
+        emptyDir:
+          sizeLimit: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: captcha-solver
+  namespace: poll-automation
+spec:
+  selector:
+    app: captcha-solver
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+---
+# Fingerprint Spoofing Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fingerprint-service
+  namespace: poll-automation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fingerprint-service
+  template:
+    metadata:
+      labels:
+        app: fingerprint-service
+    spec:
+      containers:
+      - name: fingerprint-service
+        image: poll-automation/fingerprint-service:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: poll-automation-config
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fingerprint-service
+  namespace: poll-automation
+spec:
+  selector:
+    app: fingerprint-service
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+---
+# Behavioral Analysis Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: behavioral-service
+  namespace: poll-automation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: behavioral-service
+  template:
+    metadata:
+      labels:
+        app: behavioral-service
+    spec:
+      containers:
+      - name: behavioral-service
+        image: poll-automation/behavioral-service:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: poll-automation-config
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: behavioral-service
+  namespace: poll-automation
+spec:
+  selector:
+    app: behavioral-service
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+---
+# Main Automation Worker Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automation-worker
+  namespace: poll-automation
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: automation-worker
+  template:
+    metadata:
+      labels:
+        app: automation-worker
+    spec:
+      containers:
+      - name: automation-worker
+        image: poll-automation/worker:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: poll-automation-config
+        env:
+        - name: WORKER_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        volumeMounts:
+        - name: browser-cache
+          mountPath: /app/cache
+        - name: downloads
+          mountPath: /app/downloads
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            add:
+            - SYS_ADMIN  # Required for Chromium sandboxing
+      volumes:
+      - name: browser-cache
+        emptyDir:
+          sizeLimit: 2Gi
+      - name: downloads
+        emptyDir:
+          sizeLimit: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: automation-worker-service
+  namespace: poll-automation
+spec:
+  selector:
+    app: automation-worker
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP
+
+---
+# Task Coordinator Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-coordinator
+  namespace: poll-automation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: task-coordinator
+  template:
+    metadata:
+      labels:
+        app: task-coordinator
+    spec:
+      containers:
+      - name: task-coordinator
+        image: poll-automation/coordinator:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: poll-automation-config
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-coordinator
+  namespace: poll-automation
+spec:
+  selector:
+    app: task-coordinator
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+---
+# API Gateway Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: poll-automation
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: poll-automation/gateway:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: poll-automation-config
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: poll-automation
+spec:
+  selector:
+    app: api-gateway
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer
+
+---
+# Horizontal Pod Autoscaler for Workers
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: automation-worker-hpa
+  namespace: poll-automation
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: automation-worker
+  minReplicas: 5
+  maxReplicas: 100
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+
+---
+# HPA for AI Service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ai-service-hpa
+  namespace: poll-automation
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ai-service
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+# Network Policy for security
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: poll-automation-network-policy
+  namespace: poll-automation
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: poll-automation
+  - from: []
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 53  # DNS
+    - protocol: UDP
+      port: 53  # DNS
+    - protocol: TCP
+      port: 443 # HTTPS
+    - protocol: TCP
+      port: 80  # HTTP
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: poll-automation
+
+---
+# Resource Quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: poll-automation-quota
+  namespace: poll-automation
+spec:
+  hard:
+    requests.cpu: "50"
+    requests.memory: 100Gi
+    limits.cpu: "100"
+    limits.memory: 200Gi
+    pods: "200"
+    persistentvolumeclaims: "10"
+    services: "20"
+
+---
+# Priority Class for critical components
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: poll-automation-critical
+value: 1000
+globalDefault: false
+description: "Critical components for poll automation system"
+
+---
+# Service Monitor for Prometheus monitoring
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: poll-automation-metrics
+  namespace: poll-automation
+spec:
+  selector:
+    matchLabels:
+      app: automation-worker
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics

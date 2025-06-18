@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= step.title %> - Verification Window</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e73c7e 0%, #23a6d5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .window-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            animation: windowSlideIn 0.4s ease-out;
+        }
+
+        @keyframes windowSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .window-header {
+            background: linear-gradient(45deg, #e73c7e, #23a6d5);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .window-header h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .window-header p {
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        .verification-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #e73c7e;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .verification-info {
+            background: linear-gradient(135deg, #fff3e0 0%, #e8f5e8 100%);
+            border: 2px solid #ff9800;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .verification-info h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .verification-info p {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .code-display {
+            background: #f5f5f5;
+            border: 2px dashed #999;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 2px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .question:hover {
+            border-color: #e73c7e;
+            background: #fff5f8;
+        }
+
+        .question-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .question-required {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-family: inherit;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .text-input:focus {
+            border-color: #e73c7e;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(231, 60, 126, 0.1);
+        }
+
+        .text-input.code-input {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            text-align: center;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 0.9em;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .window-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #e73c7e, #23a6d5);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 60, 126, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .window-status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(231, 60, 126, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .security-notice {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .security-notice h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .security-notice p {
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        /* Input validation styles */
+        .input-valid {
+            border-color: #28a745 !important;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1) !important;
+        }
+
+        .input-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+        }
+
+        /* Honeypot fields */
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .pulse-effect {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 60, 126, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 60, 126, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 60, 126, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-display">
+        Window: <span id="timer">00:00</span>
+    </div>
+    
+    <div class="window-status">
+        🗂️ NEW WINDOW
+    </div>
+
+    <div class="window-container">
+        <div class="verification-badge">VERIFICATION REQUIRED</div>
+        
+        <div class="window-header">
+            <h1>🔐 <%= step.title %></h1>
+            <p>Please complete the verification process to continue</p>
+        </div>
+
+        <div class="content">
+            <div class="verification-info pulse-effect">
+                <h3>📧 Email Verification Required</h3>
+                <p>We've sent a verification code to your email address. Please check your inbox (and spam folder) for an email with the subject "Survey Verification Code".</p>
+                
+                <div class="code-display">
+                    Sample Code: ABC123
+                </div>
+                
+                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">
+                    <strong>Note:</strong> For demo purposes, use the sample code shown above.
+                </p>
+            </div>
+
+            <div class="security-notice">
+                <h4>🛡️ Security Notice</h4>
+                <p>This verification step helps us ensure the security and integrity of your survey responses. Your information is protected and will not be shared with third parties.</p>
+            </div>
+
+            <form id="verification-form">
+                <input type="hidden" name="currentStep" value="<%= step.id %>">
+                <input type="hidden" name="isNewWindow" value="true">
+                
+                <!-- Honeypot fields -->
+                <input type="email" name="email_backup" class="honeypot" tabindex="-1" autocomplete="off">
+                <input type="text" name="phone_secondary" class="honeypot" tabindex="-1" autocomplete="off">
+                
+                <% step.questions.forEach(question => { %>
+                    <div class="question" data-question-id="<%= question.id %>">
+                        <div class="question-title">
+                            <%= question.text %>
+                            <% if (question.required) { %>
+                                <span class="question-required">*</span>
+                            <% } %>
+                        </div>
+
+                        <% if (question.type === 'text' && question.pattern) { %>
+                            <input type="text" 
+                                   class="text-input <%= question.id.includes('code') ? 'code-input' : '' %>" 
+                                   name="<%= question.id %>"
+                                   placeholder="<%= question.placeholder || 'Enter verification code...' %>"
+                                   pattern="<%= question.pattern %>"
+                                   maxlength="6"
+                                   <%= question.required ? 'required' : '' %>
+                                   oninput="validateInput('<%= question.id %>', this)">
+                        
+                        <% } else if (question.type === 'tel') { %>
+                            <input type="tel" 
+                                   class="text-input" 
+                                   name="<%= question.id %>"
+                                   placeholder="<%= question.placeholder || 'Enter phone number...' %>"
+                                   pattern="<%= question.pattern %>"
+                                   <%= question.required ? 'required' : '' %>
+                                   oninput="validateInput('<%= question.id %>', this)">
+                        <% } %>
+
+                        <div class="validation-error" id="error-<%= question.id %>"></div>
+                        <div class="success-message" id="success-<%= question.id %>"></div>
+                    </div>
+                <% }); %>
+            </form>
+        </div>
+
+        <div class="window-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeWindow()">
+                ⛔ Cancel Verification
+            </button>
+            
+            <button type="submit" form="verification-form" class="btn btn-primary" id="verify-btn">
+                ✅ Verify & Continue
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let windowStartTime = Date.now();
+        let interactionCount = 0;
+        let validationResults = {};
+
+        // Timer update
+        function updateTimer() {
+            const elapsed = Date.now() - windowStartTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        setInterval(updateTimer, 1000);
+
+        function validateInput(questionId, input) {
+            const value = input.value;
+            const pattern = input.getAttribute('pattern');
+            const errorEl = document.getElementById(`error-${questionId}`);
+            const successEl = document.getElementById(`success-${questionId}`);
+            
+            // Clear previous messages
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+            input.classList.remove('input-valid', 'input-invalid');
+            
+            if (value.length === 0) {
+                validationResults[questionId] = false;
+                return;
+            }
+            
+            let isValid = true;
+            let message = '';
+            
+            if (questionId.includes('code')) {
+                // Verification code validation
+                if (pattern) {
+                    const regex = new RegExp(pattern);
+                    if (!regex.test(value)) {
+                        isValid = false;
+                        message = 'Please enter a valid 6-character code (letters and numbers only)';
+                    } else if (value.toUpperCase() === 'ABC123') {
+                        isValid = true;
+                        message = 'Verification code accepted!';
+                    } else {
+                        isValid = false;
+                        message = 'Invalid verification code. Please check your email.';
+                    }
+                } else {
+                    isValid = value.length >= 6;
+                    message = isValid ? 'Code format looks good!' : 'Code must be at least 6 characters';
+                }
+            } else if (questionId.includes('phone')) {
+                // Phone number validation
+                const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+                isValid = phoneRegex.test(value.replace(/\s/g, ''));
+                message = isValid ? 'Phone number format is valid!' : 'Please enter a valid phone number (e.g., +1234567890)';
+            }
+            
+            if (isValid) {
+                input.classList.add('input-valid');
+                successEl.textContent = message;
+                successEl.style.display = 'block';
+            } else {
+                input.classList.add('input-invalid');
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+            }
+            
+            validationResults[questionId] = isValid;
+            trackWindowInteraction('field_validation', questionId, isValid ? 'valid' : 'invalid');
+        }
+
+        function trackWindowInteraction(type, field, result = null) {
+            interactionCount++;
+            
+            const data = {
+                type: 'window_interaction',
+                data: {
+                    interaction: type,
+                    field: field,
+                    result: result,
+                    timestamp: Date.now(),
+                    windowDuration: Date.now() - windowStartTime,
+                    interactionCount: interactionCount
+                }
+            };
+            
+            // Send to parent window if available
+            try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage(data, '*');
+                }
+            } catch (e) {
+                // Fallback to direct API call
+                fetch('/api/track-behavior', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        windowInteractions: [data.data]
+                    })
+                }).catch(console.error);
+            }
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const form = document.getElementById('verification-form');
+            const formData = new FormData(form);
+            
+            // Clear previous errors
+            document.querySelectorAll('.validation-error').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Check each required field
+            <% step.questions.forEach(question => { %>
+                <% if (question.required) { %>
+                    const <%= question.id %>_value = formData.get('<%= question.id %>');
+                    if (!<%= question.id %>_value || <%= question.id %>_value.trim() === '') {
+                        document.getElementById('error-<%= question.id %>').textContent = 'This field is required.';
+                        document.getElementById('error-<%= question.id %>').style.display = 'block';
+                        isValid = false;
+                    } else if (!validationResults['<%= question.id %>']) {
+                        document.getElementById('error-<%= question.id %>').textContent = 'Please correct the validation errors.';
+                        document.getElementById('error-<%= question.id %>').style.display = 'block';
+                        isValid = false;
+                    }
+                <% } %>
+            <% }); %>
+
+            return isValid;
+        }
+
+        function closeWindow() {
+            trackWindowInteraction('window_close', 'user_action');
+            
+            // Notify parent window
+            try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({
+                        type: 'verification_cancelled',
+                        completed: false
+                    }, '*');
+                }
+            } catch (e) {
+                console.log('Could not communicate with parent window');
+            }
+            
+            window.close();
+        }
+
+        // Form submission
+        document.getElementById('verification-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                trackWindowInteraction('form_validation', 'failed');
+                return;
+            }
+            
+            const verifyBtn = document.getElementById('verify-btn');
+            verifyBtn.textContent = 'Verifying...';
+            verifyBtn.disabled = true;
+            document.querySelector('.window-container').classList.add('loading');
+            
+            trackWindowInteraction('form_submission', 'started');
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/survey/submit-step', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    trackWindowInteraction('verification_completed', 'success');
+                    
+                    // Notify parent window of completion
+                    try {
+                        if (window.opener && !window.opener.closed) {
+                            window.opener.postMessage({
+                                type: 'verification_completed',
+                                completed: true,
+                                nextAction: result.action,
+                                nextUrl: result.url
+                            }, '*');
+                        }
+                    } catch (e) {
+                        console.log('Could not communicate with parent window');
+                    }
+                    
+                    // Show success message
+                    document.querySelector('.content').innerHTML = `
+                        <div style="text-align: center; padding: 50px;">
+                            <h2 style="color: #28a745; margin-bottom: 20px;">🎉 Verification Successful!</h2>
+                            <p style="color: #666; margin-bottom: 25px; font-size: 1.1em;">Your identity has been verified successfully.</p>
+                            <div style="background: #d4edda; padding: 20px; border-radius: 15px; color: #155724; margin-bottom: 20px;">
+                                <strong>✅ Verification Complete</strong><br>
+                                You may now continue with the survey in the main window.
+                            </div>
+                            <p style="color: #999; font-size: 0.9em;">This window will close automatically in a few seconds...</p>
+                        </div>
+                    `;
+                    
+                    // Close window after delay
+                    setTimeout(() => {
+                        window.close();
+                    }, 3000);
+                    
+                } else {
+                    trackWindowInteraction('verification_failed', result.error);
+                    alert('Verification failed: ' + result.error);
+                    verifyBtn.disabled = false;
+                    verifyBtn.textContent = '✅ Verify & Continue';
+                    document.querySelector('.window-container').classList.remove('loading');
+                }
+                
+            } catch (error) {
+                console.error('Verification error:', error);
+                trackWindowInteraction('verification_error', error.message);
+                alert('A network error occurred. Please try again.');
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = '✅ Verify & Continue';
+                document.querySelector('.window-container').classList.remove('loading');
+            }
+        });
+
+        // Initialize window
+        document.addEventListener('DOMContentLoaded', function() {
+            trackWindowInteraction('window_opened', 'step_<%= step.id %>');
+            
+            // Focus first input
+            const firstInput = document.querySelector('input[type="text"], input[type="tel"]');
+            if (firstInput) {
+                firstInput.focus();
+            }
+            
+            // Add event listeners for form elements
+            document.querySelectorAll('input').forEach(element => {
+                element.addEventListener('focus', () => trackWindowInteraction('field_focus', element.name));
+                element.addEventListener('blur', () => trackWindowInteraction('field_blur', element.name));
+            });
+        });
+
+        // Handle window close
+        window.addEventListener('beforeunload', function() {
+            trackWindowInteraction('window_beforeunload', 'browser_close');
+        });
+
+        // Auto-uppercase for verification code
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('code-input')) {
+                e.target.value = e.target.value.toUpperCase();
+            }
+        });
+    </script>
+</body>
+</html>

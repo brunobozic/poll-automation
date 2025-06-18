@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PollDemo - Advanced Testing Platform</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Cookie Consent Banner (appears after 2 seconds) -->
+    <div id="cookieBanner" class="cookie-banner" style="display: none;">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <i class="fas fa-cookie-bite"></i>
+                <span>We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.</span>
+            </div>
+            <div class="cookie-actions">
+                <button class="btn btn-secondary" onclick="handleCookies('decline')">Decline</button>
+                <button class="btn btn-primary" onclick="handleCookies('accept')">Accept All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Age Verification Modal -->
+    <div id="ageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-shield-alt"></i> Age Verification</h3>
+            </div>
+            <div class="modal-body">
+                <p>You must be 18 years or older to participate in surveys on this site.</p>
+                <p>Are you 18 years of age or older?</p>
+                <div class="age-verification-buttons">
+                    <button class="btn btn-secondary" onclick="handleAgeVerification(false)">No, I am under 18</button>
+                    <button class="btn btn-success" onclick="handleAgeVerification(true)">Yes, I am 18 or older</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <i class="fas fa-poll"></i>
+                    PollDemo Advanced
+                </div>
+                <div class="nav-links">
+                    <a href="/"><i class="fas fa-home"></i> Home</a>
+                    <a href="#" onclick="showNewsletterPopup()"><i class="fas fa-envelope"></i> Newsletter</a>
+                    <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1><i class="fas fa-robot"></i> PollDemo Advanced</h1>
+                <p>Sophisticated poll automation testing platform</p>
+                <p class="subtitle">Complete with modals, iframes, CAPTCHAs, and modern web challenges</p>
+                
+                <div class="cta-buttons">
+                    <a href="#" onclick="showLoginModal()" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Quick Login
+                    </a>
+                    <a href="/login" class="btn btn-secondary">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Full Login Page
+                    </a>
+                    <a href="#" onclick="showVideoModal()" class="btn btn-secondary">
+                        <i class="fas fa-play"></i>
+                        Watch Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section with Interactive Elements -->
+    <section class="features-section">
+        <div class="container">
+            <h2>Advanced Testing Features</h2>
+            <div class="features-grid">
+                <div class="feature-card" onclick="showFeatureModal('authentication')">
+                    <i class="fas fa-user-shield"></i>
+                    <h3>Multi-Modal Authentication</h3>
+                    <p>Login modals, popup windows, and iframe-based authentication flows</p>
+                    <div class="feature-badge">Interactive Demo</div>
+                </div>
+                <div class="feature-card" onclick="showFeatureModal('captcha')">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <h3>CAPTCHA Challenges</h3>
+                    <p>Various CAPTCHA types including math, checkbox, and reCAPTCHA simulation</p>
+                    <div class="feature-badge">Test Ready</div>
+                </div>
+                <div class="feature-card" onclick="showFeatureModal('spa')">
+                    <i class="fas fa-cogs"></i>
+                    <h3>SPA Simulation</h3>
+                    <p>Dynamic content loading, routing, and framework-specific behaviors</p>
+                    <div class="feature-badge">React-like</div>
+                </div>
+                <div class="feature-card" onclick="showFeatureModal('iframe')">
+                    <i class="fas fa-window-restore"></i>
+                    <h3>Iframe Integration</h3>
+                    <p>Nested polls, payment forms, and cross-origin content challenges</p>
+                    <div class="feature-badge">Complex</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Embedded Content Section -->
+    <section class="embedded-section">
+        <div class="container">
+            <h2>Embedded Content Examples</h2>
+            <div class="embedded-grid">
+                <div class="embedded-item">
+                    <h3>Survey Widget (Iframe)</h3>
+                    <iframe src="/widget/mini-survey" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
+                </div>
+                <div class="embedded-item">
+                    <h3>Quick Poll</h3>
+                    <div class="quick-poll">
+                        <p><strong>Which automation tool do you prefer?</strong></p>
+                        <form onsubmit="submitQuickPoll(event)">
+                            <label class="option-label">
+                                <input type="radio" name="tool" value="playwright">
+                                <span>Playwright</span>
+                            </label>
+                            <label class="option-label">
+                                <input type="radio" name="tool" value="selenium">
+                                <span>Selenium</span>
+                            </label>
+                            <label class="option-label">
+                                <input type="radio" name="tool" value="puppeteer">
+                                <span>Puppeteer</span>
+                            </label>
+                            <button type="submit" class="btn btn-primary">Vote</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Info with Popups -->
+    <section class="demo-info">
+        <div class="container">
+            <div class="info-card">
+                <h2><i class="fas fa-flask"></i> Advanced Testing Environment</h2>
+                <p>This enhanced demo site provides realistic web automation challenges including:</p>
+                
+                <div class="challenge-list">
+                    <div class="challenge-item" onclick="demoChallenge('cookies')">
+                        <i class="fas fa-cookie-bite"></i>
+                        <span>Cookie Consent Banners</span>
+                        <button class="demo-btn">Demo</button>
+                    </div>
+                    <div class="challenge-item" onclick="demoChallenge('popup')">
+                        <i class="fas fa-window-maximize"></i>
+                        <span>Popup Windows</span>
+                        <button class="demo-btn">Demo</button>
+                    </div>
+                    <div class="challenge-item" onclick="demoChallenge('modal')">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Modal Dialogs</span>
+                        <button class="demo-btn">Demo</button>
+                    </div>
+                    <div class="challenge-item" onclick="demoChallenge('redirect')">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Redirect Chains</span>
+                        <button class="demo-btn">Demo</button>
+                    </div>
+                </div>
+
+                <div class="test-accounts">
+                    <h3>Test Accounts</h3>
+                    <div class="account-grid">
+                        <div class="account">
+                            <strong>testuser</strong> / testpass
+                            <small>Standard account</small>
+                        </div>
+                        <div class="account">
+                            <strong>demo</strong> / demo123
+                            <small>Enhanced features</small>
+                        </div>
+                        <div class="account">
+                            <strong>bbozic</strong> / password123
+                            <small>Admin access</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cta-section">
+                    <a href="/login" class="btn btn-primary">Start Testing</a>
+                    <a href="#" onclick="showHelpModal()" class="btn btn-secondary">Get Help</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-in-alt"></i> Quick Login</h3>
+                <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="quickLoginForm" onsubmit="handleQuickLogin(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" name="username" required placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" name="password" required placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="remember"> Remember me
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Login</button>
+                </form>
+                <div class="modal-footer">
+                    <p>Test accounts: testuser/testpass, demo/demo123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter Popup -->
+    <div id="newsletterPopup" class="modal">
+        <div class="modal-content newsletter-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-envelope"></i> Stay Updated!</h3>
+                <span class="close" onclick="closeModal('newsletterPopup')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Get the latest updates on poll automation and testing techniques!</p>
+                <form onsubmit="handleNewsletter(event)">
+                    <div class="form-group">
+                        <input type="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" required> I agree to receive newsletters
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content video-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-play"></i> Demo Video</h3>
+                <span class="close" onclick="closeModal('videoModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="video-placeholder">
+                    <i class="fas fa-play-circle"></i>
+                    <p>Demo video would play here</p>
+                    <small>Simulated video player for automation testing</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Modals -->
+    <div id="featureModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="featureModalTitle"></h3>
+                <span class="close" onclick="closeModal('featureModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="featureModalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-question-circle"></i> Help & Documentation</h3>
+                <span class="close" onclick="closeModal('helpModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="help-content">
+                    <h4>Testing Features</h4>
+                    <ul>
+                        <li><strong>Modals:</strong> Various modal types for interaction testing</li>
+                        <li><strong>Iframes:</strong> Embedded content with cross-origin challenges</li>
+                        <li><strong>CAPTCHAs:</strong> Different verification methods</li>
+                        <li><strong>Redirects:</strong> Multi-step navigation flows</li>
+                    </ul>
+                    
+                    <h4>Automation Challenges</h4>
+                    <ul>
+                        <li>Dynamic content loading</li>
+                        <li>Popup window handling</li>
+                        <li>Form validation</li>
+                        <li>Session management</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 PollDemo Advanced. Built for comprehensive automation testing.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+    <script src="/js/advanced-demo.js"></script>
+
+    <!-- Simulated Analytics (for testing purposes) -->
+    <script>
+        // Simulate various tracking scripts that automation tools encounter
+        window.gtag = function() { console.log('Analytics call:', arguments); };
+        window.fbq = function() { console.log('Facebook pixel:', arguments); };
+        
+        // Show cookie banner after delay
+        setTimeout(() => {
+            document.getElementById('cookieBanner').style.display = 'block';
+        }, 2000);
+
+        // Show age verification for new visitors
+        if (!localStorage.getItem('ageVerified')) {
+            setTimeout(() => {
+                document.getElementById('ageModal').style.display = 'block';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
+
+<div class="features-section">
+    <div class="container">
+        <h2>Demo Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-user-check"></i>
+                <h3>User Authentication</h3>
+                <p>Login system with session management</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-poll-h"></i>
+                <h3>Multiple Poll Types</h3>
+                <p>Various question types: multiple choice, rating, text, yes/no</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-robot"></i>
+                <h3>Anti-Bot Questions</h3>
+                <p>Includes trick questions to test bot detection</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Form Validation</h3>
+                <p>Required field validation and error handling</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="demo-info">
+    <div class="container">
+        <div class="info-card">
+            <h3>Test Accounts</h3>
+            <div class="test-accounts">
+                <div class="account">
+                    <strong>Username:</strong> testuser<br>
+                    <strong>Password:</strong> testpass
+                </div>
+                <div class="account">
+                    <strong>Username:</strong> demo<br>
+                    <strong>Password:</strong> demo123
+                </div>
+                <div class="account">
+                    <strong>Username:</strong> bbozic<br>
+                    <strong>Password:</strong> password123
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

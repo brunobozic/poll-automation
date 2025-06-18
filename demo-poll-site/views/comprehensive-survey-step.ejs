@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= step.title %> - <%= survey.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.3s;
+            width: <%= (step.id / survey.totalSteps) * 100 %>%;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .question {
+            margin-bottom: 40px;
+            padding: 30px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .question:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .question-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .question-required {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        /* Radio button styles */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+            accent-color: #667eea;
+        }
+
+        .radio-option.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        /* Checkbox styles */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .checkbox-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+            accent-color: #667eea;
+        }
+
+        .checkbox-option.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        /* Slider styles */
+        .slider-container {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+            outline: none;
+            appearance: none;
+            margin: 20px 0;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        /* Date input styles */
+        .date-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1.1em;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .date-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Text input styles */
+        .text-input, .textarea-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-family: inherit;
+            background: white;
+            transition: all 0.3s;
+            resize: vertical;
+        }
+
+        .text-input:focus, .textarea-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .textarea-input {
+            min-height: 120px;
+        }
+
+        .character-counter {
+            text-align: right;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .step-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Honeypot fields */
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+
+        .bot-score {
+            font-weight: bold;
+        }
+
+        .bot-score.low { color: #28a745; }
+        .bot-score.medium { color: #ffc107; }
+        .bot-score.high { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="status-indicator">
+        Step <%= step.id %> of <%= survey.totalSteps %><br>
+        Bot Score: <span class="bot-score <%= botScore > 100 ? 'high' : botScore > 50 ? 'medium' : 'low' %>"><%= Math.round(botScore) %></span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1><%= step.title %></h1>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p style="margin-top: 10px; opacity: 0.9;">Step <%= step.id %> of <%= survey.totalSteps %></p>
+        </div>
+
+        <div class="content">
+            <div class="step-info">
+                <strong>📋 Step <%= step.id %>:</strong> <%= step.title %> - Please complete all required fields to proceed to the next step.
+            </div>
+
+            <form id="survey-form">
+                <input type="hidden" name="currentStep" value="<%= step.id %>">
+                
+                <!-- Honeypot fields -->
+                <input type="email" name="email_backup" class="honeypot" tabindex="-1" autocomplete="off">
+                <input type="tel" name="phone_secondary" class="honeypot" tabindex="-1" autocomplete="off">
+                
+                <% step.questions.forEach(question => { %>
+                    <div class="question" data-question-id="<%= question.id %>">
+                        <div class="question-title">
+                            <%= question.text %>
+                            <% if (question.required) { %>
+                                <span class="question-required">*</span>
+                            <% } %>
+                        </div>
+
+                        <% if (question.type === 'radio') { %>
+                            <div class="radio-group">
+                                <% question.options.forEach((option, index) => { %>
+                                    <label class="radio-option" onclick="selectRadio(this)">
+                                        <input type="radio" 
+                                               name="<%= question.id %>" 
+                                               value="<%= option.value %>" 
+                                               <%= question.required ? 'required' : '' %>>
+                                        <span><%= option.label %></span>
+                                    </label>
+                                <% }); %>
+                            </div>
+
+                        <% } else if (question.type === 'checkbox') { %>
+                            <div class="checkbox-group">
+                                <% question.options.forEach((option, index) => { %>
+                                    <label class="checkbox-option" onclick="selectCheckbox(this)">
+                                        <input type="checkbox" 
+                                               name="<%= question.id %>" 
+                                               value="<%= option.value %>">
+                                        <span><%= option.label %></span>
+                                    </label>
+                                <% }); %>
+                            </div>
+
+                        <% } else if (question.type === 'slider') { %>
+                            <div class="slider-container">
+                                <div class="slider-value" id="slider-value-<%= question.id %>">
+                                    <%= Math.round((question.min + question.max) / 2) %>
+                                </div>
+                                <input type="range" 
+                                       class="slider" 
+                                       name="<%= question.id %>"
+                                       min="<%= question.min %>" 
+                                       max="<%= question.max %>" 
+                                       value="<%= Math.round((question.min + question.max) / 2) %>"
+                                       oninput="updateSliderValue('<%= question.id %>', this.value)"
+                                       <%= question.required ? 'required' : '' %>>
+                                <div class="slider-labels">
+                                    <% Object.entries(question.labels || {}).forEach(([value, label]) => { %>
+                                        <span><%= label %></span>
+                                    <% }); %>
+                                </div>
+                            </div>
+
+                        <% } else if (question.type === 'date') { %>
+                            <input type="date" 
+                                   class="date-input" 
+                                   name="<%= question.id %>"
+                                   <% if (question.max) { %>max="<%= question.max %>"<% } %>
+                                   <% if (question.min) { %>min="<%= question.min %>"<% } %>
+                                   <%= question.required ? 'required' : '' %>>
+
+                        <% } else if (question.type === 'textarea') { %>
+                            <textarea class="textarea-input" 
+                                      name="<%= question.id %>"
+                                      placeholder="<%= question.placeholder || 'Enter your response...' %>"
+                                      <% if (question.minLength) { %>minlength="<%= question.minLength %>"<% } %>
+                                      <%= question.required ? 'required' : '' %>
+                                      oninput="updateCharacterCount('<%= question.id %>', this)"></textarea>
+                            <% if (question.minLength) { %>
+                                <div class="character-counter" id="char-count-<%= question.id %>">
+                                    0 / <%= question.minLength %> characters minimum
+                                </div>
+                            <% } %>
+
+                        <% } else if (question.type === 'text' || question.type === 'tel') { %>
+                            <input type="<%= question.type %>" 
+                                   class="text-input" 
+                                   name="<%= question.id %>"
+                                   placeholder="<%= question.placeholder || 'Enter your answer...' %>"
+                                   <% if (question.pattern) { %>pattern="<%= question.pattern %>"<% } %>
+                                   <%= question.required ? 'required' : '' %>>
+                        <% } %>
+
+                        <div class="validation-error" id="error-<%= question.id %>"></div>
+                    </div>
+                <% }); %>
+            </form>
+        </div>
+
+        <div class="navigation">
+            <% if (step.id > 1) { %>
+                <a href="/survey/step<%= step.id - 1 %>" class="btn btn-secondary">
+                    ← Previous Step
+                </a>
+            <% } else { %>
+                <div></div>
+            <% } %>
+            
+            <button type="submit" form="survey-form" class="btn btn-primary" id="next-btn">
+                <% if (step.id === survey.totalSteps) { %>
+                    🏁 Complete Survey
+                <% } else { %>
+                    Next Step →
+                <% } %>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let formData = {};
+        let interactionCount = 0;
+
+        function selectRadio(label) {
+            // Remove selected class from siblings
+            const group = label.parentElement;
+            group.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to current
+            label.classList.add('selected');
+            
+            // Track interaction
+            trackInteraction('radio_select', label.querySelector('input').name);
+        }
+
+        function selectCheckbox(label) {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            
+            if (checkbox.checked) {
+                label.classList.add('selected');
+            } else {
+                label.classList.remove('selected');
+            }
+            
+            // Track interaction
+            trackInteraction('checkbox_toggle', checkbox.name);
+        }
+
+        function updateSliderValue(questionId, value) {
+            document.getElementById(`slider-value-${questionId}`).textContent = value;
+            trackInteraction('slider_change', questionId);
+        }
+
+        function updateCharacterCount(questionId, textarea) {
+            const counter = document.getElementById(`char-count-${questionId}`);
+            if (counter) {
+                const minLength = textarea.getAttribute('minlength') || 0;
+                const currentLength = textarea.value.length;
+                counter.textContent = `${currentLength} / ${minLength} characters minimum`;
+                
+                if (currentLength >= minLength) {
+                    counter.style.color = '#28a745';
+                } else {
+                    counter.style.color = '#666';
+                }
+            }
+            
+            trackInteraction('text_input', questionId);
+        }
+
+        function trackInteraction(type, field) {
+            interactionCount++;
+            
+            // Send interaction data
+            fetch('/api/track-behavior', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    interactions: [{
+                        type: type,
+                        field: field,
+                        timestamp: Date.now(),
+                        count: interactionCount
+                    }]
+                })
+            }).catch(console.error);
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const form = document.getElementById('survey-form');
+            const formData = new FormData(form);
+            
+            // Clear previous errors
+            document.querySelectorAll('.validation-error').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Validate required fields
+            <% step.questions.forEach(question => { %>
+                <% if (question.required) { %>
+                    const <%= question.id %>_value = formData.get('<%= question.id %>');
+                    if (!<%= question.id %>_value || <%= question.id %>_value.trim() === '') {
+                        document.getElementById('error-<%= question.id %>').textContent = 'This field is required.';
+                        document.getElementById('error-<%= question.id %>').style.display = 'block';
+                        isValid = false;
+                    }
+                    
+                    <% if (question.minLength) { %>
+                        if (<%= question.id %>_value && <%= question.id %>_value.length < <%= question.minLength %>) {
+                            document.getElementById('error-<%= question.id %>').textContent = 'Minimum <%= question.minLength %> characters required.';
+                            document.getElementById('error-<%= question.id %>').style.display = 'block';
+                            isValid = false;
+                        }
+                    <% } %>
+                <% } %>
+            <% }); %>
+
+            return isValid;
+        }
+
+        // Form submission
+        document.getElementById('survey-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+            
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.textContent = 'Processing...';
+            nextBtn.disabled = true;
+            document.querySelector('.container').classList.add('loading');
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/survey/submit-step', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    switch (result.action) {
+                        case 'redirect':
+                            window.location.href = result.url;
+                            break;
+                            
+                        case 'show_modal':
+                            // Open modal window
+                            const modalWindow = window.open(
+                                result.modalContent, 
+                                'survey_modal',
+                                'width=700,height=500,scrollbars=yes,resizable=yes,modal=yes'
+                            );
+                            
+                            // Wait for modal to close
+                            const checkModal = setInterval(() => {
+                                if (modalWindow.closed) {
+                                    clearInterval(checkModal);
+                                    // Continue to next step after modal
+                                    window.location.href = '/survey/step<%= step.id + 1 %>';
+                                }
+                            }, 1000);
+                            break;
+                            
+                        case 'open_window':
+                            // Open new window
+                            const newWindow = window.open(
+                                result.url,
+                                result.windowName || 'survey_window',
+                                result.windowFeatures || 'width=800,height=600,scrollbars=yes,resizable=yes'
+                            );
+                            
+                            // Continue to next step (parent window)
+                            setTimeout(() => {
+                                window.location.href = '/survey/step<%= step.id + 1 %>';
+                            }, 2000);
+                            break;
+                            
+                        case 'complete':
+                            window.location.href = result.url;
+                            break;
+                    }
+                } else {
+                    alert('Error: ' + result.error);
+                    nextBtn.disabled = false;
+                    nextBtn.textContent = '<%= step.id === survey.totalSteps ? "Complete Survey" : "Next Step →" %>';
+                    document.querySelector('.container').classList.remove('loading');
+                }
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('An error occurred. Please try again.');
+                nextBtn.disabled = false;
+                nextBtn.textContent = '<%= step.id === survey.totalSteps ? "Complete Survey" : "Next Step →" %>';
+                document.querySelector('.container').classList.remove('loading');
+            }
+        });
+
+        // Initialize form interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Track page load
+            trackInteraction('page_load', 'step_<%= step.id %>');
+            
+            // Add event listeners for all form elements
+            document.querySelectorAll('input, textarea, select').forEach(element => {
+                element.addEventListener('focus', () => trackInteraction('field_focus', element.name));
+                element.addEventListener('blur', () => trackInteraction('field_blur', element.name));
+            });
+        });
+    </script>
+</body>
+</html>

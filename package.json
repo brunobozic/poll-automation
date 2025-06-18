@@ -1,0 +1,71 @@
+{
+  "name": "ai-poll-automation",
+  "version": "2.0.0",
+  "description": "AI-powered automated poll filling system with intelligent decision making",
+  "main": "src/ai/ai-poll-automation.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "NODE_ENV=development nodemon src/index.js",
+    "test": "node test-ai-automation.js",
+    "test:framework": "node test-playwright-framework.js",
+    "setup": "node scripts/setup.js",
+    "setup-db": "node src/database/setup.js",
+    "demo": "npm run demo:site",
+    "demo:site": "cd demo-poll-site && npm start",
+    "demo:automation": "node examples/simple-usage.js",
+    "production": "NODE_ENV=production node src/index.js",
+    "validate": "node -e \"require('./production.config.js').validate()\"",
+    "health": "curl -f http://localhost:3000/health || exit 1",
+    "logs": "tail -f logs/automation_$(date +%Y-%m-%d).log",
+    "clean": "node scripts/cleanup.js",
+    "install:browsers": "npx playwright install chromium",
+    "install:deps": "sudo npx playwright install-deps"
+  },
+  "keywords": [
+    "automation",
+    "polls",
+    "surveys",
+    "playwright",
+    "AI",
+    "GPT",
+    "OpenAI",
+    "web-automation",
+    "intelligent",
+    "adaptive"
+  ],
+  "author": "Bruno Bozic",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.53.0",
+    "axios": "^1.6.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "playwright": "^1.40.0",
+    "sqlite3": "^5.1.6",
+    "winston": "^3.11.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^7.1.5",
+    "jsonwebtoken": "^9.0.2",
+    "ejs": "^3.1.9"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.33.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/ai-poll-automation.git"
+  },
+  "config": {
+    "production": "./production.config.js"
+  }
+}

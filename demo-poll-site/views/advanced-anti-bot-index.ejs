@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Anti-Bot Survey Protection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .protection-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #ff6b6b;
+            margin: 20px;
+            border-radius: 8px;
+        }
+
+        .protection-info h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .detection-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .detection-method {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+            font-size: 0.9em;
+        }
+
+        .survey-content {
+            padding: 30px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        .question h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .question label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .question label:hover {
+            background-color: #f0f0f0;
+        }
+
+        .question input[type="radio"], .question input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .question input[type="text"], .question textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .question textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Honeypot fields - hidden from humans */
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .challenge-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .challenge-question {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .challenge-input {
+            padding: 10px;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            width: 100px;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-width: 200px;
+            font-size: 0.9em;
+        }
+
+        .bot-score {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .bot-score.low { color: #28a745; }
+        .bot-score.medium { color: #ffc107; }
+        .bot-score.high { color: #dc3545; }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .analyzing {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Advanced Anti-Bot Survey</h1>
+            <p>Testing State-of-the-Art Bot Detection (2024)</p>
+        </div>
+
+        <div class="protection-info">
+            <h3>🔍 Active Protection Methods:</h3>
+            <div class="detection-methods">
+                <div class="detection-method">🎨 Canvas Fingerprinting</div>
+                <div class="detection-method">🖼️ WebGL Analysis</div>
+                <div class="detection-method">🎵 Audio Fingerprinting</div>
+                <div class="detection-method">🖱️ Mouse Tracking</div>
+                <div class="detection-method">⌨️ Keystroke Analysis</div>
+                <div class="detection-method">🕰️ Timing Analysis</div>
+                <div class="detection-method">🍯 Honeypot Fields</div>
+                <div class="detection-method">🔧 CDP Detection</div>
+                <div class="detection-method">🎯 Behavioral Scoring</div>
+                <div class="detection-method">🚦 Rate Limiting</div>
+            </div>
+        </div>
+
+        <!-- Hidden canvas for fingerprinting -->
+        <canvas id="fingerprint-canvas" style="display: none;"></canvas>
+        
+        <!-- Honeypot fields (hidden from humans) -->
+        <input type="email" name="email_confirm" class="honeypot" tabindex="-1" autocomplete="off">
+        <input type="tel" name="phone_backup" class="honeypot" tabindex="-1" autocomplete="off">
+        <input type="text" name="address_secondary" class="honeypot" tabindex="-1" autocomplete="off">
+
+        <form id="survey-form" class="survey-content">
+            <!-- Challenge Section -->
+            <div class="challenge-section" id="challenge-section">
+                <div class="challenge-question">Human Verification: What is 6 × 7?</div>
+                <input type="number" id="challenge-answer" class="challenge-input" placeholder="?" required>
+                <div style="margin-top: 10px; font-size: 0.9em; color: #856404;">
+                    Please wait at least 3 seconds before answering...
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div style="text-align: center; margin-bottom: 20px; color: #666;">
+                Question <span id="current-question">0</span> of <%= survey.questions.length %>
+            </div>
+
+            <% survey.questions.forEach((question, index) => { %>
+                <div class="question" id="question-<%= question.id %>" style="<%= index > 0 ? 'display: none;' : '' %>">
+                    <h3><%= question.text %> <% if (question.required) { %><span style="color: red;">*</span><% } %></h3>
+                    
+                    <% if (question.type === 'single-choice') { %>
+                        <% question.options.forEach(option => { %>
+                            <label>
+                                <input type="radio" name="question_<%= question.id %>" value="<%= option.value %>" required="<%= question.required %>">
+                                <%= option.label %>
+                            </label>
+                        <% }); %>
+                    <% } else if (question.type === 'multiple-choice') { %>
+                        <% question.options.forEach(option => { %>
+                            <label>
+                                <input type="checkbox" name="question_<%= question.id %>" value="<%= option.value %>">
+                                <%= option.label %>
+                            </label>
+                        <% }); %>
+                    <% } else if (question.type === 'text') { %>
+                        <% if (question.hasKeystrokeAnalysis) { %>
+                            <textarea 
+                                name="question_<%= question.id %>" 
+                                placeholder="Please type your response here (minimum <%= question.minLength || 20 %> characters)..."
+                                required="<%= question.required %>"
+                                data-keystroke-analysis="true"
+                                minlength="<%= question.minLength || 20 %>"></textarea>
+                        <% } else { %>
+                            <input type="text" 
+                                name="question_<%= question.id %>" 
+                                placeholder="Your answer..."
+                                required="<%= question.required %>">
+                        <% } %>
+                    <% } %>
+                    
+                    <% if (index < survey.questions.length - 1) { %>
+                        <button type="button" class="submit-btn" onclick="nextQuestion(<%= question.id %>)" style="margin-top: 15px;">
+                            Next Question →
+                        </button>
+                    <% } %>
+                </div>
+            <% }); %>
+
+            <div class="submit-section" id="submit-section" style="display: none;">
+                <div class="warning" id="bot-warning" style="display: none;">
+                    ⚠️ Bot activity detected! Your submission may be blocked.
+                </div>
+                <button type="submit" class="submit-btn" id="submit-btn" disabled>
+                    🔍 Analyzing... Please Wait
+                </button>
+                <div style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                    Advanced anti-bot protection is analyzing your responses...
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Status Display -->
+    <div class="status-display" id="status-display">
+        <div><strong>Bot Detection Status</strong></div>
+        <div>Bot Score: <span class="bot-score low" id="bot-score">0</span></div>
+        <div>Risk Level: <span id="risk-level">Low</span></div>
+        <div>Session: <span id="session-id"><%= sessionId %></span></div>
+        <div style="margin-top: 10px; font-size: 0.8em; color: #666;">
+            Real-time bot detection monitoring
+        </div>
+    </div>
+
+    <script>
+        // Global tracking variables
+        let mouseMovements = [];
+        let keystrokes = [];
+        let clicks = [];
+        let startTime = Date.now();
+        let questionStartTimes = [];
+        let currentQuestionIndex = 0;
+        let challengeStartTime = Date.now();
+        let botScore = <%= botScore %>;
+        let fingerprint = {};
+        
+        // Initialize tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFingerprinting();
+            initializeMouseTracking();
+            initializeKeystrokeTracking();
+            initializeTimingTracking();
+            updateProgress();
+        });
+        
+        // Canvas and WebGL Fingerprinting
+        function initializeFingerprinting() {
+            try {
+                // Canvas fingerprinting
+                const canvas = document.getElementById('fingerprint-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Draw complex pattern for fingerprinting
+                ctx.textBaseline = 'top';
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#f60';
+                ctx.fillRect(125, 1, 62, 20);
+                ctx.fillStyle = '#069';
+                ctx.fillText('BrowserLeaks.com 🌍', 2, 15);
+                ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+                ctx.fillText('BrowserLeaks.com 🌍', 4, 17);
+                
+                fingerprint.canvas = canvas.toDataURL();
+                
+                // WebGL fingerprinting
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    fingerprint.webgl = {
+                        vendor: gl.getParameter(debugInfo ? debugInfo.UNMASKED_VENDOR_WEBGL : gl.VENDOR),
+                        renderer: gl.getParameter(debugInfo ? debugInfo.UNMASKED_RENDERER_WEBGL : gl.RENDERER),
+                        version: gl.getParameter(gl.VERSION),
+                        shadingLanguageVersion: gl.getParameter(gl.SHADING_LANGUAGE_VERSION)
+                    };
+                } else {
+                    fingerprint.webgl = 'not_supported';
+                }
+                
+                // Audio fingerprinting
+                if (window.AudioContext || window.webkitAudioContext) {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioCtx.createOscillator();
+                    const analyser = audioCtx.createAnalyser();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.type = 'triangle';
+                    oscillator.frequency.setValueAtTime(10000, audioCtx.currentTime);
+                    
+                    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                    
+                    oscillator.connect(analyser);
+                    analyser.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    oscillator.start(0);
+                    
+                    const freqData = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(freqData);
+                    
+                    fingerprint.audio = freqData.reduce((sum, value) => sum + value, 0).toString();
+                    
+                    oscillator.stop();
+                    audioCtx.close();
+                } else {
+                    fingerprint.audio = 'not_supported';
+                }
+                
+                // Screen and browser information
+                fingerprint.screen = {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth
+                };
+                
+                fingerprint.viewport = {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                };
+                
+                fingerprint.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                fingerprint.language = navigator.language;
+                fingerprint.languages = navigator.languages;
+                fingerprint.platform = navigator.platform;
+                fingerprint.cookieEnabled = navigator.cookieEnabled;
+                fingerprint.doNotTrack = navigator.doNotTrack;
+                
+                // Browser features detection
+                fingerprint.features = {
+                    webdriver: navigator.webdriver,
+                    plugins: navigator.plugins.length,
+                    mimeTypes: navigator.mimeTypes.length,
+                    connection: navigator.connection ? navigator.connection.effectiveType : 'unknown',
+                    hardwareConcurrency: navigator.hardwareConcurrency,
+                    deviceMemory: navigator.deviceMemory,
+                    maxTouchPoints: navigator.maxTouchPoints
+                };
+                
+                // Performance timing
+                const perfStart = performance.now();
+                for (let i = 0; i < 100000; i++) {
+                    Math.random();
+                }
+                fingerprint.performance = {
+                    timing: performance.now() - perfStart
+                };
+                
+                // CDP Detection
+                fingerprint.cdp = window.chrome && window.chrome.runtime && window.chrome.runtime.onConnect;
+                fingerprint.automation = !!window.navigator.webdriver;
+                
+                // Send fingerprint to server
+                sendFingerprint();
+                
+            } catch (error) {
+                console.error('Fingerprinting error:', error);
+                fingerprint.error = error.message;
+                sendFingerprint();
+            }
+        }
+        
+        function sendFingerprint() {
+            fetch('/api/fingerprint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fingerprint)
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateBotScore(data.botScore);
+                if (data.isBot) {
+                    showBotWarning();
+                }
+            })
+            .catch(error => console.error('Fingerprint submission error:', error));
+        }
+        
+        // Mouse movement tracking
+        function initializeMouseTracking() {
+            let lastMouseTime = Date.now();
+            
+            document.addEventListener('mousemove', function(e) {
+                const now = Date.now();
+                mouseMovements.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    timestamp: now,
+                    interval: now - lastMouseTime
+                });
+                lastMouseTime = now;
+                
+                // Limit array size
+                if (mouseMovements.length > 1000) {
+                    mouseMovements = mouseMovements.slice(-500);
+                }
+            });
+            
+            document.addEventListener('click', function(e) {
+                clicks.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    timestamp: Date.now(),
+                    target: e.target.tagName,
+                    button: e.button
+                });
+            });
+            
+            // Send mouse behavior data periodically
+            setInterval(function() {
+                if (mouseMovements.length > 10) {
+                    sendMouseBehavior();
+                }
+            }, 5000);
+        }
+        
+        function sendMouseBehavior() {
+            fetch('/api/mouse-behavior', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    movements: mouseMovements.slice(-100), // Last 100 movements
+                    clicks: clicks,
+                    timings: {
+                        sessionDuration: Date.now() - startTime
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateBotScore(data.totalBotScore);
+            })
+            .catch(error => console.error('Mouse behavior submission error:', error));
+        }
+        
+        // Keystroke tracking
+        function initializeKeystrokeTracking() {
+            document.addEventListener('keydown', function(e) {
+                keystrokes.push({
+                    key: e.key,
+                    code: e.code,
+                    keydown: Date.now(),
+                    ctrlKey: e.ctrlKey,
+                    altKey: e.altKey,
+                    shiftKey: e.shiftKey
+                });
+            });
+            
+            document.addEventListener('keyup', function(e) {
+                const lastKeystroke = keystrokes[keystrokes.length - 1];
+                if (lastKeystroke && lastKeystroke.key === e.key) {
+                    lastKeystroke.keyup = Date.now();
+                }
+            });
+        }
+        
+        function sendKeystrokeAnalysis() {
+            if (keystrokes.length > 0) {
+                fetch('/api/keystroke-analysis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        keystrokes: keystrokes
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    updateBotScore(data.totalBotScore);
+                })
+                .catch(error => console.error('Keystroke analysis error:', error));
+            }
+        }
+        
+        // Timing tracking
+        function initializeTimingTracking() {
+            questionStartTimes.push(Date.now());
+        }
+        
+        // Challenge verification
+        function verifyChallenges() {
+            const challengeAnswer = document.getElementById('challenge-answer').value;
+            const waitTime = Date.now() - challengeStartTime;
+            
+            return fetch('/api/verify-challenge', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    challengeType: 'math',
+                    answer: challengeAnswer,
+                    proof: {
+                        waitTime: waitTime,
+                        interactions: clicks.length + keystrokes.length
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateBotScore(data.botScore);
+                return data.verified;
+            });
+        }
+        
+        // Navigation functions
+        function nextQuestion(currentId) {
+            const currentQuestion = document.getElementById('question-' + currentId);
+            const nextQuestionId = currentId + 1;
+            const nextQuestion = document.getElementById('question-' + nextQuestionId);
+            
+            // Record timing
+            questionStartTimes.push(Date.now());
+            
+            if (nextQuestion) {
+                currentQuestion.style.display = 'none';
+                nextQuestion.style.display = 'block';
+                currentQuestionIndex++;
+                updateProgress();
+            } else {
+                // Show submit section
+                currentQuestion.style.display = 'none';
+                document.getElementById('submit-section').style.display = 'block';
+                currentQuestionIndex++;
+                updateProgress();
+                
+                // Enable submit after analysis
+                setTimeout(function() {
+                    analyzeFinalBehavior();
+                }, 2000);
+            }
+        }
+        
+        function updateProgress() {
+            const totalQuestions = <%= survey.questions.length %>;
+            const progress = Math.min((currentQuestionIndex / totalQuestions) * 100, 100);
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('current-question').textContent = currentQuestionIndex;
+        }
+        
+        function analyzeFinalBehavior() {
+            // Send final keystroke analysis
+            sendKeystrokeAnalysis();
+            
+            // Send final mouse behavior
+            sendMouseBehavior();
+            
+            // Enable submit button
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🛡️ Submit Survey';
+            submitBtn.classList.remove('analyzing');
+        }
+        
+        function updateBotScore(score) {
+            botScore = score;
+            const scoreElement = document.getElementById('bot-score');
+            const riskElement = document.getElementById('risk-level');
+            
+            scoreElement.textContent = Math.round(score);
+            
+            // Update risk level and color
+            if (score > 150) {
+                scoreElement.className = 'bot-score high';
+                riskElement.textContent = 'High';
+                riskElement.style.color = '#dc3545';
+            } else if (score > 80) {
+                scoreElement.className = 'bot-score medium';
+                riskElement.textContent = 'Medium';
+                riskElement.style.color = '#ffc107';
+            } else {
+                scoreElement.className = 'bot-score low';
+                riskElement.textContent = 'Low';
+                riskElement.style.color = '#28a745';
+            }
+            
+            // Show warning if bot detected
+            if (score > 100) {
+                showBotWarning();
+            }
+        }
+        
+        function showBotWarning() {
+            document.getElementById('bot-warning').style.display = 'block';
+        }
+        
+        // Form submission
+        document.getElementById('survey-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Verify challenges first
+            const challengeVerified = await verifyChallenges();
+            if (!challengeVerified) {
+                alert('Please complete the human verification challenge correctly.');
+                return;
+            }
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const answers = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (key.startsWith('question_')) {
+                    if (answers[key]) {
+                        // Multiple values (checkboxes)
+                        if (Array.isArray(answers[key])) {
+                            answers[key].push(value);
+                        } else {
+                            answers[key] = [answers[key], value];
+                        }
+                    } else {
+                        answers[key] = value;
+                    }
+                }
+            }
+            
+            // Calculate timing data
+            const totalTime = Date.now() - startTime;
+            const questionTimes = [];
+            for (let i = 1; i < questionStartTimes.length; i++) {
+                questionTimes.push(questionStartTimes[i] - questionStartTimes[i-1]);
+            }
+            
+            // Submit survey
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔄 Submitting...';
+            
+            try {
+                const response = await fetch('/api/submit-survey', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        answers: answers,
+                        timingData: {
+                            totalTime: totalTime,
+                            questionTimes: questionTimes
+                        },
+                        behaviorData: {
+                            mouseMovements: mouseMovements.length,
+                            keystrokes: keystrokes.length,
+                            clicks: clicks.length
+                        }
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Success
+                    document.querySelector('.container').innerHTML = `
+                        <div class="header">
+                            <h1>✅ Survey Submitted Successfully!</h1>
+                            <p>Thank you for your participation</p>
+                        </div>
+                        <div style="padding: 40px; text-align: center;">
+                            <h3>Submission Details</h3>
+                            <p><strong>Submission ID:</strong> ${result.submissionId}</p>
+                            <p><strong>Human Confidence:</strong> ${result.analysis.humanConfidence}%</p>
+                            <p><strong>Final Bot Score:</strong> ${result.botScore}</p>
+                            <div style="margin-top: 30px; padding: 20px; background: #d4edda; border-radius: 10px;">
+                                <h4 style="color: #155724;">🎉 Anti-Bot Protection Passed!</h4>
+                                <p style="color: #155724;">Your human-like behavior was successfully verified.</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Bot detected
+                    document.querySelector('.container').innerHTML = `
+                        <div class="header" style="background: linear-gradient(45deg, #dc3545, #c82333);">
+                            <h1>🛡️ Bot Activity Detected</h1>
+                            <p>Your submission has been blocked</p>
+                        </div>
+                        <div style="padding: 40px; text-align: center;">
+                            <h3>Detection Results</h3>
+                            <p><strong>Bot Score:</strong> ${result.botScore}</p>
+                            <p><strong>Risk Level:</strong> High</p>
+                            <div style="margin-top: 20px; padding: 20px; background: #f8d7da; border-radius: 10px;">
+                                <h4 style="color: #721c24;">⚠️ Automated Behavior Detected</h4>
+                                <ul style="color: #721c24; text-align: left; display: inline-block;">
+                                    ${result.errors.map(error => `<li>${error}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div style="margin-top: 20px; font-size: 0.9em; color: #666;">
+                                <p>Our advanced anti-bot system detected non-human behavior patterns.</p>
+                                <p>If you believe this is an error, please contact support.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('An error occurred while submitting the survey. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🛡️ Submit Survey';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Survey Content</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .iframe-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #ff9800;
+        }
+
+        .iframe-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 10px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .iframe-header h2 {
+            color: #e65100;
+            margin-bottom: 8px;
+            font-size: 1.4em;
+        }
+
+        .iframe-header p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .embedded-question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .embedded-question:hover {
+            border-color: #ff9800;
+            background: #fff8f0;
+        }
+
+        .question-title {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .rating-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .rating-option {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .rating-option input[type="radio"] {
+            margin-bottom: 8px;
+            transform: scale(1.3);
+            accent-color: #ff9800;
+        }
+
+        .rating-option label {
+            font-size: 0.85em;
+            color: #666;
+            cursor: pointer;
+            display: block;
+        }
+
+        .rating-option.selected {
+            background: #fff3e0;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .additional-content {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .additional-content h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .content-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .content-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+
+        .iframe-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .iframe-btn {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .iframe-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .iframe-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .completion-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 152, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .validation-message {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .iframe-badge {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .interaction-counter {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-family: monospace;
+        }
+
+        /* Honeypot */
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-animation {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 2px solid #ff9800;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="completion-status" id="completion-status">
+        IFRAME CONTENT
+    </div>
+
+    <div class="interaction-counter" id="interaction-counter">
+        Interactions: 0
+    </div>
+
+    <div class="iframe-content">
+        <div class="iframe-header">
+            <div class="iframe-badge">EMBEDDED CONTENT</div>
+            <h2>🎯 Product Rating Survey</h2>
+            <p>Please rate your experience with our embedded content service</p>
+        </div>
+
+        <form id="iframe-survey">
+            <input type="hidden" name="iframe_session" value="<%= sessionId %>">
+            
+            <!-- Honeypot field -->
+            <input type="text" name="product_backup" class="honeypot" tabindex="-1" autocomplete="off">
+
+            <div class="embedded-question">
+                <div class="question-title">How would you rate the quality of this embedded content experience?</div>
+                
+                <div class="rating-container">
+                    <div class="rating-option">
+                        <input type="radio" name="content_rating" value="1" id="rating1" onchange="selectRating(this)">
+                        <label for="rating1">Poor<br>😞</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="content_rating" value="2" id="rating2" onchange="selectRating(this)">
+                        <label for="rating2">Fair<br>😐</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="content_rating" value="3" id="rating3" onchange="selectRating(this)">
+                        <label for="rating3">Good<br>🙂</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="content_rating" value="4" id="rating4" onchange="selectRating(this)">
+                        <label for="rating4">Very Good<br>😊</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="content_rating" value="5" id="rating5" onchange="selectRating(this)">
+                        <label for="rating5">Excellent<br>🤩</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="additional-content">
+                <h3>📊 Content Analytics</h3>
+                <p>This iframe demonstrates cross-domain content embedding with real-time interaction tracking:</p>
+                <div class="content-items">
+                    <div class="content-item">
+                        <strong>Load Time</strong><br>
+                        <span id="load-time">Calculating...</span>
+                    </div>
+                    <div class="content-item">
+                        <strong>Domain</strong><br>
+                        <span id="domain-info">localhost:3004</span>
+                    </div>
+                    <div class="content-item">
+                        <strong>Frame Size</strong><br>
+                        <span id="frame-size">400px height</span>
+                    </div>
+                    <div class="content-item">
+                        <strong>Protocol</strong><br>
+                        <span id="protocol-info">HTTP/1.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="validation-message" id="validation-message">
+                Please select a rating before completing the embedded content.
+            </div>
+
+            <div class="success-message" id="success-message">
+                ✅ Embedded content completed successfully! The parent survey can now continue.
+            </div>
+
+            <div class="iframe-actions">
+                <button type="submit" class="iframe-btn" id="complete-btn" disabled>
+                    <span class="loading-animation" style="display: none;"></span>
+                    Complete Embedded Content
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let iframeStartTime = Date.now();
+        let interactionCount = 0;
+        let completed = false;
+
+        function updateInteractionCounter() {
+            document.getElementById('interaction-counter').textContent = `Interactions: ${interactionCount}`;
+        }
+
+        function trackIframeInteraction(action, data = null) {
+            interactionCount++;
+            updateInteractionCounter();
+            
+            const interactionData = {
+                action: action,
+                data: data,
+                timestamp: Date.now(),
+                duration: Date.now() - iframeStartTime
+            };
+            
+            // Send message to parent window
+            try {
+                window.parent.postMessage({
+                    type: 'iframe_interaction',
+                    action: action,
+                    data: interactionData
+                }, '*');
+            } catch (error) {
+                console.log('Could not communicate with parent:', error);
+            }
+        }
+
+        function selectRating(radio) {
+            // Remove selected class from all options
+            document.querySelectorAll('.rating-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to current option
+            radio.closest('.rating-option').classList.add('selected');
+            
+            // Enable complete button
+            document.getElementById('complete-btn').disabled = false;
+            
+            // Hide validation message
+            document.getElementById('validation-message').style.display = 'none';
+            
+            trackIframeInteraction('rating_selected', {
+                rating: radio.value,
+                label: radio.nextElementSibling.textContent.trim()
+            });
+        }
+
+        function validateIframeForm() {
+            const rating = document.querySelector('input[name="content_rating"]:checked');
+            
+            if (!rating) {
+                document.getElementById('validation-message').style.display = 'block';
+                return false;
+            }
+            
+            return true;
+        }
+
+        function completeIframeContent() {
+            if (!completed) {
+                completed = true;
+                
+                // Update status
+                document.getElementById('completion-status').textContent = 'COMPLETED ✅';
+                document.getElementById('completion-status').style.background = 'rgba(40, 167, 69, 0.9)';
+                
+                // Show success message
+                document.getElementById('success-message').style.display = 'block';
+                
+                // Update button
+                const btn = document.getElementById('complete-btn');
+                btn.textContent = '✅ Content Completed';
+                btn.disabled = true;
+                btn.style.background = '#28a745';
+                
+                trackIframeInteraction('iframe_completed', {
+                    totalTime: Date.now() - iframeStartTime,
+                    totalInteractions: interactionCount,
+                    rating: document.querySelector('input[name="content_rating"]:checked')?.value
+                });
+                
+                // Notify parent window
+                try {
+                    window.parent.postMessage({
+                        type: 'iframe_survey_completed',
+                        completed: true,
+                        data: {
+                            rating: document.querySelector('input[name="content_rating"]:checked')?.value,
+                            completionTime: Date.now() - iframeStartTime,
+                            interactions: interactionCount
+                        }
+                    }, '*');
+                } catch (error) {
+                    console.log('Could not notify parent window:', error);
+                }
+            }
+        }
+
+        // Form submission
+        document.getElementById('iframe-survey').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateIframeForm()) {
+                trackIframeInteraction('validation_failed', 'missing_rating');
+                return;
+            }
+            
+            const btn = document.getElementById('complete-btn');
+            btn.querySelector('.loading-animation').style.display = 'inline-block';
+            btn.disabled = true;
+            
+            trackIframeInteraction('form_submission', 'iframe_survey');
+            
+            // Simulate processing time
+            setTimeout(() => {
+                btn.querySelector('.loading-animation').style.display = 'none';
+                completeIframeContent();
+            }, 1500);
+        });
+
+        // Initialize iframe content
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calculate and display load time
+            const loadTime = Date.now() - iframeStartTime;
+            document.getElementById('load-time').textContent = `${loadTime}ms`;
+            
+            trackIframeInteraction('iframe_loaded', {
+                loadTime: loadTime,
+                userAgent: navigator.userAgent,
+                referrer: document.referrer
+            });
+            
+            // Listen for messages from parent
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'parent_ready') {
+                    trackIframeInteraction('parent_communication', 'established');
+                }
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('focus', () => trackIframeInteraction('field_focus', radio.name));
+                radio.addEventListener('blur', () => trackIframeInteraction('field_blur', radio.name));
+            });
+            
+            // Track scrolling in iframe
+            window.addEventListener('scroll', function() {
+                trackIframeInteraction('iframe_scroll', {
+                    scrollTop: window.scrollY,
+                    scrollHeight: document.body.scrollHeight
+                });
+            });
+            
+            // Track clicks
+            document.addEventListener('click', function(e) {
+                trackIframeInteraction('click', {
+                    target: e.target.tagName,
+                    x: e.clientX,
+                    y: e.clientY
+                });
+            });
+        });
+
+        // Track iframe visibility changes
+        document.addEventListener('visibilitychange', function() {
+            trackIframeInteraction('visibility_change', {
+                hidden: document.hidden
+            });
+        });
+
+        // Track window focus/blur
+        window.addEventListener('focus', () => trackIframeInteraction('iframe_focus', 'gained'));
+        window.addEventListener('blur', () => trackIframeInteraction('iframe_blur', 'lost'));
+
+        // Update analytics periodically
+        setInterval(function() {
+            if (!completed) {
+                trackIframeInteraction('heartbeat', {
+                    sessionDuration: Date.now() - iframeStartTime,
+                    interactions: interactionCount
+                });
+            }
+        }, 10000); // Every 10 seconds
+    </script>
+</body>
+</html>

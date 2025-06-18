@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= step.title %> - Iframe Content</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .iframe-info {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .iframe-info h3 {
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+
+        .iframe-container {
+            border: 3px solid #ff9800;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 30px 0;
+            position: relative;
+            background: #f5f5f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .iframe-header {
+            background: #ff9800;
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .iframe-content {
+            height: 400px;
+            width: 100%;
+            border: none;
+            background: white;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .question:hover {
+            border-color: #ff9800;
+            background: #fff8f0;
+        }
+
+        .question-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .radio-option:hover {
+            border-color: #ff9800;
+            background: #fff8f0;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #ff9800;
+        }
+
+        .radio-option.selected {
+            border-color: #ff9800;
+            background: #fff8f0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .iframe-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 152, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .iframe-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff9800;
+            font-size: 1.1em;
+            z-index: 10;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #ff9800;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Honeypot */
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cross-origin-notice {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .cross-origin-notice h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="iframe-status">
+        🖼️ IFRAME STEP
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🖼️ <%= step.title %></h1>
+            <p>Survey step with embedded iframe content</p>
+        </div>
+
+        <div class="content">
+            <div class="iframe-info">
+                <h3>📋 Iframe Content Integration</h3>
+                <p>This step demonstrates real-world iframe embedding commonly used in surveys for third-party content, embedded videos, external widgets, or cross-domain forms. The iframe below contains additional survey content that must be completed.</p>
+            </div>
+
+            <div class="cross-origin-notice">
+                <h4>🔗 Cross-Origin Content</h4>
+                <p>The embedded content below simulates real-world scenarios where surveys include iframe-embedded content from external domains or specialized survey platforms.</p>
+            </div>
+
+            <div class="iframe-container">
+                <div class="iframe-header">
+                    🌐 Embedded Survey Content
+                    <span style="margin-left: auto; font-size: 0.8em;">localhost:3004/survey/iframe-content</span>
+                </div>
+                <div class="iframe-loading" id="iframe-loading">
+                    <div class="spinner"></div>
+                    Loading embedded content...
+                </div>
+                <iframe 
+                    id="survey-iframe"
+                    class="iframe-content" 
+                    src="<%= step.iframeSrc %>"
+                    title="Embedded Survey Content"
+                    onload="iframeLoaded()"
+                    onerror="iframeError()">
+                </iframe>
+            </div>
+
+            <form id="iframe-form">
+                <input type="hidden" name="currentStep" value="<%= step.id %>">
+                <input type="hidden" name="hasIframe" value="true">
+                <input type="hidden" name="iframeCompleted" value="false" id="iframe-completed">
+                
+                <!-- Honeypot fields -->
+                <input type="email" name="email_backup" class="honeypot" tabindex="-1" autocomplete="off">
+                
+                <% step.questions.forEach(question => { %>
+                    <div class="question" data-question-id="<%= question.id %>">
+                        <div class="question-title">
+                            <%= question.text %>
+                            <% if (question.required) { %>
+                                <span style="color: #dc3545;">*</span>
+                            <% } %>
+                        </div>
+
+                        <% if (question.type === 'radio') { %>
+                            <div class="radio-group">
+                                <% question.options.forEach((option, index) => { %>
+                                    <label class="radio-option" onclick="selectRadio(this)">
+                                        <input type="radio" 
+                                               name="<%= question.id %>" 
+                                               value="<%= option.value %>" 
+                                               <%= question.required ? 'required' : '' %>>
+                                        <span><%= option.label %></span>
+                                    </label>
+                                <% }); %>
+                            </div>
+                        <% } %>
+
+                        <div class="validation-error" id="error-<%= question.id %>"></div>
+                    </div>
+                <% }); %>
+            </form>
+        </div>
+
+        <div class="navigation">
+            <a href="/survey/step<%= step.id - 1 %>" class="btn btn-secondary">
+                ← Previous Step
+            </a>
+            
+            <button type="submit" form="iframe-form" class="btn btn-primary" id="next-btn" disabled>
+                🔄 Complete Iframe Content First
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let iframeInteractions = [];
+        let iframeStartTime = Date.now();
+
+        function selectRadio(label) {
+            // Remove selected class from siblings
+            const group = label.parentElement;
+            group.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to current
+            label.classList.add('selected');
+            
+            trackIframeInteraction('radio_select', label.querySelector('input').name);
+            updateSubmitButton();
+        }
+
+        function trackIframeInteraction(type, field, data = null) {
+            iframeInteractions.push({
+                type: type,
+                field: field,
+                data: data,
+                timestamp: Date.now(),
+                sessionDuration: Date.now() - iframeStartTime
+            });
+
+            // Send to tracking API
+            fetch('/api/track-behavior', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    iframeInteractions: [iframeInteractions[iframeInteractions.length - 1]]
+                })
+            }).catch(console.error);
+        }
+
+        function iframeLoaded() {
+            document.getElementById('iframe-loading').style.display = 'none';
+            trackIframeInteraction('iframe_loaded', 'embedded_content');
+            
+            try {
+                // Set up communication with iframe
+                const iframe = document.getElementById('survey-iframe');
+                
+                // Listen for messages from iframe
+                window.addEventListener('message', function(event) {
+                    if (event.origin !== window.location.origin) {
+                        return; // Security check
+                    }
+                    
+                    if (event.data.type === 'iframe_survey_completed') {
+                        iframeContentCompleted(event.data);
+                    } else if (event.data.type === 'iframe_interaction') {
+                        trackIframeInteraction('iframe_user_action', event.data.action, event.data);
+                    }
+                });
+                
+                // Send initialization message to iframe
+                setTimeout(() => {
+                    iframe.contentWindow.postMessage({
+                        type: 'parent_ready',
+                        sessionId: '<%= sessionId %>'
+                    }, window.location.origin);
+                }, 1000);
+                
+            } catch (error) {
+                console.log('Iframe communication setup failed:', error);
+                // Enable submit anyway for demo purposes
+                setTimeout(() => {
+                    iframeContentCompleted({ completed: true, demo: true });
+                }, 3000);
+            }
+        }
+
+        function iframeError() {
+            document.getElementById('iframe-loading').innerHTML = `
+                <div style="color: #dc3545; text-align: center;">
+                    <strong>⚠️ Error Loading Content</strong><br>
+                    <span style="font-size: 0.9em;">The embedded content could not be loaded.</span>
+                </div>
+            `;
+            trackIframeInteraction('iframe_error', 'load_failed');
+            
+            // Enable submit anyway for demo purposes
+            setTimeout(() => {
+                iframeContentCompleted({ completed: true, error: true });
+            }, 2000);
+        }
+
+        function iframeContentCompleted(data) {
+            trackIframeInteraction('iframe_completed', 'embedded_survey', data);
+            
+            // Mark iframe as completed
+            document.getElementById('iframe-completed').value = 'true';
+            
+            // Update iframe header to show completion
+            const iframeHeader = document.querySelector('.iframe-header');
+            iframeHeader.innerHTML = `
+                ✅ Embedded Survey Content - Completed
+                <span style="margin-left: auto; font-size: 0.8em;">Ready to proceed</span>
+            `;
+            iframeHeader.style.background = '#28a745';
+            
+            // Update iframe container styling
+            document.querySelector('.iframe-container').style.borderColor = '#28a745';
+            
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            const iframeCompleted = document.getElementById('iframe-completed').value === 'true';
+            const form = document.getElementById('iframe-form');
+            const formData = new FormData(form);
+            
+            // Check if required form fields are filled
+            let formValid = true;
+            <% step.questions.forEach(question => { %>
+                <% if (question.required) { %>
+                    if (!formData.get('<%= question.id %>')) {
+                        formValid = false;
+                    }
+                <% } %>
+            <% }); %>
+
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (iframeCompleted && formValid) {
+                nextBtn.disabled = false;
+                nextBtn.innerHTML = 'Next Step →';
+                nextBtn.classList.remove('btn-secondary');
+                nextBtn.classList.add('btn-primary');
+            } else if (iframeCompleted && !formValid) {
+                nextBtn.disabled = false;
+                nextBtn.innerHTML = '⚠️ Complete Required Fields';
+                nextBtn.classList.remove('btn-primary');
+                nextBtn.classList.add('btn-secondary');
+            } else {
+                nextBtn.disabled = true;
+                nextBtn.innerHTML = '🔄 Complete Iframe Content First';
+                nextBtn.classList.remove('btn-primary');
+                nextBtn.classList.add('btn-secondary');
+            }
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const form = document.getElementById('iframe-form');
+            const formData = new FormData(form);
+            
+            // Clear previous errors
+            document.querySelectorAll('.validation-error').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Check iframe completion
+            if (document.getElementById('iframe-completed').value !== 'true') {
+                alert('Please complete the embedded content first.');
+                return false;
+            }
+
+            // Validate required fields
+            <% step.questions.forEach(question => { %>
+                <% if (question.required) { %>
+                    const <%= question.id %>_value = formData.get('<%= question.id %>');
+                    if (!<%= question.id %>_value) {
+                        document.getElementById('error-<%= question.id %>').textContent = 'This field is required.';
+                        document.getElementById('error-<%= question.id %>').style.display = 'block';
+                        isValid = false;
+                    }
+                <% } %>
+            <% }); %>
+
+            return isValid;
+        }
+
+        // Form submission
+        document.getElementById('iframe-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                trackIframeInteraction('form_validation_failed', 'required_fields');
+                return;
+            }
+            
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.textContent = 'Processing...';
+            nextBtn.disabled = true;
+            document.querySelector('.container').classList.add('loading');
+            
+            trackIframeInteraction('form_submission', 'iframe_step');
+            
+            try {
+                const formData = new FormData(this);
+                
+                // Add iframe interaction data
+                formData.append('iframeData', JSON.stringify({
+                    interactions: iframeInteractions,
+                    completionTime: Date.now() - iframeStartTime,
+                    totalInteractions: iframeInteractions.length
+                }));
+                
+                const response = await fetch('/survey/submit-step', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    trackIframeInteraction('submission_success', 'redirect');
+                    
+                    if (result.action === 'redirect') {
+                        window.location.href = result.url;
+                    } else if (result.action === 'complete') {
+                        window.location.href = result.url;
+                    }
+                } else {
+                    trackIframeInteraction('submission_failed', result.error);
+                    alert('Error: ' + result.error);
+                    nextBtn.disabled = false;
+                    nextBtn.textContent = 'Next Step →';
+                    document.querySelector('.container').classList.remove('loading');
+                }
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                trackIframeInteraction('submission_error', error.message);
+                alert('An error occurred. Please try again.');
+                nextBtn.disabled = false;
+                nextBtn.textContent = 'Next Step →';
+                document.querySelector('.container').classList.remove('loading');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            trackIframeInteraction('page_loaded', 'iframe_step_<%= step.id %>');
+            
+            // Add event listeners for form interactions
+            document.querySelectorAll('input').forEach(element => {
+                element.addEventListener('change', () => {
+                    trackIframeInteraction('field_change', element.name);
+                    updateSubmitButton();
+                });
+                element.addEventListener('focus', () => trackIframeInteraction('field_focus', element.name));
+            });
+        });
+
+        // Track page unload
+        window.addEventListener('beforeunload', function() {
+            trackIframeInteraction('page_unload', 'navigation');
+        });
+    </script>
+</body>
+</html>

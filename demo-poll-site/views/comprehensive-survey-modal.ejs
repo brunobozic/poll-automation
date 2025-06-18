@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= step.title %> - Modal Survey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: rgba(0,0,0,0.8);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .modal-header p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .modal-content {
+            padding: 30px;
+        }
+
+        .modal-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .question:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .question-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .question-required {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        /* Slider styles for modal */
+        .slider-container {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+            outline: none;
+            appearance: none;
+            margin: 15px 0;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        /* Textarea styles for modal */
+        .textarea-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            background: white;
+            transition: all 0.3s;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .textarea-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .character-counter {
+            text-align: right;
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .modal-badge {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: white;
+            color: #667eea;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Honeypot fields */
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-container">
+        <div class="modal-badge">MODAL STEP</div>
+        
+        <div class="modal-header">
+            <button class="close-btn" onclick="closeModal()" title="Close Modal">×</button>
+            <h1>💬 <%= step.title %></h1>
+            <p>Complete this modal survey section</p>
+        </div>
+
+        <div class="modal-content">
+            <div class="modal-info">
+                <strong>📋 Modal Survey:</strong> This section opens in a popup window to simulate real-world multi-window survey flows. Please complete all fields before closing.
+            </div>
+
+            <form id="modal-form">
+                <input type="hidden" name="currentStep" value="<%= step.id %>">
+                <input type="hidden" name="isModal" value="true">
+                
+                <!-- Honeypot fields -->
+                <input type="email" name="email_backup" class="honeypot" tabindex="-1" autocomplete="off">
+                <input type="text" name="address_hidden" class="honeypot" tabindex="-1" autocomplete="off">
+                
+                <% step.questions.forEach(question => { %>
+                    <div class="question pulse-animation" data-question-id="<%= question.id %>">
+                        <div class="question-title">
+                            <%= question.text %>
+                            <% if (question.required) { %>
+                                <span class="question-required">*</span>
+                            <% } %>
+                        </div>
+
+                        <% if (question.type === 'slider') { %>
+                            <div class="slider-container">
+                                <div class="slider-value" id="slider-value-<%= question.id %>">
+                                    <%= Math.round((question.min + question.max) / 2) %>
+                                </div>
+                                <input type="range" 
+                                       class="slider" 
+                                       name="<%= question.id %>"
+                                       min="<%= question.min %>" 
+                                       max="<%= question.max %>" 
+                                       value="<%= Math.round((question.min + question.max) / 2) %>"
+                                       oninput="updateSliderValue('<%= question.id %>', this.value)"
+                                       <%= question.required ? 'required' : '' %>>
+                                <div class="slider-labels">
+                                    <% Object.entries(question.labels || {}).forEach(([value, label]) => { %>
+                                        <span><%= label %></span>
+                                    <% }); %>
+                                </div>
+                            </div>
+
+                        <% } else if (question.type === 'textarea') { %>
+                            <textarea class="textarea-input" 
+                                      name="<%= question.id %>"
+                                      placeholder="<%= question.placeholder || 'Enter your detailed feedback...' %>"
+                                      <% if (question.minLength) { %>minlength="<%= question.minLength %>"<% } %>
+                                      <%= question.required ? 'required' : '' %>
+                                      oninput="updateCharacterCount('<%= question.id %>', this)"></textarea>
+                            <% if (question.minLength) { %>
+                                <div class="character-counter" id="char-count-<%= question.id %>">
+                                    0 / <%= question.minLength %> characters minimum
+                                </div>
+                            <% } %>
+                        <% } %>
+
+                        <div class="validation-error" id="error-<%= question.id %>"></div>
+                    </div>
+                <% }); %>
+            </form>
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                ⛔ Cancel
+            </button>
+            
+            <button type="submit" form="modal-form" class="btn btn-primary" id="submit-modal-btn">
+                ✅ Complete Modal Step
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let modalStartTime = Date.now();
+        let interactionCount = 0;
+
+        function updateSliderValue(questionId, value) {
+            document.getElementById(`slider-value-${questionId}`).textContent = value;
+            trackModalInteraction('slider_change', questionId);
+        }
+
+        function updateCharacterCount(questionId, textarea) {
+            const counter = document.getElementById(`char-count-${questionId}`);
+            if (counter) {
+                const minLength = textarea.getAttribute('minlength') || 0;
+                const currentLength = textarea.value.length;
+                counter.textContent = `${currentLength} / ${minLength} characters minimum`;
+                
+                if (currentLength >= minLength) {
+                    counter.style.color = '#28a745';
+                } else {
+                    counter.style.color = '#666';
+                }
+            }
+            
+            trackModalInteraction('text_input', questionId);
+        }
+
+        function trackModalInteraction(type, field) {
+            interactionCount++;
+            
+            // Send interaction data to parent window if available
+            try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({
+                        type: 'modal_interaction',
+                        data: {
+                            interaction: type,
+                            field: field,
+                            timestamp: Date.now(),
+                            modalDuration: Date.now() - modalStartTime
+                        }
+                    }, '*');
+                }
+            } catch (e) {
+                // Fallback to direct API call
+                fetch('/api/track-behavior', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        modalInteractions: [{
+                            type: type,
+                            field: field,
+                            timestamp: Date.now(),
+                            modalDuration: Date.now() - modalStartTime
+                        }]
+                    })
+                }).catch(console.error);
+            }
+        }
+
+        function validateModalForm() {
+            let isValid = true;
+            const form = document.getElementById('modal-form');
+            const formData = new FormData(form);
+            
+            // Clear previous errors
+            document.querySelectorAll('.validation-error').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Validate required fields
+            <% step.questions.forEach(question => { %>
+                <% if (question.required) { %>
+                    const <%= question.id %>_value = formData.get('<%= question.id %>');
+                    if (!<%= question.id %>_value || <%= question.id %>_value.trim() === '') {
+                        document.getElementById('error-<%= question.id %>').textContent = 'This field is required.';
+                        document.getElementById('error-<%= question.id %>').style.display = 'block';
+                        isValid = false;
+                    }
+                    
+                    <% if (question.minLength) { %>
+                        if (<%= question.id %>_value && <%= question.id %>_value.length < <%= question.minLength %>) {
+                            document.getElementById('error-<%= question.id %>').textContent = 'Minimum <%= question.minLength %> characters required.';
+                            document.getElementById('error-<%= question.id %>').style.display = 'block';
+                            isValid = false;
+                        }
+                    <% } %>
+                <% } %>
+            <% }); %>
+
+            return isValid;
+        }
+
+        function closeModal() {
+            // Track modal close
+            trackModalInteraction('modal_close', 'user_action');
+            
+            // Notify parent window
+            try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({
+                        type: 'modal_closed',
+                        completed: false
+                    }, '*');
+                }
+            } catch (e) {
+                console.log('Could not communicate with parent window');
+            }
+            
+            window.close();
+        }
+
+        // Form submission
+        document.getElementById('modal-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateModalForm()) {
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submit-modal-btn');
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+            document.querySelector('.modal-container').classList.add('loading');
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/survey/submit-step', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Track successful completion
+                    trackModalInteraction('modal_completed', 'success');
+                    
+                    // Notify parent window of completion
+                    try {
+                        if (window.opener && !window.opener.closed) {
+                            window.opener.postMessage({
+                                type: 'modal_completed',
+                                completed: true,
+                                nextAction: result.action,
+                                nextUrl: result.url
+                            }, '*');
+                        }
+                    } catch (e) {
+                        console.log('Could not communicate with parent window');
+                    }
+                    
+                    // Show success message
+                    document.querySelector('.modal-content').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <h2 style="color: #28a745; margin-bottom: 15px;">✅ Modal Step Completed!</h2>
+                            <p style="color: #666; margin-bottom: 20px;">Your feedback has been recorded. This window will close automatically.</p>
+                            <div style="background: #d4edda; padding: 15px; border-radius: 10px; color: #155724;">
+                                Thank you for completing the modal survey section.
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Close modal after delay
+                    setTimeout(() => {
+                        window.close();
+                    }, 2000);
+                    
+                } else {
+                    alert('Error: ' + result.error);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '✅ Complete Modal Step';
+                    document.querySelector('.modal-container').classList.remove('loading');
+                }
+                
+            } catch (error) {
+                console.error('Modal submission error:', error);
+                alert('An error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✅ Complete Modal Step';
+                document.querySelector('.modal-container').classList.remove('loading');
+            }
+        });
+
+        // Initialize modal
+        document.addEventListener('DOMContentLoaded', function() {
+            // Track modal open
+            trackModalInteraction('modal_opened', 'step_<%= step.id %>');
+            
+            // Focus first input
+            const firstInput = document.querySelector('input[type="range"], textarea');
+            if (firstInput) {
+                firstInput.focus();
+            }
+            
+            // Add event listeners for all form elements
+            document.querySelectorAll('input, textarea').forEach(element => {
+                element.addEventListener('focus', () => trackModalInteraction('field_focus', element.name));
+                element.addEventListener('blur', () => trackModalInteraction('field_blur', element.name));
+            });
+        });
+
+        // Handle window close
+        window.addEventListener('beforeunload', function() {
+            trackModalInteraction('modal_beforeunload', 'browser_close');
+        });
+
+        // Prevent accidental closing
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                if (confirm('Are you sure you want to close this modal? Your progress will be lost.')) {
+                    closeModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

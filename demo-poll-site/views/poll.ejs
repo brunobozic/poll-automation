@@ -1,0 +1,329 @@
+<div class="poll-section">
+    <div class="container">
+        <div class="poll-container">
+            <div class="poll-header">
+                <div class="poll-breadcrumb">
+                    <a href="/dashboard">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
+                <div class="poll-title">
+                    <h1><%= poll.title %></h1>
+                    <p><%= poll.description %></p>
+                </div>
+                <div class="poll-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text">
+                        <span id="currentQuestion">1</span> of <%= poll.questions.length %> questions
+                    </span>
+                </div>
+            </div>
+
+            <form id="pollForm" method="POST" action="/poll/<%= poll.id %>/submit">
+                <div class="questions-container">
+                    <% poll.questions.forEach((question, index) => { %>
+                        <div class="question-card" data-question-id="<%= question.id %>" data-question-index="<%= index %>">
+                            <div class="question-header">
+                                <div class="question-number">
+                                    Question <%= index + 1 %>
+                                    <% if (question.required) { %>
+                                        <span class="required-indicator">*</span>
+                                    <% } %>
+                                    <% if (question.isTrick) { %>
+                                        <span class="verification-badge">
+                                            <i class="fas fa-shield-alt"></i>
+                                            Verification
+                                        </span>
+                                    <% } %>
+                                    <% if (question.isCalibration) { %>
+                                        <span class="calibration-badge">
+                                            <i class="fas fa-check-circle"></i>
+                                            Quality Check
+                                        </span>
+                                    <% } %>
+                                </div>
+                            </div>
+                            
+                            <div class="question-content">
+                                <h3 class="question-text"><%= question.text %></h3>
+                                
+                                <div class="question-options">
+                                    <% if (question.type === 'single-choice' || question.type === 'yes-no') { %>
+                                        <% question.options.forEach((option, optIndex) => { %>
+                                            <label class="option-label radio-option">
+                                                <input 
+                                                    type="radio" 
+                                                    name="question_<%= question.id %>" 
+                                                    value="<%= option.value %>"
+                                                    <% if (question.required) { %>required<% } %>
+                                                >
+                                                <span class="option-custom"></span>
+                                                <span class="option-text"><%= option.label %></span>
+                                            </label>
+                                        <% }); %>
+                                        
+                                    <% } else if (question.type === 'multiple-choice') { %>
+                                        <% question.options.forEach((option, optIndex) => { %>
+                                            <label class="option-label checkbox-option">
+                                                <input 
+                                                    type="checkbox" 
+                                                    name="question_<%= question.id %>" 
+                                                    value="<%= option.value %>"
+                                                >
+                                                <span class="option-custom"></span>
+                                                <span class="option-text"><%= option.label %></span>
+                                            </label>
+                                        <% }); %>
+                                        
+                                    <% } else if (question.type === 'rating') { %>
+                                        <div class="rating-container">
+                                            <div class="rating-scale">
+                                                <% question.options.forEach((option, optIndex) => { %>
+                                                    <label class="rating-option">
+                                                        <input 
+                                                            type="radio" 
+                                                            name="question_<%= question.id %>" 
+                                                            value="<%= option.value %>"
+                                                            <% if (question.required) { %>required<% } %>
+                                                        >
+                                                        <span class="rating-number"><%= option.label %></span>
+                                                    </label>
+                                                <% }); %>
+                                            </div>
+                                            <div class="rating-labels">
+                                                <span>Lowest</span>
+                                                <span>Highest</span>
+                                            </div>
+                                        </div>
+                                        
+                                    <% } else if (question.type === 'text') { %>
+                                        <div class="text-input-container">
+                                            <textarea 
+                                                name="question_<%= question.id %>" 
+                                                placeholder="Please provide your answer..."
+                                                rows="4"
+                                                <% if (question.required) { %>required<% } %>
+                                            ></textarea>
+                                            <div class="text-counter">
+                                                <span class="char-count">0</span> characters
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+
+                <div class="poll-actions">
+                    <div class="action-buttons">
+                        <button type="button" id="prevBtn" class="btn btn-secondary" onclick="changeQuestion(-1)">
+                            <i class="fas fa-chevron-left"></i>
+                            Previous
+                        </button>
+                        
+                        <button type="button" id="nextBtn" class="btn btn-primary" onclick="changeQuestion(1)">
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        
+                        <button type="submit" id="submitBtn" class="btn btn-success" style="display: none;">
+                            <i class="fas fa-check"></i>
+                            Submit Survey
+                        </button>
+                    </div>
+                    
+                    <div class="poll-info">
+                        <p class="completion-time">
+                            <i class="fas fa-clock"></i>
+                            Estimated time: ~<%= Math.ceil(poll.questions.length * 1.5) %> minutes
+                        </p>
+                        <p class="required-notice">
+                            <i class="fas fa-asterisk"></i>
+                            Fields marked with * are required
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div id="loadingModal" class="modal">
+    <div class="modal-content loading-content">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <h3>Submitting your responses...</h3>
+        <p>Please wait while we process your survey.</p>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+    <div class="modal-content success-content">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>Survey Completed!</h3>
+        <p>Thank you for your participation. Your responses have been recorded.</p>
+        <div class="success-actions">
+            <a href="/dashboard" class="btn btn-primary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentQuestionIndex = 0;
+const totalQuestions = <%= poll.questions.length %>;
+const questions = document.querySelectorAll('.question-card');
+
+// Initialize
+showQuestion(0);
+updateProgress();
+
+function showQuestion(index) {
+    // Hide all questions
+    questions.forEach(q => q.style.display = 'none');
+    
+    // Show current question
+    if (questions[index]) {
+        questions[index].style.display = 'block';
+    }
+    
+    // Update button states
+    document.getElementById('prevBtn').style.display = index === 0 ? 'none' : 'inline-flex';
+    document.getElementById('nextBtn').style.display = index === totalQuestions - 1 ? 'none' : 'inline-flex';
+    document.getElementById('submitBtn').style.display = index === totalQuestions - 1 ? 'inline-flex' : 'none';
+    
+    // Update progress
+    document.getElementById('currentQuestion').textContent = index + 1;
+    updateProgress();
+    
+    // Add character counter for text areas
+    const textarea = questions[index].querySelector('textarea');
+    if (textarea) {
+        const counter = questions[index].querySelector('.char-count');
+        textarea.addEventListener('input', function() {
+            counter.textContent = this.value.length;
+        });
+    }
+}
+
+function changeQuestion(direction) {
+    const newIndex = currentQuestionIndex + direction;
+    
+    if (newIndex >= 0 && newIndex < totalQuestions) {
+        // Validate current question if moving forward
+        if (direction > 0 && !validateCurrentQuestion()) {
+            return;
+        }
+        
+        currentQuestionIndex = newIndex;
+        showQuestion(currentQuestionIndex);
+    }
+}
+
+function validateCurrentQuestion() {
+    const currentQuestion = questions[currentQuestionIndex];
+    const questionId = currentQuestion.dataset.questionId;
+    const inputs = currentQuestion.querySelectorAll('input, textarea');
+    
+    let hasAnswer = false;
+    
+    // Check if any input has a value
+    inputs.forEach(input => {
+        if (input.type === 'radio' || input.type === 'checkbox') {
+            if (input.checked) hasAnswer = true;
+        } else {
+            if (input.value.trim()) hasAnswer = true;
+        }
+    });
+    
+    // Check if question is required
+    const isRequired = currentQuestion.querySelector('input[required], textarea[required]');
+    
+    if (isRequired && !hasAnswer) {
+        alert('Please answer this required question before proceeding.');
+        return false;
+    }
+    
+    return true;
+}
+
+function updateProgress() {
+    const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+}
+
+// Form submission
+document.getElementById('pollForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Show loading modal
+    document.getElementById('loadingModal').style.display = 'block';
+    
+    // Collect form data
+    const formData = new FormData(this);
+    const data = {};
+    
+    // Handle multiple choice questions
+    for (let [key, value] of formData.entries()) {
+        if (data[key]) {
+            if (Array.isArray(data[key])) {
+                data[key].push(value);
+            } else {
+                data[key] = [data[key], value];
+            }
+        } else {
+            data[key] = value;
+        }
+    }
+    
+    // Submit to server
+    fetch(this.action, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        document.getElementById('loadingModal').style.display = 'none';
+        
+        if (result.success) {
+            document.getElementById('successModal').style.display = 'block';
+        } else {
+            alert('Error submitting survey: ' + (result.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        document.getElementById('loadingModal').style.display = 'none';
+        alert('Error submitting survey: ' + error.message);
+    });
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft' && currentQuestionIndex > 0) {
+        changeQuestion(-1);
+    } else if (e.key === 'ArrowRight' && currentQuestionIndex < totalQuestions - 1) {
+        changeQuestion(1);
+    }
+});
+
+// Auto-save functionality (optional)
+setInterval(function() {
+    const formData = new FormData(document.getElementById('pollForm'));
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    localStorage.setItem('poll_<%= poll.id %>_draft', JSON.stringify(data));
+}, 30000); // Save every 30 seconds
+</script>

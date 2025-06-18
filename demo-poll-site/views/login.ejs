@@ -1,0 +1,86 @@
+<div class="login-section">
+    <div class="container">
+        <div class="login-form-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <i class="fas fa-user-circle"></i>
+                    <h2>Login to PollDemo</h2>
+                    <p>Access your polls and surveys</p>
+                </div>
+
+                <% if (error) { %>
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <%= error %>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/login" class="login-form">
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            required 
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </button>
+                </form>
+
+                <div class="login-footer">
+                    <p>Don't have an account? This is a demo site - use the test accounts above.</p>
+                </div>
+            </div>
+
+            <div class="demo-accounts">
+                <h3>Available Test Accounts</h3>
+                <div class="account-list">
+                    <div class="account-item" onclick="fillLogin('testuser', 'testpass')">
+                        <strong>testuser</strong> / testpass
+                        <small>Click to auto-fill</small>
+                    </div>
+                    <div class="account-item" onclick="fillLogin('demo', 'demo123')">
+                        <strong>demo</strong> / demo123
+                        <small>Click to auto-fill</small>
+                    </div>
+                    <div class="account-item" onclick="fillLogin('bbozic', 'password123')">
+                        <strong>bbozic</strong> / password123
+                        <small>Click to auto-fill</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function fillLogin(username, password) {
+    document.getElementById('username').value = username;
+    document.getElementById('password').value = password;
+}
+</script>

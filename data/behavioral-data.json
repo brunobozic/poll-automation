@@ -1,0 +1,24 @@
+{
+  "sessions": [
+    {
+      "sessionId": "test-session",
+      "profileUsed": "tech_savvy_fast",
+      "siteType": "survey_complex",
+      "outcome": {
+        "success": true,
+        "detectionScore": 0.2,
+        "blocked": false
+      },
+      "timestamp": 1750274685769
+    }
+  ],
+  "metrics": {
+    "detectionEvents": 0,
+    "successfulSessions": 1,
+    "totalSessions": 1,
+    "averageDetectionScore": 0.2,
+    "adaptationCount": 0
+  },
+  "adaptations": {},
+  "lastUpdated": 1750274685770
+}

@@ -1,0 +1,167 @@
+<div class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="welcome-card">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <div>
+                        <h2>Welcome back, <%= user.username %>!</h2>
+                        <p>You have <%= polls.length %> surveys available</p>
+                        <small>Logged in: <%= new Date(user.loginTime).toLocaleString() %></small>
+                    </div>
+                </div>
+                <div class="user-stats">
+                    <div class="stat">
+                        <span class="stat-number"><%= polls.length %></span>
+                        <span class="stat-label">Available Surveys</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">EUR 0.00</span>
+                        <span class="stat-label">Current Balance</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="polls-section">
+            <h3>Available Surveys</h3>
+            <div class="polls-grid">
+                <% polls.forEach((poll, index) => { %>
+                    <div class="poll-card" data-poll-id="<%= poll.id %>">
+                        <div class="poll-header">
+                            <div class="poll-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="poll-info">
+                                <h4><%= poll.title %></h4>
+                                <p><%= poll.description %></p>
+                            </div>
+                        </div>
+                        
+                        <div class="poll-details">
+                            <div class="poll-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <%= poll.questions.length %> questions
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    ~<%= Math.ceil(poll.questions.length * 1.5) %> min
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-euro-sign"></i>
+                                    EUR <%= (0.2 + Math.random() * 2.8).toFixed(2) %>
+                                </span>
+                            </div>
+                            
+                            <% if (poll.questions.some(q => q.isTrick)) { %>
+                                <div class="warning-notice">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Contains verification questions
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <div class="poll-actions">
+                            <a href="/poll/<%= poll.id %>" class="btn btn-primary">
+                                <i class="fas fa-play"></i>
+                                Start Survey
+                            </a>
+                            <button class="btn btn-secondary" onclick="previewPoll(<%= poll.id %>)">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-cards">
+                <div class="action-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Earnings</h4>
+                    <p>Track your survey earnings</p>
+                    <span class="action-value">EUR 0.00</span>
+                </div>
+                <div class="action-card">
+                    <i class="fas fa-trophy"></i>
+                    <h4>Achievements</h4>
+                    <p>Unlock survey milestones</p>
+                    <span class="action-value">0 / 10</span>
+                </div>
+                <div class="action-card">
+                    <i class="fas fa-gift"></i>
+                    <h4>Referrals</h4>
+                    <p>Invite friends and earn</p>
+                    <span class="action-value">0 invited</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Poll Preview Modal -->
+<div id="pollPreviewModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Poll Preview</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="pollPreviewContent">
+            <!-- Preview content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+function previewPoll(pollId) {
+    // Simulate loading poll preview
+    const polls = <%- JSON.stringify(polls) %>;
+    const poll = polls.find(p => p.id === pollId);
+    
+    let previewHtml = `
+        <div class="poll-preview">
+            <h4>${poll.title}</h4>
+            <p>${poll.description}</p>
+            <div class="questions-preview">
+                <h5>Questions (${poll.questions.length}):</h5>
+                <ol>
+    `;
+    
+    poll.questions.forEach(q => {
+        previewHtml += `
+            <li>
+                <strong>${q.text}</strong>
+                <span class="question-type">(${q.type}${q.required ? ', required' : ''})</span>
+                ${q.isTrick ? '<span class="trick-indicator">⚠️ Verification Question</span>' : ''}
+            </li>
+        `;
+    });
+    
+    previewHtml += `
+                </ol>
+            </div>
+            <div class="preview-actions">
+                <a href="/poll/${pollId}" class="btn btn-primary">Start This Survey</a>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('pollPreviewContent').innerHTML = previewHtml;
+    document.getElementById('pollPreviewModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('pollPreviewModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('pollPreviewModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>

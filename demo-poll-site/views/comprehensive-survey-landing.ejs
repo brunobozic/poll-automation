@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= survey.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .landing-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .survey-info {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .survey-info h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-card li {
+            padding: 5px 0;
+            color: #666;
+        }
+
+        .feature-card li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .start-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 30px -40px -40px -40px;
+            color: white;
+        }
+
+        .start-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .progress-indicators {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 20px;
+            border: 2px solid #e9ecef;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+
+        .technical-info {
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .technical-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .technical-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .tech-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-display">
+        Session: <%= sessionId.substring(0, 8) %>...<br>
+        Started: <span id="timer">00:00</span>
+    </div>
+
+    <div class="landing-container">
+        <div class="header">
+            <h1>🌐 <%= survey.title %></h1>
+            <p><%= survey.description %></p>
+        </div>
+
+        <div class="content">
+            <div class="survey-info">
+                <h2>📋 Survey Overview</h2>
+                <p>This comprehensive market research survey demonstrates real-world complexity with multiple interaction types, security measures, and advanced user experience patterns. Your participation helps us understand consumer behavior and preferences.</p>
+            </div>
+
+            <div class="warning-box">
+                <h3>⚠️ Important Notice</h3>
+                <p>This survey includes advanced anti-bot protection, multiple steps with redirects, modal windows, iframe content, and new tab interactions. Please ensure you have JavaScript enabled and popup blockers disabled for the best experience.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🎯 Question Types</h3>
+                    <ul>
+                        <li>Multiple choice (radio buttons)</li>
+                        <li>Multi-select checkboxes</li>
+                        <li>Interactive sliders</li>
+                        <li>Date picker fields</li>
+                        <li>Text input and textarea</li>
+                        <li>Phone and email validation</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔄 Flow Complexity</h3>
+                    <ul>
+                        <li>Multi-step progression</li>
+                        <li>Modal popup windows</li>
+                        <li>New tab/window opening</li>
+                        <li>Iframe embedded content</li>
+                        <li>Dynamic content loading</li>
+                        <li>Progress validation</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🛡️ Security Features</h3>
+                    <ul>
+                        <li>Advanced fingerprinting</li>
+                        <li>Behavioral analysis</li>
+                        <li>CAPTCHA challenges</li>
+                        <li>Honeypot field detection</li>
+                        <li>Timing validation</li>
+                        <li>Pattern recognition</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📊 Real-World Elements</h3>
+                    <ul>
+                        <li>Email verification codes</li>
+                        <li>Phone number validation</li>
+                        <li>Progressive disclosure</li>
+                        <li>Cross-domain tracking</li>
+                        <li>Session management</li>
+                        <li>Analytics tracking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="progress-indicators">
+                <div class="step-indicator">
+                    <div class="step-number">1</div>
+                    <span>Demographics</span>
+                </div>
+                <div class="step-indicator">
+                    <div class="step-number">2</div>
+                    <span>Preferences</span>
+                </div>
+                <div class="step-indicator">
+                    <div class="step-number">3</div>
+                    <span>Modal Feedback</span>
+                </div>
+                <div class="step-indicator">
+                    <div class="step-number">4</div>
+                    <span>Verification</span>
+                </div>
+                <div class="step-indicator">
+                    <div class="step-number">5</div>
+                    <span>Iframe Content</span>
+                </div>
+                <div class="step-indicator">
+                    <div class="step-number">6</div>
+                    <span>Final Submit</span>
+                </div>
+            </div>
+
+            <div class="technical-info">
+                <h3>🔧 Technical Implementation</h3>
+                <p>This survey simulates enterprise-level complexity found in real market research platforms:</p>
+                <div class="technical-grid">
+                    <div class="tech-item">
+                        <strong>Anti-Bot Detection</strong><br>
+                        Canvas, WebGL, Audio fingerprinting
+                    </div>
+                    <div class="tech-item">
+                        <strong>Behavioral Analysis</strong><br>
+                        Mouse tracking, keystroke timing
+                    </div>
+                    <div class="tech-item">
+                        <strong>Multi-Window Flow</strong><br>
+                        Modals, new tabs, iframe content
+                    </div>
+                    <div class="tech-item">
+                        <strong>Form Validation</strong><br>
+                        Client & server-side validation
+                    </div>
+                </div>
+            </div>
+
+            <div class="start-section">
+                <h2>Ready to Begin?</h2>
+                <p style="margin: 15px 0; opacity: 0.9;">The survey takes approximately 5-10 minutes to complete and includes <%= survey.totalSteps %> comprehensive steps.</p>
+                <button class="start-btn" onclick="startSurvey()">🚀 Start Comprehensive Survey</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden tracking elements -->
+    <canvas id="fp-canvas" style="display: none;"></canvas>
+    
+    <!-- Honeypot fields -->
+    <input type="email" name="email_backup" style="position: absolute; left: -9999px; opacity: 0;" tabindex="-1">
+    <input type="tel" name="phone_secondary" style="position: absolute; left: -9999px; opacity: 0;" tabindex="-1">
+    <input type="text" name="address_hidden" style="position: absolute; left: -9999px; opacity: 0;" tabindex="-1">
+
+    <script>
+        let startTime = Date.now();
+        let mouseMovements = [];
+        let keystrokes = [];
+        let clicks = [];
+
+        // Timer update
+        function updateTimer() {
+            const elapsed = Date.now() - startTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        setInterval(updateTimer, 1000);
+
+        // Advanced fingerprinting
+        function generateFingerprint() {
+            const canvas = document.getElementById('fp-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Canvas fingerprinting
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#f60';
+            ctx.fillRect(125, 1, 62, 20);
+            ctx.fillStyle = '#069';
+            ctx.fillText('Comprehensive Survey 2024 🌐', 2, 15);
+            
+            const canvasFingerprint = canvas.toDataURL();
+            
+            // Collect comprehensive fingerprint
+            const fingerprint = {
+                canvas: canvasFingerprint,
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth
+                },
+                navigator: {
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    languages: navigator.languages,
+                    platform: navigator.platform,
+                    cookieEnabled: navigator.cookieEnabled,
+                    doNotTrack: navigator.doNotTrack,
+                    hardwareConcurrency: navigator.hardwareConcurrency,
+                    maxTouchPoints: navigator.maxTouchPoints
+                },
+                features: {
+                    webdriver: !!navigator.webdriver,
+                    plugins: navigator.plugins.length,
+                    mimeTypes: navigator.mimeTypes.length
+                },
+                timing: {
+                    pageLoad: Date.now() - startTime
+                }
+            };
+            
+            // Send fingerprint
+            fetch('/api/advanced-fingerprint', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(fingerprint)
+            }).catch(console.error);
+        }
+
+        // Behavior tracking
+        document.addEventListener('mousemove', function(e) {
+            mouseMovements.push({
+                x: e.clientX,
+                y: e.clientY,
+                timestamp: Date.now()
+            });
+            
+            // Limit array size
+            if (mouseMovements.length > 1000) {
+                mouseMovements = mouseMovements.slice(-500);
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            clicks.push({
+                x: e.clientX,
+                y: e.clientY,
+                target: e.target.tagName,
+                timestamp: Date.now()
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            keystrokes.push({
+                key: e.key,
+                timestamp: Date.now()
+            });
+        });
+
+        // Send behavior data periodically
+        setInterval(function() {
+            if (mouseMovements.length > 0 || clicks.length > 0 || keystrokes.length > 0) {
+                fetch('/api/track-behavior', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mouseMovements: mouseMovements.slice(-100),
+                        clicks: clicks,
+                        keystrokes: keystrokes,
+                        timing: { sessionDuration: Date.now() - startTime }
+                    })
+                }).catch(console.error);
+                
+                // Clear sent data
+                mouseMovements = [];
+                clicks = [];
+                keystrokes = [];
+            }
+        }, 5000);
+
+        function startSurvey() {
+            // Generate initial fingerprint
+            generateFingerprint();
+            
+            // Add slight delay to simulate user reading
+            setTimeout(() => {
+                window.location.href = '/survey/step1';
+            }, 1000);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(generateFingerprint, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+{
+  "testSummary": {
+    "testDate": "2025-06-18T19:20:49.205Z",
+    "totalConfigurations": 4,
+    "runsPerConfiguration": 3,
+    "totalTestRuns": 12
+  },
+  "overallStatistics": {
+    "totalTests": 12,
+    "successfulTests": 0,
+    "detectedTests": 0,
+    "failedTests": 12,
+    "successRate": "0.0%",
+    "detectionRate": "0.0%",
+    "averageSessionDuration": 201,
+    "averageDetectionScore": "0.000"
+  },
+  "configurationComparison": {
+    "Basic Bypass (Control)": {
+      "totalRuns": 3,
+      "successRate": "0.0%",
+      "detectionRate": "0.0%",
+      "avgSessionDuration": 411,
+      "configuration": {
+        "name": "Basic Bypass (Control)",
+        "enableAdvancedFeatures": false,
+        "enableMLBehavior": false,
+        "enableAdaptation": false
+      }
+    },
+    "Advanced Fingerprinting": {
+      "totalRuns": 3,
+      "successRate": "0.0%",
+      "detectionRate": "0.0%",
+      "avgSessionDuration": 124,
+      "configuration": {
+        "name": "Advanced Fingerprinting",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": false,
+        "enableAdaptation": false
+      }
+    },
+    "ML Behavioral Analysis": {
+      "totalRuns": 3,
+      "successRate": "0.0%",
+      "detectionRate": "0.0%",
+      "avgSessionDuration": 162,
+      "configuration": {
+        "name": "ML Behavioral Analysis",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": true,
+        "enableAdaptation": false
+      }
+    },
+    "Full AI Enhancement": {
+      "totalRuns": 3,
+      "successRate": "0.0%",
+      "detectionRate": "0.0%",
+      "avgSessionDuration": 107,
+      "configuration": {
+        "name": "Full AI Enhancement",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": true,
+        "enableAdaptation": true
+      }
+    }
+  },
+  "aiSystemAnalysis": {},
+  "improvementAnalysis": {
+    "successRateImprovement": {
+      "before": "0.0%",
+      "after": "0.0%",
+      "improvement": "0.0 percentage points"
+    },
+    "detectionRateReduction": {
+      "before": "0.0%",
+      "after": "0.0%",
+      "reduction": "0.0 percentage points"
+    },
+    "performanceOverhead": {
+      "basicDuration": "411ms",
+      "fullAiDuration": "107ms",
+      "overhead": "-303ms",
+      "overheadPercentage": "-73.9%"
+    }
+  },
+  "detailedResults": [
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 963,
+      "timestamp": "2025-06-18T19:20:22.399Z",
+      "testConfiguration": {
+        "name": "Basic Bypass (Control)",
+        "enableAdvancedFeatures": false,
+        "enableMLBehavior": false,
+        "enableAdaptation": false
+      },
+      "configuration": "Basic Bypass (Control)",
+      "runNumber": 1
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 156,
+      "timestamp": "2025-06-18T19:20:24.639Z",
+      "testConfiguration": {
+        "name": "Basic Bypass (Control)",
+        "enableAdvancedFeatures": false,
+        "enableMLBehavior": false,
+        "enableAdaptation": false
+      },
+      "configuration": "Basic Bypass (Control)",
+      "runNumber": 2
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 113,
+      "timestamp": "2025-06-18T19:20:26.826Z",
+      "testConfiguration": {
+        "name": "Basic Bypass (Control)",
+        "enableAdvancedFeatures": false,
+        "enableMLBehavior": false,
+        "enableAdaptation": false
+      },
+      "configuration": "Basic Bypass (Control)",
+      "runNumber": 3
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 112,
+      "timestamp": "2025-06-18T19:20:29.156Z",
+      "testConfiguration": {
+        "name": "Advanced Fingerprinting",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": false,
+        "enableAdaptation": false
+      },
+      "configuration": "Advanced Fingerprinting",
+      "runNumber": 1
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 121,
+      "timestamp": "2025-06-18T19:20:31.384Z",
+      "testConfiguration": {
+        "name": "Advanced Fingerprinting",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": false,
+        "enableAdaptation": false
+      },
+      "configuration": "Advanced Fingerprinting",
+      "runNumber": 2
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 140,
+      "timestamp": "2025-06-18T19:20:33.625Z",
+      "testConfiguration": {
+        "name": "Advanced Fingerprinting",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": false,
+        "enableAdaptation": false
+      },
+      "configuration": "Advanced Fingerprinting",
+      "runNumber": 3
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 124,
+      "timestamp": "2025-06-18T19:20:35.849Z",
+      "testConfiguration": {
+        "name": "ML Behavioral Analysis",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": true,
+        "enableAdaptation": false
+      },
+      "configuration": "ML Behavioral Analysis",
+      "runNumber": 1
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 132,
+      "timestamp": "2025-06-18T19:20:38.085Z",
+      "testConfiguration": {
+        "name": "ML Behavioral Analysis",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": true,
+        "enableAdaptation": false
+      },
+      "configuration": "ML Behavioral Analysis",
+      "runNumber": 2
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 229,
+      "timestamp": "2025-06-18T19:20:40.463Z",
+      "testConfiguration": {
+        "name": "ML Behavioral Analysis",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": true,
+        "enableAdaptation": false
+      },
+      "configuration": "ML Behavioral Analysis",
+      "runNumber": 3
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 102,
+      "timestamp": "2025-06-18T19:20:42.636Z",
+      "testConfiguration": {
+        "name": "Full AI Enhancement",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": true,
+        "enableAdaptation": true
+      },
+      "configuration": "Full AI Enhancement",
+      "runNumber": 1
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 117,
+      "timestamp": "2025-06-18T19:20:44.860Z",
+      "testConfiguration": {
+        "name": "Full AI Enhancement",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": true,
+        "enableAdaptation": true
+      },
+      "configuration": "Full AI Enhancement",
+      "runNumber": 2
+    },
+    {
+      "success": false,
+      "blocked": false,
+      "error": "weights.reduce is not a function",
+      "sessionDuration": 103,
+      "timestamp": "2025-06-18T19:20:47.077Z",
+      "testConfiguration": {
+        "name": "Full AI Enhancement",
+        "enableAdvancedFeatures": true,
+        "enableMLBehavior": true,
+        "enableAdaptation": true
+      },
+      "configuration": "Full AI Enhancement",
+      "runNumber": 3
+    }
+  ],
+  "recommendations": [
+    "Best performing configuration:  with 0% success rate",
+    "Advanced fingerprinting provides significant detection resistance",
+    "ML behavioral analysis improves human-like behavior simulation",
+    "Real-time adaptation engine learns from session outcomes",
+    "Combined AI systems provide superior anti-detection capabilities",
+    "Performance overhead is acceptable for enhanced success rates"
+  ]
+}
