@@ -1,0 +1,92 @@
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+.env.development
+*.key
+*.pem
+*.p12
+secrets/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+data/*.sqlite
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+.node_repl_history
+
+# Screenshots and recordings
+screenshots/
+recordings/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.avi
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Browser data
+browser-data/
+user-data/
+profiles/
+
+# Proxy files
+proxies.txt
+proxy-list.txt
+*.proxy
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Test artifacts
+test-results/
+coverage/
+.nyc_output
+
+# AI model files
+*.model
+models/
+weights/
+
+# Sensitive configuration
+config/production.json
+config/secrets.json

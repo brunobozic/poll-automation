@@ -1,0 +1,95 @@
+{
+  "app": {
+    "name": "Streamlined Poll Automation",
+    "version": "3.0.0",
+    "description": "Advanced automation system with unified architecture"
+  },
+  "stealth": {
+    "level": "high"
+  },
+  "database": {
+    "path": "data/polls.db",
+    "enableLogging": true,
+    "connectionPool": {
+      "min": 1,
+      "max": 5
+    }
+  },
+  "browser": {
+    "headless": true,
+    "defaultTimeout": 30000,
+    "navigationTimeout": 30000,
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "stealth": {
+      "enabled": true,
+      "level": "high"
+    }
+  },
+  "behavior": {
+    "personality": "adaptive",
+    "mouseSimulation": true,
+    "keystrokeSimulation": true,
+    "errorRate": 0.02,
+    "learningEnabled": true,
+    "adaptationRate": 0.1
+  },
+  "network": {
+    "proxyEnabled": false,
+    "rotationInterval": 300000,
+    "healthCheckInterval": 60000,
+    "stealthLevel": "high",
+    "maxRetries": 3,
+    "timeout": 10000
+  },
+  "ai": {
+    "serviceUrl": "http://127.0.0.1:5000",
+    "learningEnabled": true,
+    "cachingEnabled": true,
+    "batchProcessing": false,
+    "costOptimization": true,
+    "timeout": 30000,
+    "maxRetries": 3
+  },
+  "challenges": {
+    "captchaEnabled": true,
+    "captchaTimeout": 60000,
+    "enableLearning": true,
+    "maxRetries": 3
+  },
+  "workflow": {
+    "enableLearning": true,
+    "debugMode": false,
+    "maxRetries": 3,
+    "timeout": 30000,
+    "adaptiveDelay": true
+  },
+  "logging": {
+    "level": "info",
+    "enableConsole": true,
+    "enableFile": false,
+    "maxLogSize": "10MB",
+    "maxFiles": 5
+  },
+  "security": {
+    "enableEncryption": false,
+    "rotateKeys": false,
+    "auditLog": false
+  },
+  "performance": {
+    "enableMetrics": true,
+    "metricsInterval": 60000,
+    "enableProfiling": false,
+    "maxMemoryUsage": "1GB"
+  },
+  "features": {
+    "multiTabSupport": true,
+    "advancedStealth": true,
+    "learningEngine": true,
+    "adaptiveBehavior": true,
+    "proxyRotation": false,
+    "challengeSolving": true
+  }
+}

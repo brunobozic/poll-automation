@@ -1,0 +1,119 @@
+{
+  "_comment": "Example configuration file showing all available options",
+  "_usage": "Copy this file and modify according to your needs",
+  
+  "database": {
+    "_comment": "Database configuration",
+    "path": "data/polls.db",
+    "enableLogging": true,
+    "connectionPool": {
+      "min": 1,
+      "max": 5
+    }
+  },
+  
+  "browser": {
+    "_comment": "Browser and Playwright configuration",
+    "headless": true,
+    "devtools": false,
+    "slowMo": 0,
+    "defaultTimeout": 30000,
+    "navigationTimeout": 30000,
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "stealth": {
+      "enabled": true,
+      "level": "high"
+    }
+  },
+  
+  "behavior": {
+    "_comment": "Human behavior simulation settings",
+    "personality": "adaptive",
+    "_personalities": ["cautious", "average", "confident", "expert", "adaptive"],
+    "mouseSimulation": true,
+    "keystrokeSimulation": true,
+    "errorRate": 0.02,
+    "learningEnabled": true,
+    "adaptationRate": 0.1
+  },
+  
+  "network": {
+    "_comment": "Network and proxy configuration",
+    "proxyEnabled": false,
+    "proxyFile": null,
+    "rotationInterval": 300000,
+    "healthCheckInterval": 60000,
+    "stealthLevel": "high",
+    "maxRetries": 3,
+    "timeout": 10000
+  },
+  
+  "ai": {
+    "_comment": "AI service configuration",
+    "serviceUrl": "http://127.0.0.1:5000",
+    "learningEnabled": true,
+    "cachingEnabled": true,
+    "batchProcessing": false,
+    "costOptimization": true,
+    "timeout": 30000,
+    "maxRetries": 3
+  },
+  
+  "challenges": {
+    "_comment": "Challenge and CAPTCHA solving configuration",
+    "captchaEnabled": true,
+    "captchaTimeout": 60000,
+    "twoCaptchaKey": null,
+    "antiCaptchaKey": null,
+    "enableLearning": true,
+    "maxRetries": 3
+  },
+  
+  "workflow": {
+    "_comment": "Workflow orchestration settings",
+    "enableLearning": true,
+    "debugMode": false,
+    "maxRetries": 3,
+    "timeout": 30000,
+    "adaptiveDelay": true
+  },
+  
+  "logging": {
+    "_comment": "Logging configuration",
+    "level": "info",
+    "_levels": ["error", "warn", "info", "debug"],
+    "enableConsole": true,
+    "enableFile": false,
+    "filePath": "logs/poll-automation.log",
+    "maxLogSize": "10MB",
+    "maxFiles": 5
+  },
+  
+  "security": {
+    "_comment": "Security and encryption settings",
+    "enableEncryption": false,
+    "rotateKeys": false,
+    "auditLog": false
+  },
+  
+  "performance": {
+    "_comment": "Performance monitoring settings",
+    "enableMetrics": true,
+    "metricsInterval": 60000,
+    "enableProfiling": false,
+    "maxMemoryUsage": "1GB"
+  },
+  
+  "features": {
+    "_comment": "Feature toggles",
+    "multiTabSupport": true,
+    "advancedStealth": true,
+    "learningEngine": true,
+    "adaptiveBehavior": true,
+    "proxyRotation": false,
+    "challengeSolving": true
+  }
+}

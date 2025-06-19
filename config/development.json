@@ -1,0 +1,48 @@
+{
+  "database": {
+    "path": "data/polls-dev.db",
+    "enableLogging": true
+  },
+  "browser": {
+    "headless": false,
+    "devtools": true,
+    "slowMo": 100
+  },
+  "behavior": {
+    "personality": "cautious",
+    "errorRate": 0.01,
+    "adaptationRate": 0.05
+  },
+  "network": {
+    "proxyEnabled": false,
+    "timeout": 15000
+  },
+  "ai": {
+    "serviceUrl": "http://localhost:5000",
+    "cachingEnabled": false,
+    "timeout": 60000
+  },
+  "workflow": {
+    "debugMode": true,
+    "timeout": 60000
+  },
+  "logging": {
+    "level": "debug",
+    "enableConsole": true,
+    "enableFile": true,
+    "filePath": "logs/poll-automation-dev.log"
+  },
+  "security": {
+    "enableEncryption": false,
+    "auditLog": true
+  },
+  "performance": {
+    "enableProfiling": true,
+    "maxMemoryUsage": "2GB"
+  },
+  "features": {
+    "advancedStealth": false,
+    "learningEngine": true,
+    "adaptiveBehavior": true
+  }
+}

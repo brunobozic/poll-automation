@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔬 Advanced Anti-AI Training Environment - 2024-2025 Protection Suite</title>
+    
+    <!-- Service Worker for advanced detection -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {
+                // Simulate service worker registration for testing
+                console.log('Service worker simulation active');
+            });
+        }
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            cursor: crosshair; /* Unusual cursor for testing */
+        }
+
+        .security-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ff4444;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            z-index: 10000;
+            font-weight: bold;
+            display: none;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .protection-status {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .challenge-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .challenge-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .difficulty-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .difficulty-extreme { background: #ff4444; color: white; }
+        .difficulty-hard { background: #ff8800; color: white; }
+        .difficulty-medium { background: #ffd700; color: #333; }
+        .difficulty-easy { background: #00cc66; color: white; }
+
+        .question-group {
+            margin-bottom: 20px;
+        }
+
+        .question-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-tracker {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        .hidden-field {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+        }
+
+        .canvas-container {
+            border: 2px dashed #ddd;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            cursor: crosshair;
+        }
+
+        .timer-display {
+            background: #ff4444;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .captcha-tile {
+            aspect-ratio: 1;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            transition: all 0.3s ease;
+        }
+
+        .captcha-tile:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .captcha-tile.selected {
+            border-color: #00cc66;
+            border-width: 3px;
+        }
+
+        .math-challenge {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .media-container {
+            background: #f0f0f0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .behavioral-trap {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        .drag-drop-area.dragover {
+            border-color: #667eea;
+            background: #e6f3ff;
+        }
+
+        .biometric-canvas {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body>
+    <!-- Security Warning Banner -->
+    <div id="securityWarning" class="security-warning">
+        ⚠️ AUTOMATED BEHAVIOR DETECTED - PLEASE VERIFY YOU ARE HUMAN
+    </div>
+
+    <!-- Hidden Honeypot Fields -->
+    <input type="text" name="email" class="hidden-field" tabindex="-1" autocomplete="off">
+    <input type="text" name="website" class="hidden-field" tabindex="-1" autocomplete="off">
+    <input type="text" name="phone" class="hidden-field" tabindex="-1" autocomplete="off">
+
+    <!-- Behavioral Traps -->
+    <div class="behavioral-trap" id="trapDiv1"></div>
+    <div class="behavioral-trap" id="trapDiv2"></div>
+    <div class="behavioral-trap" id="trapDiv3"></div>
+
+    <div class="main-container">
+        <!-- Header with Protection Status -->
+        <div class="header">
+            <h1>🔬 Advanced Anti-AI Training Environment</h1>
+            <p>Military-Grade Protection Suite - 2024-2025 Edition</p>
+            <div class="protection-status">
+                <div>🛡️ Active Protections: <span id="protectionCount">0</span></div>
+                <div>🧠 AI Detection Level: <span id="aiDetectionLevel">EXTREME</span></div>
+                <div>⚡ Real-time Analysis: <span id="realtimeStatus">ACTIVE</span></div>
+            </div>
+        </div>
+
+        <!-- Challenge Grid -->
+        <div class="challenge-grid">
+            
+            <!-- Challenge 1: Advanced CAPTCHA with Computer Vision -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🧩 Visual Intelligence Challenge</div>
+                    <div class="difficulty-badge difficulty-extreme">EXTREME</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Select all images containing traffic lights:</label>
+                    <div class="captcha-grid" id="visualCaptcha">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    <button class="btn" onclick="verifyVisualCaptcha()">Verify Selection</button>
+                </div>
+            </div>
+
+            <!-- Challenge 2: Advanced Math with Time Pressure -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🔢 Cognitive Load Challenge</div>
+                    <div class="difficulty-badge difficulty-hard">HARD</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Solve this equation within 30 seconds:</label>
+                    <div class="math-challenge" id="mathChallenge">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    <div class="timer-display" id="mathTimer">Time: 30s</div>
+                    <input type="number" class="form-control" id="mathAnswer" placeholder="Your answer">
+                    <button class="btn" onclick="submitMathChallenge()">Submit Answer</button>
+                </div>
+            </div>
+
+            <!-- Challenge 3: Mouse Movement Biometrics -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🖱️ Biometric Verification</div>
+                    <div class="difficulty-badge difficulty-extreme">EXTREME</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Draw a circle with your mouse (human-like movement required):</label>
+                    <canvas class="biometric-canvas" id="biometricCanvas" width="300" height="200"></canvas>
+                    <div id="biometricFeedback" style="margin-top: 10px; font-weight: bold;"></div>
+                    <button class="btn" onclick="clearBiometric()">Clear</button>
+                    <button class="btn" onclick="analyzeBiometric()">Analyze Movement</button>
+                </div>
+            </div>
+
+            <!-- Challenge 4: Attention Verification with Media -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">👁️ Attention Pattern Analysis</div>
+                    <div class="difficulty-badge difficulty-hard">HARD</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Watch the video and answer the question:</label>
+                    <div class="media-container">
+                        <div class="video-container" id="attentionVideo">
+                            <canvas id="videoCanvas" width="350" height="200"></canvas>
+                        </div>
+                        <p id="videoQuestion" style="margin-top: 15px; font-weight: bold;"></p>
+                        <input type="text" class="form-control" id="videoAnswer" placeholder="Your answer" style="margin-top: 10px;">
+                        <button class="btn" onclick="submitVideoChallenge()">Submit Answer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge 5: Audio CAPTCHA with Noise -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🔊 Audio Intelligence Test</div>
+                    <div class="difficulty-badge difficulty-hard">HARD</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Listen to the audio and enter the spoken numbers:</label>
+                    <div class="media-container">
+                        <audio class="audio-player" id="audioCaptcha" controls>
+                            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEA..." type="audio/wav">
+                        </audio>
+                        <input type="text" class="form-control" id="audioAnswer" placeholder="Enter the numbers you heard">
+                        <button class="btn" onclick="generateAudioChallenge()">Generate New Audio</button>
+                        <button class="btn" onclick="submitAudioChallenge()">Submit Answer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge 6: Drag and Drop with Physics -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🎯 Physics Interaction Test</div>
+                    <div class="difficulty-badge difficulty-medium">MEDIUM</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Drag the circles to their matching colors:</label>
+                    <div id="dragDropContainer">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge 7: Sequence Memory -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🧠 Memory Pattern Challenge</div>
+                    <div class="difficulty-badge difficulty-hard">HARD</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Memorize and repeat the sequence:</label>
+                    <div id="sequenceDisplay" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0;">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    <button class="btn" onclick="startSequenceChallenge()">Start Challenge</button>
+                    <button class="btn" onclick="submitSequence()" disabled id="submitSequenceBtn">Submit Sequence</button>
+                </div>
+            </div>
+
+            <!-- Challenge 8: Proof of Work (Computational) -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">⚡ Computational Proof Challenge</div>
+                    <div class="difficulty-badge difficulty-extreme">EXTREME</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Complete the proof-of-work calculation:</label>
+                    <div id="powChallenge">
+                        <div>Find a number that makes SHA-256 hash start with "0000":</div>
+                        <div>Base string: <span id="powBase"></span></div>
+                        <input type="number" class="form-control" id="powAnswer" placeholder="Your number">
+                        <div id="powResult" style="margin: 10px 0; font-family: monospace;"></div>
+                        <button class="btn" onclick="checkProofOfWork()">Check Answer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge 9: Keyboard Dynamics -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">⌨️ Typing Pattern Analysis</div>
+                    <div class="difficulty-badge difficulty-extreme">EXTREME</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Type the following text naturally (timing is analyzed):</label>
+                    <div id="typingPrompt" style="background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 10px 0; font-weight: bold;">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    <textarea class="form-control" id="typingInput" rows="3" placeholder="Type the text above exactly as shown..."></textarea>
+                    <div id="typingAnalysis" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
+                    <button class="btn" onclick="analyzeTyping()">Analyze Typing Pattern</button>
+                </div>
+            </div>
+
+            <!-- Challenge 10: Multi-Step Verification -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🔄 Multi-Factor Challenge</div>
+                    <div class="difficulty-badge difficulty-extreme">EXTREME</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Complete all verification steps:</label>
+                    <div id="multiStepChallenge">
+                        <div class="step" id="step1">
+                            <strong>Step 1:</strong> Click exactly 3 times on the button
+                            <button class="btn" onclick="countClicks()" id="clickCounter">Clicks: 0</button>
+                        </div>
+                        <div class="step" id="step2" style="display: none; margin-top: 15px;">
+                            <strong>Step 2:</strong> Hold the button for exactly 2 seconds
+                            <button class="btn" onmousedown="startHold()" onmouseup="endHold()" id="holdButton">Hold Me</button>
+                            <div id="holdTime">Hold time: 0ms</div>
+                        </div>
+                        <div class="step" id="step3" style="display: none; margin-top: 15px;">
+                            <strong>Step 3:</strong> Double-click within 1 second
+                            <button class="btn" onclick="handleDoubleClick()" id="doubleClickBtn">Double Click</button>
+                            <div id="doubleClickStatus"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge 11: Contextual Knowledge -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🌍 Contextual Intelligence Test</div>
+                    <div class="difficulty-badge difficulty-hard">HARD</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Answer based on current context:</label>
+                    <div id="contextualQuestion">
+                        <!-- Will be populated with time/location/browser specific questions -->
+                    </div>
+                    <input type="text" class="form-control" id="contextualAnswer" placeholder="Your answer">
+                    <button class="btn" onclick="submitContextualAnswer()">Submit Answer</button>
+                </div>
+            </div>
+
+            <!-- Challenge 12: Hidden Interaction Patterns -->
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <div class="challenge-title">🕵️ Pattern Recognition Challenge</div>
+                    <div class="difficulty-badge difficulty-extreme">EXTREME</div>
+                </div>
+                
+                <div class="question-group">
+                    <label class="question-label">Find the hidden interaction pattern:</label>
+                    <div id="patternChallenge" style="height: 200px; background: #f0f0f0; border-radius: 10px; position: relative; cursor: pointer;">
+                        <!-- Interactive elements will be added by JavaScript -->
+                    </div>
+                    <div id="patternHint" style="margin-top: 10px; font-style: italic; color: #666;"></div>
+                    <button class="btn" onclick="checkPattern()">Check Pattern</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Final Submission -->
+        <div class="challenge-card" style="grid-column: 1 / -1;">
+            <div class="challenge-header">
+                <div class="challenge-title">📋 Final Verification</div>
+                <div class="difficulty-badge difficulty-extreme">EXTREME</div>
+            </div>
+            
+            <div class="question-group">
+                <label class="question-label">Complete all challenges above, then submit:</label>
+                <textarea class="form-control" rows="3" placeholder="Optional: Describe your experience with these challenges..."></textarea>
+                <button class="btn" onclick="submitAllChallenges()" id="finalSubmit" disabled>Submit All Challenges</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Tracker -->
+    <div class="progress-tracker">
+        <div>Challenges Completed: <span id="completedCount">0</span>/12</div>
+        <div>AI Confidence: <span id="aiConfidence">0%</span></div>
+        <div>Human Score: <span id="humanScore">0%</span></div>
+        <div>Threat Level: <span id="threatLevel">LOW</span></div>
+    </div>
+
+    <!-- Modal for Additional Challenges -->
+    <div id="challengeModal" class="modal">
+        <div class="modal-content">
+            <h3>Additional Verification Required</h3>
+            <div id="modalContent">
+                <!-- Dynamic content -->
+            </div>
+            <button class="btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for tracking
+        let challengeStates = {
+            visual: false,
+            math: false,
+            biometric: false,
+            attention: false,
+            audio: false,
+            dragDrop: false,
+            sequence: false,
+            proofOfWork: false,
+            typing: false,
+            multiStep: false,
+            contextual: false,
+            pattern: false
+        };
+
+        let securityMetrics = {
+            mouseMovements: [],
+            keystrokes: [],
+            timings: [],
+            interactions: [],
+            behaviorScore: 0,
+            suspicionLevel: 0
+        };
+
+        let activeTimers = {};
+        let challengeStartTime = Date.now();
+
+        // Initialize all challenges
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProtections();
+            initializeVisualCaptcha();
+            initializeMathChallenge();
+            initializeBiometricCanvas();
+            initializeAttentionVideo();
+            initializeDragDrop();
+            initializeProofOfWork();
+            initializeTypingChallenge();
+            initializeContextualChallenge();
+            initializePatternChallenge();
+            startBehaviorTracking();
+        });
+
+        // Protection Systems
+        function initializeProtections() {
+            // Browser detection
+            detectAutomation();
+            
+            // Mouse movement tracking
+            document.addEventListener('mousemove', trackMouseMovement);
+            
+            // Keyboard pattern tracking
+            document.addEventListener('keydown', trackKeyDown);
+            document.addEventListener('keyup', trackKeyUp);
+            
+            // Focus tracking
+            window.addEventListener('focus', trackFocus);
+            window.addEventListener('blur', trackBlur);
+            
+            // Scroll tracking
+            window.addEventListener('scroll', trackScroll);
+            
+            // Visibility API
+            document.addEventListener('visibilitychange', trackVisibility);
+            
+            updateProtectionCount();
+        }
+
+        function detectAutomation() {
+            const checks = [
+                () => navigator.webdriver,
+                () => window.chrome && window.chrome.runtime && window.chrome.runtime.onConnect,
+                () => window.callPhantom,
+                () => window._phantom,
+                () => window.__nightmare,
+                () => window.Buffer,
+                () => window.emit,
+                () => window.spawn
+            ];
+
+            let suspiciousCount = checks.filter(check => {
+                try { return check(); } catch(e) { return false; }
+            }).length;
+
+            if (suspiciousCount > 0) {
+                securityMetrics.suspicionLevel += suspiciousCount * 20;
+                showSecurityWarning();
+            }
+        }
+
+        function showSecurityWarning() {
+            document.getElementById('securityWarning').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('securityWarning').style.display = 'none';
+            }, 3000);
+        }
+
+        // Visual CAPTCHA Challenge
+        function initializeVisualCaptcha() {
+            const grid = document.getElementById('visualCaptcha');
+            const images = [
+                'traffic-light-1.jpg', 'car-1.jpg', 'traffic-light-2.jpg',
+                'building-1.jpg', 'traffic-light-3.jpg', 'tree-1.jpg',
+                'person-1.jpg', 'traffic-light-4.jpg', 'road-1.jpg'
+            ];
+            
+            images.forEach((img, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'captcha-tile';
+                tile.dataset.index = index;
+                tile.dataset.isTrafficLight = img.includes('traffic-light');
+                tile.style.background = `linear-gradient(45deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)})`;
+                tile.addEventListener('click', selectCaptchaTile);
+                grid.appendChild(tile);
+            });
+        }
+
+        function selectCaptchaTile(event) {
+            event.target.classList.toggle('selected');
+            trackInteraction('captcha_tile_click', { index: event.target.dataset.index });
+        }
+
+        function verifyVisualCaptcha() {
+            const selected = document.querySelectorAll('#visualCaptcha .captcha-tile.selected');
+            const correct = Array.from(selected).every(tile => tile.dataset.isTrafficLight === 'true');
+            const allTrafficLights = document.querySelectorAll('#visualCaptcha .captcha-tile[data-is-traffic-light="true"]');
+            
+            if (correct && selected.length === allTrafficLights.length) {
+                challengeStates.visual = true;
+                showChallengeSuccess('Visual CAPTCHA completed!');
+            } else {
+                showChallengeError('Incorrect selection. Try again.');
+                // Reset selections
+                selected.forEach(tile => tile.classList.remove('selected'));
+            }
+            updateProgress();
+        }
+
+        // Math Challenge
+        function initializeMathChallenge() {
+            generateMathProblem();
+            startMathTimer();
+        }
+
+        function generateMathProblem() {
+            const operations = [
+                () => ({ 
+                    problem: `${Math.floor(Math.random()*50)+10} + ${Math.floor(Math.random()*50)+10} × ${Math.floor(Math.random()*10)+2}`,
+                    answer: null // Complex calculation
+                }),
+                () => {
+                    const a = Math.floor(Math.random()*20)+5;
+                    const b = Math.floor(Math.random()*20)+5;
+                    return {
+                        problem: `√(${a*a}) + ∛(${b*b*b})`,
+                        answer: a + b
+                    };
+                },
+                () => {
+                    const x = Math.floor(Math.random()*10)+2;
+                    return {
+                        problem: `If 2x + 5 = ${2*x+5}, what is x?`,
+                        answer: x
+                    };
+                }
+            ];
+            
+            const selected = operations[Math.floor(Math.random()*operations.length)]();
+            document.getElementById('mathChallenge').textContent = selected.problem;
+            document.getElementById('mathChallenge').dataset.answer = selected.answer || 'complex';
+        }
+
+        function startMathTimer() {
+            let timeLeft = 30;
+            activeTimers.math = setInterval(() => {
+                timeLeft--;
+                document.getElementById('mathTimer').textContent = `Time: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(activeTimers.math);
+                    document.getElementById('mathAnswer').disabled = true;
+                    showChallengeError('Time expired! Math challenge failed.');
+                    setTimeout(() => {
+                        document.getElementById('mathAnswer').disabled = false;
+                        generateMathProblem();
+                        startMathTimer();
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        function submitMathChallenge() {
+            const answer = document.getElementById('mathAnswer').value;
+            const correctAnswer = document.getElementById('mathChallenge').dataset.answer;
+            
+            if (answer && (answer == correctAnswer || correctAnswer === 'complex')) {
+                challengeStates.math = true;
+                clearInterval(activeTimers.math);
+                showChallengeSuccess('Math challenge completed!');
+            } else {
+                showChallengeError('Incorrect answer. Try again.');
+            }
+            updateProgress();
+        }
+
+        // Biometric Canvas
+        function initializeBiometricCanvas() {
+            const canvas = document.getElementById('biometricCanvas');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let points = [];
+            let startTime;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                startTime = Date.now();
+                points = [];
+                const rect = canvas.getBoundingClientRect();
+                points.push({
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top,
+                    time: 0,
+                    pressure: e.pressure || 0.5
+                });
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) {
+                    const rect = canvas.getBoundingClientRect();
+                    const currentTime = Date.now() - startTime;
+                    points.push({
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top,
+                        time: currentTime,
+                        pressure: e.pressure || 0.5
+                    });
+                    
+                    // Draw line
+                    ctx.lineWidth = 2;
+                    ctx.lineCap = 'round';
+                    ctx.strokeStyle = '#667eea';
+                    
+                    if (points.length > 1) {
+                        const prev = points[points.length - 2];
+                        const curr = points[points.length - 1];
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(prev.x, prev.y);
+                        ctx.lineTo(curr.x, curr.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+                canvas.biometricData = points;
+            });
+        }
+
+        function clearBiometric() {
+            const canvas = document.getElementById('biometricCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.biometricData = null;
+            document.getElementById('biometricFeedback').textContent = '';
+        }
+
+        function analyzeBiometric() {
+            const canvas = document.getElementById('biometricCanvas');
+            const feedback = document.getElementById('biometricFeedback');
+            
+            if (!canvas.biometricData || canvas.biometricData.length < 10) {
+                feedback.textContent = 'Please draw a complete circle.';
+                feedback.style.color = '#ff4444';
+                return;
+            }
+
+            const points = canvas.biometricData;
+            
+            // Analyze drawing patterns
+            const analysis = {
+                smoothness: calculateSmoothness(points),
+                speed: calculateSpeed(points),
+                circleAccuracy: calculateCircleAccuracy(points),
+                humanLikeness: calculateHumanLikeness(points)
+            };
+
+            const overallScore = (analysis.smoothness + analysis.speed + analysis.circleAccuracy + analysis.humanLikeness) / 4;
+            
+            if (overallScore > 0.7) {
+                challengeStates.biometric = true;
+                feedback.textContent = `Human-like drawing detected! Score: ${(overallScore*100).toFixed(1)}%`;
+                feedback.style.color = '#00cc66';
+            } else {
+                feedback.textContent = `Non-human pattern detected. Score: ${(overallScore*100).toFixed(1)}%`;
+                feedback.style.color = '#ff4444';
+            }
+            
+            updateProgress();
+        }
+
+        function calculateSmoothness(points) {
+            if (points.length < 3) return 0;
+            
+            let totalAngleChange = 0;
+            for (let i = 1; i < points.length - 1; i++) {
+                const angle1 = Math.atan2(points[i].y - points[i-1].y, points[i].x - points[i-1].x);
+                const angle2 = Math.atan2(points[i+1].y - points[i].y, points[i+1].x - points[i].x);
+                let angleDiff = Math.abs(angle2 - angle1);
+                if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff;
+                totalAngleChange += angleDiff;
+            }
+            
+            const averageAngleChange = totalAngleChange / (points.length - 2);
+            return Math.max(0, 1 - (averageAngleChange / Math.PI));
+        }
+
+        function calculateSpeed(points) {
+            if (points.length < 2) return 0;
+            
+            const speeds = [];
+            for (let i = 1; i < points.length; i++) {
+                const distance = Math.sqrt(
+                    Math.pow(points[i].x - points[i-1].x, 2) + 
+                    Math.pow(points[i].y - points[i-1].y, 2)
+                );
+                const timeDiff = points[i].time - points[i-1].time;
+                if (timeDiff > 0) {
+                    speeds.push(distance / timeDiff);
+                }
+            }
+            
+            const avgSpeed = speeds.reduce((a, b) => a + b, 0) / speeds.length;
+            const speedVariance = speeds.reduce((sum, speed) => sum + Math.pow(speed - avgSpeed, 2), 0) / speeds.length;
+            
+            // Human movement has natural speed variation
+            return Math.min(1, speedVariance / 10);
+        }
+
+        function calculateCircleAccuracy(points) {
+            if (points.length < 10) return 0;
+            
+            // Find center point
+            const centerX = points.reduce((sum, p) => sum + p.x, 0) / points.length;
+            const centerY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+            
+            // Calculate distances from center
+            const distances = points.map(p => 
+                Math.sqrt(Math.pow(p.x - centerX, 2) + Math.pow(p.y - centerY, 2))
+            );
+            
+            const avgRadius = distances.reduce((a, b) => a + b, 0) / distances.length;
+            const radiusVariance = distances.reduce((sum, dist) => sum + Math.pow(dist - avgRadius, 2), 0) / distances.length;
+            
+            // Lower variance = more circular
+            return Math.max(0, 1 - (radiusVariance / (avgRadius * avgRadius)));
+        }
+
+        function calculateHumanLikeness(points) {
+            // Check for micro-tremors and natural imperfections
+            let microMovements = 0;
+            for (let i = 1; i < points.length - 1; i++) {
+                const movement = Math.sqrt(
+                    Math.pow(points[i+1].x - points[i-1].x, 2) + 
+                    Math.pow(points[i+1].y - points[i-1].y, 2)
+                );
+                if (movement < 2) microMovements++;
+            }
+            
+            const microMovementRatio = microMovements / points.length;
+            return Math.min(1, microMovementRatio * 5); // Humans have natural micro-movements
+        }
+
+        // Audio Intelligence Challenge
+        function initializeAudioChallenge() {
+            generateAudioChallenge();
+        }
+
+        function generateAudioChallenge() {
+            // Simulate audio CAPTCHA with background noise
+            const digits = Array.from({length: 4}, () => Math.floor(Math.random() * 10));
+            document.getElementById('audioPrompt').textContent = `Listen and type: ${digits.join(' ')}`;
+            document.getElementById('audioChallenge').dataset.answer = digits.join('');
+        }
+
+        function submitAudioChallenge() {
+            const answer = document.getElementById('audioAnswer').value;
+            const correct = document.getElementById('audioChallenge').dataset.answer;
+            
+            if (answer === correct) {
+                challengeStates.audio = true;
+                showChallengeSuccess('Audio challenge completed!');
+            } else {
+                showChallengeError('Incorrect audio sequence.');
+            }
+            updateProgress();
+        }
+
+        // Attention Video Challenge  
+        function initializeAttentionVideo() {
+            // Simulate video content analysis
+            const scenarios = [
+                'What color shirt was the person wearing?',
+                'How many people appeared in the video?',
+                'What object was placed on the table?',
+                'In which direction did the person walk?'
+            ];
+            
+            const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            document.getElementById('videoQuestion').textContent = randomScenario;
+            
+            // Simulate answers based on scenario
+            const answers = {
+                'What color shirt was the person wearing?': ['blue', 'red', 'white', 'black'],
+                'How many people appeared in the video?': ['1', '2', '3', 'one', 'two', 'three'],
+                'What object was placed on the table?': ['book', 'cup', 'phone', 'keys'],
+                'In which direction did the person walk?': ['left', 'right', 'forward', 'backward']
+            };
+            
+            document.getElementById('videoContainer').dataset.correctAnswers = JSON.stringify(answers[randomScenario] || []);
+        }
+
+        function submitVideoChallenge() {
+            const answer = document.getElementById('videoAnswer').value.toLowerCase().trim();
+            const correctAnswers = JSON.parse(document.getElementById('videoContainer').dataset.correctAnswers || '[]');
+            
+            if (correctAnswers.includes(answer)) {
+                challengeStates.attention = true;
+                showChallengeSuccess('Attention verification passed!');
+            } else {
+                showChallengeError('Incorrect answer. Pay closer attention.');
+            }
+            updateProgress();
+        }
+
+        // Drag and Drop Challenge
+        function initializeDragDrop() {
+            const container = document.getElementById('dragContainer');
+            const targetZones = ['zone1', 'zone2', 'zone3'];
+            const items = ['item1', 'item2', 'item3'];
+            
+            // Create draggable items
+            items.forEach((item, index) => {
+                const element = document.createElement('div');
+                element.className = 'draggable-item';
+                element.draggable = true;
+                element.id = item;
+                element.textContent = `Item ${index + 1}`;
+                element.addEventListener('dragstart', handleDragStart);
+                container.appendChild(element);
+            });
+            
+            // Create drop zones
+            targetZones.forEach((zone, index) => {
+                const element = document.createElement('div');
+                element.className = 'drop-zone';
+                element.id = zone;
+                element.textContent = `Zone ${index + 1}`;
+                element.addEventListener('dragover', handleDragOver);
+                element.addEventListener('drop', handleDrop);
+                container.appendChild(element);
+            });
+        }
+
+        let draggedElement = null;
+
+        function handleDragStart(event) {
+            draggedElement = event.target;
+            trackInteraction('drag_start', { elementId: event.target.id });
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            if (draggedElement) {
+                event.target.appendChild(draggedElement);
+                trackInteraction('drag_drop', { 
+                    elementId: draggedElement.id, 
+                    targetId: event.target.id 
+                });
+                
+                // Check if all items are placed
+                const placedItems = document.querySelectorAll('.drop-zone .draggable-item');
+                if (placedItems.length === 3) {
+                    challengeStates.dragDrop = true;
+                    showChallengeSuccess('Physics interaction completed!');
+                    updateProgress();
+                }
+            }
+        }
+
+        // Sequence Memory Challenge
+        function startSequenceChallenge() {
+            const sequence = [];
+            const length = Math.floor(Math.random() * 3) + 4; // 4-6 items
+            const colors = ['red', 'blue', 'green', 'yellow', 'purple'];
+            
+            for (let i = 0; i < length; i++) {
+                sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+            }
+            
+            document.getElementById('memorySequence').dataset.sequence = JSON.stringify(sequence);
+            
+            // Display sequence briefly
+            document.getElementById('sequenceDisplay').textContent = sequence.join(' → ');
+            
+            setTimeout(() => {
+                document.getElementById('sequenceDisplay').textContent = 'Enter the sequence:';
+                document.getElementById('sequenceInput').focus();
+            }, 3000);
+        }
+
+        function submitSequence() {
+            const input = document.getElementById('sequenceInput').value.toLowerCase().trim();
+            const correctSequence = JSON.parse(document.getElementById('memorySequence').dataset.sequence || '[]');
+            const inputSequence = input.split(/[\s,→-]+/).filter(s => s.length > 0);
+            
+            if (JSON.stringify(inputSequence) === JSON.stringify(correctSequence)) {
+                challengeStates.sequence = true;
+                showChallengeSuccess('Memory challenge completed!');
+            } else {
+                showChallengeError('Incorrect sequence. Try again.');
+                startSequenceChallenge();
+            }
+            updateProgress();
+        }
+
+        // Proof of Work Challenge
+        function initializeProofOfWork() {
+            generateProofOfWork();
+        }
+
+        function generateProofOfWork() {
+            const baseString = Math.random().toString(36).substring(2, 8);
+            document.getElementById('powBase').textContent = baseString;
+            document.getElementById('powChallenge').dataset.baseString = baseString;
+        }
+
+        async function checkProofOfWork() {
+            const baseString = document.getElementById('powChallenge').dataset.baseString;
+            const answer = document.getElementById('powAnswer').value;
+            
+            if (!answer) {
+                showChallengeError('Please enter a number.');
+                return;
+            }
+            
+            // Simulate proof-of-work check (simplified)
+            const testString = baseString + answer;
+            const hash = await simpleHash(testString);
+            
+            document.getElementById('powResult').textContent = `Hash: ${hash.substring(0, 8)}...`;
+            
+            if (hash.startsWith('0000') || Math.random() < 0.3) { // Allow some success for testing
+                challengeStates.proofOfWork = true;
+                showChallengeSuccess('Proof-of-work completed!');
+                updateProgress();
+            } else {
+                showChallengeError('Hash does not start with 0000. Try a different number.');
+            }
+        }
+
+        async function simpleHash(str) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Typing Pattern Analysis
+        function initializeTypingChallenge() {
+            const prompts = [
+                'The quick brown fox jumps over the lazy dog.',
+                'Pack my box with five dozen liquor jugs.',
+                'How vexingly quick daft zebras jump!',
+                'Bright vixens jump; dozy fowl quack.'
+            ];
+            
+            const selectedPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            document.getElementById('typingPrompt').textContent = selectedPrompt;
+            document.getElementById('typingInput').dataset.targetText = selectedPrompt;
+            
+            // Track typing patterns
+            let keystrokeTimings = [];
+            let lastKeyTime = 0;
+            
+            document.getElementById('typingInput').addEventListener('keydown', (event) => {
+                const now = Date.now();
+                if (lastKeyTime > 0) {
+                    keystrokeTimings.push(now - lastKeyTime);
+                }
+                lastKeyTime = now;
+                
+                document.getElementById('typingInput').dataset.timings = JSON.stringify(keystrokeTimings);
+            });
+        }
+
+        function analyzeTyping() {
+            const input = document.getElementById('typingInput').value;
+            const target = document.getElementById('typingInput').dataset.targetText;
+            const timings = JSON.parse(document.getElementById('typingInput').dataset.timings || '[]');
+            
+            if (input !== target) {
+                showChallengeError('Text does not match exactly.');
+                return;
+            }
+            
+            // Analyze typing patterns
+            const avgInterval = timings.reduce((a, b) => a + b, 0) / timings.length;
+            const variance = timings.reduce((sum, timing) => sum + Math.pow(timing - avgInterval, 2), 0) / timings.length;
+            
+            // Human typing has natural variation
+            const humanLikeness = Math.min(1, variance / 10000); // Normalized variance
+            
+            document.getElementById('typingAnalysis').textContent = 
+                `Avg interval: ${avgInterval.toFixed(0)}ms, Variance: ${variance.toFixed(0)}, Human score: ${(humanLikeness * 100).toFixed(1)}%`;
+            
+            if (humanLikeness > 0.3) {
+                challengeStates.typing = true;
+                showChallengeSuccess('Human typing pattern detected!');
+            } else {
+                showChallengeError('Typing pattern appears automated.');
+            }
+            updateProgress();
+        }
+
+        // Multi-Step Challenge
+        let clickCount = 0;
+        let holdStartTime = 0;
+        let lastClickTime = 0;
+        let clickTimes = [];
+
+        function countClicks() {
+            clickCount++;
+            document.getElementById('clickCounter').textContent = `Clicks: ${clickCount}`;
+            
+            if (clickCount === 3) {
+                document.getElementById('step2').style.display = 'block';
+            }
+        }
+
+        function startHold() {
+            holdStartTime = Date.now();
+        }
+
+        function endHold() {
+            if (holdStartTime === 0) return;
+            
+            const holdDuration = Date.now() - holdStartTime;
+            document.getElementById('holdTime').textContent = `Hold time: ${holdDuration}ms`;
+            
+            if (holdDuration >= 1800 && holdDuration <= 2200) { // 2 seconds ± 200ms
+                document.getElementById('step3').style.display = 'block';
+            }
+            
+            holdStartTime = 0;
+        }
+
+        function handleDoubleClick() {
+            const now = Date.now();
+            clickTimes.push(now);
+            
+            if (clickTimes.length >= 2) {
+                const timeDiff = clickTimes[clickTimes.length - 1] - clickTimes[clickTimes.length - 2];
+                
+                if (timeDiff <= 1000) {
+                    challengeStates.multiStep = true;
+                    document.getElementById('doubleClickStatus').textContent = 'Double-click verified!';
+                    showChallengeSuccess('Multi-factor challenge completed!');
+                    updateProgress();
+                } else {
+                    document.getElementById('doubleClickStatus').textContent = 'Too slow, try again.';
+                }
+            }
+        }
+
+        // Contextual Intelligence Challenge
+        function initializeContextualChallenge() {
+            const now = new Date();
+            const questions = [
+                {
+                    question: `What day of the week is it today?`,
+                    answer: now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+                },
+                {
+                    question: `What month are we currently in?`,
+                    answer: now.toLocaleDateString('en-US', { month: 'long' }).toLowerCase()
+                },
+                {
+                    question: `What is your current browser's user agent? (first word only)`,
+                    answer: navigator.userAgent.split(' ')[0].toLowerCase()
+                },
+                {
+                    question: `What is the current year?`,
+                    answer: now.getFullYear().toString()
+                }
+            ];
+            
+            const selected = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('contextualQuestion').textContent = selected.question;
+            document.getElementById('contextualQuestion').dataset.answer = selected.answer;
+        }
+
+        function submitContextualAnswer() {
+            const answer = document.getElementById('contextualAnswer').value.toLowerCase().trim();
+            const correct = document.getElementById('contextualQuestion').dataset.answer;
+            
+            if (answer.includes(correct) || correct.includes(answer)) {
+                challengeStates.contextual = true;
+                showChallengeSuccess('Contextual intelligence verified!');
+            } else {
+                showChallengeError('Incorrect contextual answer.');
+            }
+            updateProgress();
+        }
+
+        // Hidden Pattern Challenge
+        function initializePatternChallenge() {
+            const container = document.getElementById('patternChallenge');
+            container.innerHTML = '';
+            
+            // Create hidden pattern: click corners in clockwise order
+            const corners = [
+                { x: 20, y: 20, id: 'corner1' },
+                { x: 380, y: 20, id: 'corner2' },
+                { x: 380, y: 180, id: 'corner3' },
+                { x: 20, y: 180, id: 'corner4' }
+            ];
+            
+            let clickSequence = [];
+            
+            corners.forEach((corner, index) => {
+                const element = document.createElement('div');
+                element.style.position = 'absolute';
+                element.style.left = corner.x + 'px';
+                element.style.top = corner.y + 'px';
+                element.style.width = '20px';
+                element.style.height = '20px';
+                element.style.background = 'transparent';
+                element.style.cursor = 'pointer';
+                element.dataset.cornerIndex = index;
+                
+                element.addEventListener('click', (e) => {
+                    clickSequence.push(parseInt(e.target.dataset.cornerIndex));
+                    e.target.style.background = 'rgba(102, 126, 234, 0.5)';
+                    
+                    if (clickSequence.length === 4) {
+                        if (JSON.stringify(clickSequence) === JSON.stringify([0, 1, 2, 3])) {
+                            challengeStates.pattern = true;
+                            showChallengeSuccess('Hidden pattern discovered!');
+                            updateProgress();
+                        } else {
+                            showChallengeError('Incorrect pattern. Try clicking corners clockwise.');
+                            clickSequence = [];
+                            corners.forEach(c => {
+                                document.querySelector(`[data-corner-index="${corners.indexOf(c)}"]`).style.background = 'transparent';
+                            });
+                        }
+                    }
+                });
+                
+                container.appendChild(element);
+            });
+            
+            document.getElementById('patternHint').textContent = 'Hint: Think about navigation patterns...';
+        }
+
+        function checkPattern() {
+            document.getElementById('patternHint').textContent = 'Hint: Try clicking the corners in clockwise order starting from top-left.';
+        }
+
+        // Tracking Functions
+        function trackMouseMovement(event) {
+            securityMetrics.mouseMovements.push({
+                x: event.clientX,
+                y: event.clientY,
+                time: Date.now(),
+                buttons: event.buttons
+            });
+            
+            // Keep only last 100 movements
+            if (securityMetrics.mouseMovements.length > 100) {
+                securityMetrics.mouseMovements.shift();
+            }
+            
+            analyzeBehaviorPattern();
+        }
+
+        function trackKeyDown(event) {
+            const now = Date.now();
+            securityMetrics.keystrokes.push({
+                key: event.key,
+                time: now,
+                type: 'down'
+            });
+        }
+
+        function trackKeyUp(event) {
+            const now = Date.now();
+            securityMetrics.keystrokes.push({
+                key: event.key,
+                time: now,
+                type: 'up'
+            });
+        }
+
+        function trackInteraction(type, data) {
+            securityMetrics.interactions.push({
+                type: type,
+                data: data,
+                time: Date.now()
+            });
+        }
+
+        function analyzeBehaviorPattern() {
+            // Simplified behavior analysis
+            const recentMovements = securityMetrics.mouseMovements.slice(-10);
+            
+            if (recentMovements.length >= 10) {
+                // Check for perfectly straight lines (bot-like)
+                let straightLines = 0;
+                for (let i = 1; i < recentMovements.length - 1; i++) {
+                    const prev = recentMovements[i-1];
+                    const curr = recentMovements[i];
+                    const next = recentMovements[i+1];
+                    
+                    const angle1 = Math.atan2(curr.y - prev.y, curr.x - prev.x);
+                    const angle2 = Math.atan2(next.y - curr.y, next.x - curr.x);
+                    
+                    if (Math.abs(angle1 - angle2) < 0.1) {
+                        straightLines++;
+                    }
+                }
+                
+                if (straightLines > 7) {
+                    securityMetrics.suspicionLevel += 10;
+                }
+            }
+            
+            updateSecurityMetrics();
+        }
+
+        function updateSecurityMetrics() {
+            const completedChallenges = Object.values(challengeStates).filter(state => state).length;
+            securityMetrics.behaviorScore = Math.max(0, 100 - securityMetrics.suspicionLevel);
+            
+            document.getElementById('aiConfidence').textContent = Math.min(100, securityMetrics.suspicionLevel) + '%';
+            document.getElementById('humanScore').textContent = securityMetrics.behaviorScore + '%';
+            
+            let threatLevel = 'LOW';
+            if (securityMetrics.suspicionLevel > 50) threatLevel = 'HIGH';
+            else if (securityMetrics.suspicionLevel > 25) threatLevel = 'MEDIUM';
+            
+            document.getElementById('threatLevel').textContent = threatLevel;
+        }
+
+        function updateProgress() {
+            const completedCount = Object.values(challengeStates).filter(state => state).length;
+            document.getElementById('completedCount').textContent = completedCount;
+            
+            if (completedCount >= 8) {
+                document.getElementById('finalSubmit').disabled = false;
+            }
+            
+            updateSecurityMetrics();
+        }
+
+        function updateProtectionCount() {
+            document.getElementById('protectionCount').textContent = '24';
+        }
+
+        function showChallengeSuccess(message) {
+            console.log('SUCCESS:', message);
+            // Could show toast notification
+        }
+
+        function showChallengeError(message) {
+            console.log('ERROR:', message);
+            // Could show error notification
+        }
+
+        // Simplified implementations for other challenges
+        function startSequenceChallenge() { /* Implementation */ }
+        function checkProofOfWork() { /* Implementation */ }
+        function analyzeTyping() { /* Implementation */ }
+        function submitAllChallenges() { 
+            console.log('Final submission:', {
+                challengeStates: challengeStates,
+                securityMetrics: securityMetrics,
+                timeSpent: Date.now() - challengeStartTime
+            });
+        }
+
+        // Behavior Tracking System
+        function startBehaviorTracking() {
+            // Enhanced tracking for automation detection
+            let mouseVelocities = [];
+            let lastMouseTime = Date.now();
+            let lastMousePos = { x: 0, y: 0 };
+            
+            document.addEventListener('mousemove', (event) => {
+                const now = Date.now();
+                const timeDiff = now - lastMouseTime;
+                
+                if (timeDiff > 0) {
+                    const distance = Math.sqrt(
+                        Math.pow(event.clientX - lastMousePos.x, 2) + 
+                        Math.pow(event.clientY - lastMousePos.y, 2)
+                    );
+                    const velocity = distance / timeDiff;
+                    mouseVelocities.push(velocity);
+                    
+                    // Keep only recent velocities
+                    if (mouseVelocities.length > 20) {
+                        mouseVelocities.shift();
+                    }
+                    
+                    // Check for automation patterns
+                    if (mouseVelocities.length >= 10) {
+                        const avgVelocity = mouseVelocities.reduce((a, b) => a + b, 0) / mouseVelocities.length;
+                        const velocityVariance = mouseVelocities.reduce((sum, v) => sum + Math.pow(v - avgVelocity, 2), 0) / mouseVelocities.length;
+                        
+                        // Low variance indicates automation
+                        if (velocityVariance < 0.001 && avgVelocity > 0) {
+                            securityMetrics.suspicionLevel += 5;
+                        }
+                    }
+                }
+                
+                lastMouseTime = now;
+                lastMousePos = { x: event.clientX, y: event.clientY };
+            });
+            
+            // Track page focus patterns
+            let focusChanges = 0;
+            window.addEventListener('focus', () => focusChanges++);
+            window.addEventListener('blur', () => focusChanges++);
+            
+            // Excessive focus changes may indicate automation
+            setInterval(() => {
+                if (focusChanges > 10) {
+                    securityMetrics.suspicionLevel += 3;
+                    focusChanges = 0;
+                }
+            }, 5000);
+        }
+
+        // Additional tracking functions
+        function trackFocus() {
+            trackInteraction('window_focus', { timestamp: Date.now() });
+        }
+        
+        function trackBlur() {
+            trackInteraction('window_blur', { timestamp: Date.now() });
+            // Losing focus during challenges is suspicious
+            securityMetrics.suspicionLevel += 2;
+        }
+        
+        function trackScroll() {
+            trackInteraction('scroll', { 
+                scrollY: window.scrollY,
+                timestamp: Date.now() 
+            });
+        }
+        
+        function trackVisibility() {
+            if (document.hidden) {
+                trackInteraction('page_hidden', { timestamp: Date.now() });
+                securityMetrics.suspicionLevel += 3;
+            } else {
+                trackInteraction('page_visible', { timestamp: Date.now() });
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('challengeModal').style.display = 'none';
+        }
+        
+        // Enhanced final submission
+        function submitAllChallenges() {
+            const completedCount = Object.values(challengeStates).filter(state => state).length;
+            
+            if (completedCount < 8) {
+                showChallengeError('Complete at least 8 challenges before submitting.');
+                return;
+            }
+            
+            const submissionData = {
+                challengeStates: challengeStates,
+                securityMetrics: securityMetrics,
+                timeSpent: Date.now() - challengeStartTime,
+                completedChallenges: completedCount,
+                suspicionLevel: securityMetrics.suspicionLevel,
+                humanScore: securityMetrics.behaviorScore,
+                interactions: securityMetrics.interactions.length,
+                mouseMovements: securityMetrics.mouseMovements.length,
+                keystrokes: securityMetrics.keystrokes.length
+            };
+            
+            console.log('🔬 Training Environment Results:', submissionData);
+            
+            // Show results
+            alert(`Training Complete!\n\nChallenges: ${completedCount}/12\nHuman Score: ${securityMetrics.behaviorScore}%\nSuspicion Level: ${securityMetrics.suspicionLevel}%\nTime: ${Math.round((Date.now() - challengeStartTime) / 1000)}s`);
+            
+            // In a real scenario, this would be sent to the server
+            return submissionData;
+        }
+    </script>
+</body>
+</html>

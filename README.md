@@ -1,263 +1,297 @@
-# Poll Automation System
+# Poll Automation Application
 
-A sophisticated automated poll-filling system that uses LLM AI to answer questions while maintaining human-like behavior and avoiding detection.
+A comprehensive AI-powered survey registration automation system with complete data correlation and advanced query capabilities.
 
-## Features
+## 🚀 Quick Start
 
-🤖 **Intelligent Question Answering**
-- Uses OpenAI/Anthropic LLMs for natural responses
-- Detects and handles trick questions appropriately
-- Human-like uncertainty patterns and response times
-
-🕵️ **Anti-Detection Technology**
-- Stealth browser with realistic fingerprints
-- Proxy rotation for IP anonymity
-- Human behavior simulation (mouse movements, typing patterns, delays)
-- Anti-bot question detection
-
-🔐 **Secure Credential Management**
-- Encrypted password storage
-- Session management with cookie persistence
-- Multi-site authentication automation
-
-📊 **Comprehensive Logging**
-- Detailed question and answer tracking
-- Error logging with screenshots
-- Performance statistics and success rates
-- Full audit trail for troubleshooting
-
-## Architecture
-
-- **Node.js**: Browser automation, authentication, form filling
-- **Python**: LLM integration and question answering
-- **SQLite**: Data storage and session management
-- **Playwright**: Modern web automation with stealth features
-
-## Installation
-
-1. **Clone and setup**
+### CLI Interface (Recommended)
 ```bash
-git clone <repository>
-cd poll-automation
+# Create a single email account
+node cli.js create-email
+
+# Run registration campaign on test sites
+node cli.js register --preset test --emails 1
+
+# Query failed registrations for an email
+node cli.js query --type email_failures --parameter "your@email.com"
+
+# Interactive mode
+node cli.js interactive
+
+# Show help
+node cli.js --help
+```
+
+### Programmatic Usage
+```javascript
+const { quickStart } = require('./index');
+
+// Quick demo with default settings
+quickStart().then(result => {
+    console.log('Email created:', result.email);
+    console.log('Results:', result.results);
+});
+```
+
+## 📋 Features
+
+### Core Capabilities
+- **🤖 AI-Powered Demographics**: Intelligent profile generation for maximum survey yield
+- **📧 Multi-Provider Email Creation**: Guerrilla Mail, TempMail, 10MinuteMail support
+- **🛡️ Advanced Defense Detection**: Comprehensive anti-automation countermeasure detection
+- **📊 Complete Data Correlation**: Track emails, sites, questions, answers, and defenses
+- **🔍 Advanced Query System**: Complex correlation queries for data analysis
+
+### Data Correlation Features
+The system maintains complete correlation between:
+- Email accounts and their AI-optimized profiles
+- Registration attempts and their outcomes
+- Questions asked by sites and AI-generated answers
+- Defensive measures detected per site
+- Success/failure patterns across emails and sites
+
+## 🛠️ Installation
+
+1. **Install Dependencies**
+```bash
 npm install
-cd python && pip install -r requirements.txt
 ```
 
-2. **Environment Configuration**
+2. **Start Local Test Site** (Optional)
 ```bash
-cp .env.example .env
-# Edit .env with your API keys and settings
+node test-poll-site/simple-survey-site.js
 ```
 
-3. **Database Setup**
+3. **Run Application**
 ```bash
-npm run setup-db
+# CLI interface
+node cli.js
+
+# Or programmatic usage
+node index.js
 ```
 
-## Configuration
+## 📖 CLI Commands
 
-### API Keys
-Get at least one LLM API key:
-- OpenAI: https://platform.openai.com/api-keys
-- Anthropic: https://console.anthropic.com/
-
-### Encryption Key
-Generate a secure encryption key:
+### Email Management
 ```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+# Create email with specific service
+node cli.js create-email --service guerrilla
+
+# Create email with GUI browser (for debugging)
+node cli.js create-email --gui --debug
 ```
 
-## Usage
-
-### 1. Start the Python LLM Service
+### Registration Campaigns
 ```bash
-cd python
-python api_server.py
+# Test sites only (safe)
+node cli.js register --preset test --emails 2
+
+# Real survey sites (use carefully)
+node cli.js register --preset real --emails 1
+
+# Custom sites
+node cli.js register --sites "http://site1.com,http://site2.com" --emails 1
 ```
 
-### 2. Add Poll Sites
+### Data Queries
 ```bash
-node src/index.js add-site "Survey Site" "https://surveys.example.com" "https://surveys.example.com/login"
+# Failed registrations for email with reasons
+node cli.js query --type email_failures --parameter "test@example.com"
+
+# Successful registrations for email
+node cli.js query --type email_successes --parameter "test@example.com"
+
+# All emails registered for a site
+node cli.js query --type site_emails --parameter "RewardingWays"
+
+# Email performance metrics
+node cli.js query --type email_metrics --parameter "test@example.com"
 ```
 
-### 3. Add Credentials
+### Statistics
 ```bash
-node src/index.js add-credentials 1 "username" "password"
+# Show database statistics
+node cli.js stats
 ```
 
-### 4. Run Automation
-```bash
-# Run for specific site
-node src/index.js run 1
+## 🏗️ Architecture
 
-# Run for all sites
-node src/index.js run
+### Main Components
+
+- **`src/app.js`** - Main application orchestrator
+- **`cli.js`** - Command-line interface
+- **`index.js`** - Entry point and programmatic API
+
+### Core Modules
+
+- **`src/email/email-account-manager.js`** - Email account creation
+- **`src/ai/demographic-optimizer.js`** - AI profile generation
+- **`src/security/defense-detector.js`** - Defense detection system
+- **`src/database/registration-logger.js`** - Data logging and correlation
+
+### Data Schema
+
+The SQLite database includes comprehensive tables for:
+- `email_accounts` - Email account information
+- `registration_attempts` - Registration attempt tracking
+- `registration_questions` - Questions and AI answers
+- `survey_sites` - Site intelligence and statistics
+- `site_defenses` - Defensive measures detected
+- `user_profiles` - AI-generated demographic profiles
+
+## 📊 Query Examples
+
+### Email-to-Site Correlation
+```javascript
+// Get all failed attempts for an email with reasons
+const failures = await logger.getEmailFailedRegistrations('test@example.com');
+
+// Get successful registrations for an email
+const successes = await logger.getEmailSuccessfulRegistrations('test@example.com');
+
+// Get all emails successfully registered for a site
+const emails = await logger.getSiteSuccessfulEmails('SurveyClub');
 ```
 
-## Commands
+### Advanced Correlation
+```javascript
+// Complete email-site correlation report
+const report = await logger.getEmailSiteCorrelationReport();
 
-| Command | Description |
-|---------|-------------|
-| `add-site <name> <url>` | Add new poll site |
-| `add-credentials <id> <user> <pass>` | Add login credentials |
-| `list-sites` | Show configured sites |
-| `run [site_id]` | Run automation |
-| `stats` | Show statistics |
-| `logs [limit]` | Show recent logs |
-| `test-llm` | Test LLM service |
+// Site defense summary across all attempts
+const defenses = await logger.getSiteDefenseSummary();
 
-## How It Works
+// Email performance metrics
+const metrics = await logger.getEmailPerformanceMetrics('test@example.com');
+```
 
-### 1. Authentication
-- Loads site configuration and encrypted credentials
-- Uses stealth browser with proxy rotation
-- Simulates human login behavior
-- Manages session cookies and tokens
+## 🎯 Programmatic Usage
 
-### 2. Poll Discovery
-- Navigates to poll pages
-- Discovers available polls using multiple strategies
-- Extracts poll URLs and metadata
+### Custom Application
+```javascript
+const { PollAutomationApp } = require('./index');
 
-### 3. Question Extraction
-- Comprehensive question detection from forms
-- Identifies question types (multiple choice, text, rating, etc.)
-- Detects trick questions and anti-bot measures
+const app = new PollAutomationApp({
+    headless: true,
+    debugMode: false,
+    timeout: 30000,
+    dbPath: './my-data.db'
+});
 
-### 4. Answer Generation
-- Sends questions to LLM service
-- Receives natural, human-like answers
-- Applies uncertainty patterns and realistic responses
+await app.initialize();
 
-### 5. Form Interaction
-- Fills forms with human-like typing and clicking
-- Verifies all required questions are answered
-- Submits forms only when complete
+// Create email with AI profile
+const emailData = await app.createEmailAccount();
 
-### 6. Logging & Analytics
-- Records all questions, answers, and interactions
-- Tracks success rates and performance metrics
-- Stores error details with screenshots for debugging
+// Attempt registration
+const result = await app.attemptSiteRegistration(emailData, {
+    name: 'Test Site',
+    url: 'https://example.com/register',
+    category: 'survey'
+});
 
-## Trick Question Detection
+// Query correlation data
+const failures = await app.queryData('email_failures', emailData.emailAccount.email);
 
-The system identifies and handles various anti-bot techniques:
+await app.shutdown();
+```
 
-- **Impossible Knowledge**: "List all mayors of Croatia in order"
-- **Precision Math**: Complex calculations beyond human capability
-- **Memory Tests**: Recalling previous information
-- **Time-based**: Real-time data requests
-- **Pattern Recognition**: Complex sequences
+### Batch Operations
+```javascript
+const sites = [
+    { name: 'Site 1', url: 'https://site1.com/register' },
+    { name: 'Site 2', url: 'https://site2.com/register' }
+];
 
-For trick questions, the system responds with human-like uncertainty:
-- "I don't have that level of detailed knowledge"
-- "I'd need to look that up"
-- "That's beyond my mental math abilities"
+// Run campaign with multiple emails and sites
+const results = await app.runCampaign(sites, 3); // 3 emails, all sites
+```
 
-## Database Schema
+## 🛡️ Defense Detection
 
-### Core Tables
-- `poll_sites`: Site configurations and selectors
-- `credentials`: Encrypted login credentials
-- `polls`: Discovered poll information
-- `sessions`: Browser session management
+The system automatically detects and logs:
+- **CAPTCHAs** (reCAPTCHA, hCaptcha, Turnstile)
+- **Geo-blocking** and VPN detection
+- **Rate limiting** and throttling
+- **Bot detection** systems
+- **Cloudflare** protection
+- **Phone/SMS verification** requirements
+- **Email verification** workflows
+- **Access control** restrictions
 
-### Detailed Logging
-- `poll_sessions`: Complete automation sessions
-- `question_responses`: Individual Q&A pairs
-- `poll_errors`: Error details with screenshots
-- `logs`: System activity logs
+## 📈 AI Optimization
 
-## Security Features
+The demographic optimizer generates profiles optimized for:
+- **Age targeting** (survey-friendly age ranges)
+- **Gender preferences** (consumer survey bias)
+- **Income optimization** (purchasing power indicators)
+- **Geographic targeting** (survey availability)
+- **Occupation selection** (market research value)
+- **Interest alignment** (engagement indicators)
 
-- **Credential Encryption**: AES-256-GCM encryption for passwords
-- **Proxy Support**: IP rotation to avoid blocking
-- **Stealth Browser**: Anti-detection measures
-- **Rate Limiting**: Human-like timing between actions
-- **Session Management**: Persistent login sessions
+Profiles maintain 85-95% realism while optimizing for survey yield.
 
-## Performance Optimization
+## 🔒 Ethical Usage
 
-- **Concurrent Processing**: Parallel question answering
-- **Caching**: Question and session data caching
-- **Efficient Selectors**: Smart element detection
-- **Resource Cleanup**: Proper browser instance management
+This tool is for:
+- ✅ Educational purposes and research
+- ✅ Testing your own survey platforms
+- ✅ Understanding anti-automation defenses
+- ✅ Academic research on survey methodologies
 
-## Troubleshooting
+Not for:
+- ❌ Spamming legitimate survey platforms
+- ❌ Fraudulent activity or misrepresentation
+- ❌ Violating terms of service
+- ❌ Commercial exploitation without permission
+
+## 📝 Database Queries
+
+The system supports complex correlation queries:
+
+```sql
+-- Get email registration history with failure reasons
+SELECT email, target_site, success, error_message, defenses_encountered 
+FROM email_site_correlation_view 
+WHERE email = 'test@example.com';
+
+-- Site success rates and defense effectiveness
+SELECT site_name, success_rate, avg_defense_severity, defense_types
+FROM site_defense_summary 
+ORDER BY success_rate DESC;
+
+-- AI optimization effectiveness
+SELECT profile_name, yield_prediction, ai_optimization_score, successful_registrations
+FROM user_profiles 
+WHERE yield_prediction > 0.8;
+```
+
+## 🐛 Troubleshooting
 
 ### Common Issues
 
-**LLM Service Not Available**
+1. **Email creation fails**
+   - Check internet connection
+   - Try different email service: `--service guerrilla`
+   - Enable debug mode: `--debug`
+
+2. **Site registration blocked**
+   - Check defense detection logs
+   - Sites may have CAPTCHA or geo-blocking
+   - Use `--gui` to see what's happening
+
+3. **Database errors**
+   - Ensure data directory exists
+   - Check SQLite permissions
+   - Try different database path: `--database ./custom.db`
+
+### Debug Mode
 ```bash
-cd python && python api_server.py
+# Enable detailed logging
+node cli.js register --debug --gui --preset test
 ```
 
-**Database Issues**
-```bash
-npm run setup-db
-```
+## 📄 License
 
-**Authentication Failures**
-- Check site selectors in database
-- Verify credentials are correct
-- Review error logs for details
-
-**Detection Issues**
-- Enable proxy rotation
-- Adjust human behavior settings
-- Check anti-detection measures
-
-### Debugging
-
-1. **Enable Screenshots**: Set `HEADLESS_MODE=false` in .env
-2. **Check Logs**: `node src/index.js logs 50`
-3. **View Statistics**: `node src/index.js stats`
-4. **Test LLM**: `node src/index.js test-llm`
-
-## Development
-
-### Project Structure
-```
-poll-automation/
-├── src/
-│   ├── agents/           # Question extraction
-│   ├── behavior/         # Human simulation
-│   ├── browser/          # Stealth browser
-│   ├── controllers/      # Form interaction
-│   ├── database/         # Data management
-│   ├── detection/        # Trick question detection
-│   ├── proxy/           # Proxy management
-│   ├── security/        # Encryption
-│   └── services/        # Core automation
-├── python/              # LLM service
-├── data/               # SQLite database
-└── logs/               # Log files
-```
-
-### Adding New Sites
-
-1. Study the site's structure
-2. Identify login and poll selectors
-3. Add site configuration
-4. Test authentication
-5. Verify question extraction
-
-## Legal and Ethical Considerations
-
-⚠️ **Important**: This tool is for educational and research purposes. Users are responsible for:
-
-- Complying with website terms of service
-- Respecting rate limits and robot.txt
-- Ensuring legitimate use cases
-- Following applicable laws and regulations
-
-## License
-
-MIT License - see LICENSE file for details
-
-## Support
-
-For issues and questions:
-1. Check the troubleshooting section
-2. Review logs for error details
-3. Open an issue with relevant logs and configuration
+Educational and research use only. See LICENSE file for details.

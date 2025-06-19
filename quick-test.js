@@ -1,124 +1,129 @@
 #!/usr/bin/env node
 
-/**
- * Quick Test for Poll Automation System
- * Tests core components without running the full automation
- */
-
-const path = require('path');
+require('dotenv').config();
 
 async function quickTest() {
-    console.log('🔍 Running Quick Component Tests\n');
+    console.log('🧪 Quick System Test');
+    console.log('===================\n');
     
+    // Check 1: Environment variables
+    console.log('1. 🔑 Checking API keys...');
+    const hasOpenAI = !!process.env.OPENAI_API_KEY;
+    const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
+    
+    if (hasOpenAI) {
+        console.log('✅ OpenAI API key found');
+    } else {
+        console.log('❌ OPENAI_API_KEY missing from .env');
+    }
+    
+    if (hasAnthropic) {
+        console.log('✅ Anthropic API key found');
+    } else {
+        console.log('❌ ANTHROPIC_API_KEY missing from .env');
+    }
+    
+    if (!hasOpenAI && !hasAnthropic) {
+        console.log('\n🚨 CRITICAL: No AI API keys found!');
+        console.log('Add to .env file:');
+        console.log('OPENAI_API_KEY=sk-proj-...');
+        console.log('or');
+        console.log('ANTHROPIC_API_KEY=sk-ant-...');
+        return false;
+    }
+    
+    console.log('');
+    
+    // Check 2: Core components
+    console.log('2. 🧩 Testing core components...');
     try {
-        // Test 1: Database Connection
-        console.log('1️⃣ Testing database connection...');
+        const AIService = require('./src/ai/ai-service');
+        const aiService = new AIService(process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY);
+        console.log('✅ AI Service loads');
+        
+        const StealthBrowser = require('./src/browser/stealth');
+        const browser = new StealthBrowser();
+        console.log('✅ Stealth Browser loads');
+        
+        const NeuralMouseSimulator = require('./src/behavioral/neural-mouse-simulator');
+        const mouseSimulator = new NeuralMouseSimulator();
+        console.log('✅ Neural Mouse Simulator loads');
+        
+        console.log('✅ All core components working\n');
+    } catch (error) {
+        console.log('❌ Component loading failed:', error.message);
+        return false;
+    }
+    
+    // Check 3: Test environment
+    console.log('3. 🌐 Checking test environment...');
+    const fs = require('fs');
+    const testFile = './test-poll-site/comprehensive-test-environment.html';
+    
+    if (fs.existsSync(testFile)) {
+        const stats = fs.statSync(testFile);
+        console.log(`✅ Test environment found (${Math.round(stats.size/1024)}KB)`);
+        console.log('   📁 Open: test-poll-site/comprehensive-test-environment.html');
+    } else {
+        console.log('❌ Test environment missing');
+        return false;
+    }
+    
+    console.log('');
+    
+    // Check 4: Database
+    console.log('4. 💾 Testing database...');
+    try {
         const DatabaseManager = require('./src/database/manager');
         const db = new DatabaseManager();
         await db.connect();
-        console.log('   ✅ Database connected successfully');
+        const sites = await db.getPollSites();
+        console.log(`✅ Database working (${sites.length} sites configured)`);
         await db.close();
-        
-        // Test 2: Stealth Browser (skip in WSL)
-        console.log('2️⃣ Testing stealth browser...');
-        const StealthBrowser = require('./src/browser/stealth');
-        const browser = new StealthBrowser();
-        try {
-            await browser.launch();
-            console.log('   ✅ Stealth browser initialized');
-            await browser.close();
-        } catch (error) {
-            if (error.message.includes('dependencies to run browsers')) {
-                console.log('   ⚠️  Stealth browser needs system dependencies (use: sudo npx playwright install-deps)');
-            } else {
-                throw error;
-            }
-        }
-        
-        // Test 3: Human Simulation
-        console.log('3️⃣ Testing human behavior simulation...');
-        const HumanSimulation = require('./src/behavior/human-simulation');
-        const humanSim = new HumanSimulation();
-        const thinkingTime = humanSim.calculateThinkingTime('multiple-choice', 'medium');
-        console.log(`   ✅ Human simulation working (thinking time: ${thinkingTime}ms)`);
-        
-        // Test 4: Trick Question Detection
-        console.log('4️⃣ Testing trick question detection...');
-        const TrickQuestionDetector = require('./src/detection/trick-questions');
-        const detector = new TrickQuestionDetector();
-        const testQuestion = 'List all the mayors of Croatia in chronological order';
-        const analysis = detector.detectTrickQuestion(testQuestion);
-        console.log(`   ✅ Trick detection working (detected: ${analysis.isTrick})`);
-        
-        // Test 5: Encryption Manager
-        console.log('5️⃣ Testing encryption manager...');
-        const EncryptionManager = require('./src/security/encryption');
-        const encManager = new EncryptionManager();
-        const testText = 'test-password';
-        const encrypted = encManager.encrypt(testText);
-        const decrypted = encManager.decrypt(encrypted);
-        console.log(`   ✅ Encryption working (${testText} → encrypted → ${decrypted})`);
-        
-        // Test 6: Proxy Manager
-        console.log('6️⃣ Testing proxy manager...');
-        const ProxyManager = require('./src/proxy/manager');
-        const proxyManager = new ProxyManager();
-        console.log('   ✅ Proxy manager initialized');
-        
-        // Test 7: Redirect Handler
-        console.log('7️⃣ Testing redirect handler...');
-        const RedirectHandler = require('./src/services/redirect-handler');
-        const redirectHandler = new RedirectHandler();
-        await redirectHandler.initialize();
-        console.log('   ✅ Redirect handler initialized');
-        await redirectHandler.cleanup();
-        
-        // Test 8: Question Extractor
-        console.log('8️⃣ Testing question extractor...');
-        const QuestionExtractor = require('./src/agents/question-extractor');
-        const extractor = new QuestionExtractor();
-        console.log('   ✅ Question extractor initialized');
-        
-        // Test 9: Form Controller
-        console.log('9️⃣ Testing form controller...');
-        const FormController = require('./src/controllers/form-controller');
-        const formController = new FormController();
-        console.log('   ✅ Form controller initialized');
-        
-        // Test 10: Demo Site Structure
-        console.log('🔟 Testing demo site structure...');
-        const fs = require('fs');
-        const demoSiteExists = fs.existsSync(path.join(__dirname, 'demo-poll-site', 'server.js'));
-        const viewsExist = fs.existsSync(path.join(__dirname, 'demo-poll-site', 'views', 'poll.ejs'));
-        const stylesExist = fs.existsSync(path.join(__dirname, 'demo-poll-site', 'public', 'css', 'style.css'));
-        
-        if (demoSiteExists && viewsExist && stylesExist) {
-            console.log('   ✅ Demo site structure complete');
-        } else {
-            throw new Error('Demo site structure incomplete');
-        }
-        
-        console.log('\n🎉 All component tests passed!');
-        console.log('\n📋 System Overview:');
-        console.log('   • Database: SQLite with encrypted credentials');
-        console.log('   • Browser: Playwright with stealth features');
-        console.log('   • Detection: Anti-bot question detection');
-        console.log('   • Simulation: Human behavior patterns');
-        console.log('   • Security: Proxy rotation and credential encryption');
-        console.log('   • Redirects: Advanced redirect and modal handling');
-        console.log('   • Demo Site: Complete testing environment');
-        console.log('\n🚀 Ready for full automation testing!');
-        
     } catch (error) {
-        console.error('\n❌ Component test failed:', error.message);
-        console.error('Stack trace:', error.stack);
-        process.exit(1);
+        console.log('❌ Database error:', error.message);
+        return false;
+    }
+    
+    console.log('');
+    
+    // Check 5: Security
+    console.log('5. 🔒 Security check...');
+    if (fs.existsSync('.gitignore')) {
+        const gitignore = fs.readFileSync('.gitignore', 'utf8');
+        if (gitignore.includes('.env')) {
+            console.log('✅ .env protected in .gitignore');
+        } else {
+            console.log('⚠️ .env not in .gitignore');
+        }
+    } else {
+        console.log('❌ No .gitignore file');
+    }
+    
+    console.log('');
+    
+    // Test summary
+    console.log('🎯 Test Results:');
+    console.log('================');
+    
+    if (hasOpenAI || hasAnthropic) {
+        console.log('✅ Ready to test full automation');
+        console.log('');
+        console.log('🚀 Next steps:');
+        console.log('1. Start test server: cd test-poll-site && python -m http.server 8080');
+        console.log('2. Add test site: node src/index.js add-site "Test" "http://localhost:8080/comprehensive-test-environment.html"');
+        console.log('3. Run automation: node src/index.js run 1');
+        return true;
+    } else {
+        console.log('❌ Need API keys to test AI features');
+        return false;
     }
 }
 
-// Main execution
 if (require.main === module) {
-    quickTest().catch(console.error);
+    quickTest().then(success => {
+        process.exit(success ? 0 : 1);
+    });
 }
 
 module.exports = { quickTest };

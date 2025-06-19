@@ -1,20 +1,22 @@
 #!/usr/bin/env node
 
-const PollAutomationService = require('./services/poll-automation');
+const EnhancedPollAutomationService = require('./services/enhanced-poll-automation');
 const DatabaseManager = require('./database/manager');
 const { setupDatabase } = require('./database/setup');
 require('dotenv').config();
 
 class PollAutomationCLI {
   constructor() {
-    this.automationService = new PollAutomationService();
+    this.automationService = new EnhancedPollAutomationService();
     this.db = new DatabaseManager();
   }
 
   async initialize() {
     try {
-      console.log('🚀 Poll Automation System v1.0.0');
-      console.log('=====================================\n');
+      console.log('🚀 Enhanced Poll Automation System v2.0.0');
+      console.log('==========================================');
+      console.log('🧠 AI-Powered • 🎭 Neural Behavior • 🛡️ Anti-Detection');
+      console.log('🧩 Challenge Solving • 🌐 Proxy Rotation • 🎯 Multi-Tab\n');
       
       // Setup database if needed
       await setupDatabase();
@@ -150,22 +152,38 @@ class PollAutomationCLI {
 
   async showStats() {
     const stats = await this.db.getStats();
-    const automationStats = this.automationService.getStats();
+    const enhancedStats = this.automationService.getEnhancedStats();
     
-    console.log('📊 System Statistics:');
-    console.log('====================');
+    console.log('📊 Enhanced System Statistics:');
+    console.log('==============================');
     console.log(`Total Sites: ${stats.totalSites}`);
     console.log(`Total Polls: ${stats.totalPolls}`);
     console.log(`Completed Polls: ${stats.completedPolls}`);
     console.log(`Failed Polls: ${stats.failedPolls}`);
     console.log(`Active Sessions: ${stats.activeSessions}`);
     console.log('');
-    console.log('📈 Runtime Statistics:');
-    console.log(`Success Rate: ${automationStats.successRate}%`);
-    console.log(`Questions Answered: ${automationStats.questionsAnswered}`);
-    console.log(`Trick Questions Detected: ${automationStats.trickQuestionsDetected}`);
-    console.log(`Average Questions per Poll: ${automationStats.avgQuestionsPerPoll}`);
-    console.log(`Total Runtime: ${Math.round(automationStats.totalRuntime / 1000)}s`);
+    console.log('🎭 Advanced Features:');
+    console.log(`Success Rate: ${enhancedStats.successRate}%`);
+    console.log(`Questions Answered: ${enhancedStats.questionsAnswered}`);
+    console.log(`Challenges Solved: ${enhancedStats.challengesSolved}`);
+    console.log(`CAPTCHAs Solved: ${enhancedStats.captchasSolved}`);
+    console.log(`Attention Checks Passed: ${enhancedStats.attentionChecksPassed}`);
+    console.log(`Trick Questions Detected: ${enhancedStats.trickQuestionsDetected}`);
+    console.log(`Proxy Rotations: ${enhancedStats.proxyRotations}`);
+    console.log(`Multi-Tab Sessions: ${enhancedStats.multiTabSessions}`);
+    console.log('');
+    console.log('🧠 AI Performance:');
+    console.log(`Total AI Cost: $${enhancedStats.aiCostTotal.toFixed(4)}`);
+    console.log(`AI Calls: ${enhancedStats.aiCallsTotal}`);
+    console.log(`Cost per Poll: $${enhancedStats.costPerPoll}`);
+    console.log(`AI Calls per Poll: ${enhancedStats.systemEfficiency.aiCallsPerPoll}`);
+    console.log('');
+    console.log('⚡ Performance:');
+    console.log(`Average Questions per Poll: ${enhancedStats.avgQuestionsPerPoll}`);
+    console.log(`Average Challenges per Poll: ${enhancedStats.avgChallengesPerPoll}`);
+    console.log(`Average Session Time: ${enhancedStats.systemEfficiency.avgSessionTime}s`);
+    console.log(`Detection Avoidance Rate: ${(enhancedStats.detectionAvoidanceRate * 100).toFixed(1)}%`);
+    console.log(`Total Runtime: ${Math.round(enhancedStats.totalRuntime / 1000)}s`);
   }
 
   async showLogs(args) {
@@ -218,14 +236,23 @@ class PollAutomationCLI {
   }
 
   displayResult(result) {
-    console.log('\n📈 Automation Results:');
-    console.log('======================');
+    console.log('\n📈 Enhanced Automation Results:');
+    console.log('===============================');
     
     if (result.success) {
       console.log(`✅ Site automation completed successfully`);
       console.log(`Total polls: ${result.totalPolls}`);
       console.log(`Completed: ${result.results.filter(r => r.success).length}`);
       console.log(`Failed: ${result.results.filter(r => !r.success).length}`);
+      
+      if (result.enhancedStats) {
+        console.log('\n🎭 Advanced Features Performance:');
+        console.log(`   Challenges Solved: ${result.enhancedStats.challengesSolved}`);
+        console.log(`   CAPTCHAs Solved: ${result.enhancedStats.captchasSolved}`);
+        console.log(`   Attention Checks: ${result.enhancedStats.attentionChecksPassed}`);
+        console.log(`   AI Cost: $${result.enhancedStats.aiCostTotal.toFixed(4)}`);
+        console.log(`   Behavior Score: ${(result.enhancedStats.detectionAvoidanceRate * 100).toFixed(1)}%`);
+      }
       
       if (result.results.length > 0) {
         console.log('\nPoll Details:');
@@ -235,14 +262,26 @@ class PollAutomationCLI {
           if (pollResult.questionsAnswered) {
             console.log(`     Questions: ${pollResult.questionsAnswered}`);
           }
-          if (pollResult.completionTime) {
-            console.log(`     Time: ${pollResult.completionTime}s`);
+          if (pollResult.challengesSolved) {
+            console.log(`     Challenges: ${pollResult.challengesSolved}`);
+          }
+          if (pollResult.behaviorScore) {
+            console.log(`     Behavior: ${(pollResult.behaviorScore * 100).toFixed(1)}%`);
+          }
+          if (pollResult.duration) {
+            console.log(`     Time: ${Math.round(pollResult.duration / 1000)}s`);
           }
           if (pollResult.error) {
             console.log(`     Error: ${pollResult.error}`);
           }
         }
       }
+      
+      if (result.recommendations && result.recommendations.length > 0) {
+        console.log('\n💡 Recommendations:');
+        result.recommendations.forEach(rec => console.log(`   • ${rec}`));
+      }
+      
     } else {
       console.log(`❌ Site automation failed: ${result.error}`);
     }
@@ -277,18 +316,28 @@ class PollAutomationCLI {
   }
 
   showHelp() {
-    console.log('📖 Poll Automation System - Help');
-    console.log('================================\n');
+    console.log('📖 Enhanced Poll Automation System - Help');
+    console.log('==========================================');
+    console.log('🧠 AI-Powered • 🎭 Neural Behavior • 🛡️ Anti-Detection\n');
     
     console.log('Commands:');
-    console.log('  run [site_id]           - Run automation (all sites if no ID)');
+    console.log('  run [site_id]           - Run enhanced automation (all sites if no ID)');
     console.log('  add-site <name> <url>   - Add new poll site');
     console.log('  add-credentials <id>    - Add login credentials for site');
     console.log('  list-sites              - List all configured sites');
-    console.log('  stats                   - Show system statistics');
+    console.log('  stats                   - Show enhanced system statistics');
     console.log('  logs [limit]            - Show recent logs');
     console.log('  test-llm                - Test LLM service connection');
     console.log('  help                    - Show this help message\n');
+    
+    console.log('🎭 Enhanced Features:');
+    console.log('  • Neural Mouse Movement - Human-like cursor patterns');
+    console.log('  • Advanced Keystroke Dynamics - Realistic typing behavior');
+    console.log('  • Multi-Tier AI Decision Making - GPT-4V + GPT-3.5 optimization');
+    console.log('  • Comprehensive Challenge Solving - CAPTCHA, attention checks');
+    console.log('  • Intelligent Proxy Rotation - Geolocation matching');
+    console.log('  • Multi-Tab Coordination - Parallel poll processing');
+    console.log('  • Behavioral Pattern Learning - Continuous improvement\n');
     
     console.log('Examples:');
     console.log('  node src/index.js add-site "Survey Site" "https://surveys.com"');

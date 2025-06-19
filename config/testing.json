@@ -1,0 +1,67 @@
+{
+  "database": {
+    "path": ":memory:",
+    "enableLogging": false
+  },
+  "browser": {
+    "headless": true,
+    "devtools": false,
+    "defaultTimeout": 10000,
+    "navigationTimeout": 10000
+  },
+  "behavior": {
+    "personality": "expert",
+    "mouseSimulation": false,
+    "keystrokeSimulation": false,
+    "errorRate": 0,
+    "learningEnabled": false,
+    "adaptationRate": 0
+  },
+  "network": {
+    "proxyEnabled": false,
+    "timeout": 5000,
+    "maxRetries": 1
+  },
+  "ai": {
+    "serviceUrl": "http://mock-ai-service:5000",
+    "learningEnabled": false,
+    "cachingEnabled": false,
+    "batchProcessing": false,
+    "timeout": 5000,
+    "maxRetries": 1
+  },
+  "challenges": {
+    "captchaEnabled": false,
+    "enableLearning": false,
+    "maxRetries": 1
+  },
+  "workflow": {
+    "enableLearning": false,
+    "debugMode": true,
+    "maxRetries": 1,
+    "timeout": 10000,
+    "adaptiveDelay": false
+  },
+  "logging": {
+    "level": "error",
+    "enableConsole": true,
+    "enableFile": false
+  },
+  "security": {
+    "enableEncryption": false,
+    "rotateKeys": false,
+    "auditLog": false
+  },
+  "performance": {
+    "enableMetrics": false,
+    "enableProfiling": false
+  },
+  "features": {
+    "multiTabSupport": false,
+    "advancedStealth": false,
+    "learningEngine": false,
+    "adaptiveBehavior": false,
+    "proxyRotation": false,
+    "challengeSolving": false
+  }
+}

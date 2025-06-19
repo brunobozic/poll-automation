@@ -151,7 +151,7 @@ const insertSampleData = () => {
         '#password',
         'button[type="submit"]',
         'https://example-polls.com/polls',
-        '{"poll_links": "a[href*=\"/poll/\"]", "questions": ".question", "options": ".option input"}'
+        '{"poll_links": "a[href*=\\"/poll/\\"]", "questions": ".question", "options": ".option input"}'
       );
     `;
 
