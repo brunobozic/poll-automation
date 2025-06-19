@@ -1,0 +1,2779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔬 Ultimate Anti-Bot Testing Environment - Comprehensive Poll Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .master-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .platform-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+            to { box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4); }
+        }
+
+        .multi-questionnaire-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .questionnaire-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .questionnaire-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .questionnaire-card.active {
+            border-color: #28a745;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        }
+
+        .questionnaire-card.completed {
+            border-color: #28a745;
+            background: linear-gradient(145deg, #d4edda, #c3e6cb);
+        }
+
+        .questionnaire-card.error {
+            border-color: #dc3545;
+            background: linear-gradient(145deg, #f8d7da, #f1aeb5);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .card-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending { background: #ffc107; color: #212529; }
+        .status-active { background: #17a2b8; color: white; }
+        .status-completed { background: #28a745; color: white; }
+        .status-error { background: #dc3545; color: white; }
+
+        .question-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .question-container:hover {
+            background: #e9ecef;
+        }
+
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #495057;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .option-item:hover {
+            background-color: #e3f2fd;
+        }
+
+        .option-item input {
+            margin-right: 10px;
+            transform: scale(1.1);
+        }
+
+        .action-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .tab-spawner {
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .challenge-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .challenge-modal {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .captcha-image {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 24px;
+        }
+
+        .captcha-image:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .captcha-image.selected {
+            border-color: #28a745;
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+        }
+
+        .attention-media {
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #333, #555);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .video-container:hover {
+            background: linear-gradient(45deg, #444, #666);
+        }
+
+        .audio-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .progress-ring {
+            width: 60px;
+            height: 60px;
+            margin: 10px auto;
+        }
+
+        .progress-ring-circle {
+            fill: none;
+            stroke: #667eea;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            animation: progress 2s ease-in-out;
+        }
+
+        @keyframes progress {
+            from { stroke-dasharray: 0 188; }
+            to { stroke-dasharray: 188 188; }
+        }
+
+        .behavioral-tracker {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            max-width: 300px;
+            display: none;
+        }
+
+        .security-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .security-high { background: #28a745; color: white; }
+        .security-medium { background: #ffc107; color: #212529; }
+        .security-low { background: #dc3545; color: white; }
+
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            visibility: hidden;
+        }
+
+        .fingerprint-canvas {
+            position: absolute;
+            top: -1000px;
+            left: -1000px;
+            width: 1px;
+            height: 1px;
+        }
+
+        .multi-window-controller {
+            background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .window-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .window-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .proof-of-work-miner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            max-width: 250px;
+        }
+
+        .neural-pattern-display {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 10px;
+            display: none;
+            max-width: 200px;
+        }
+
+        .advanced-biometric-scanner {
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(145deg, #e6f3ff, #cce7ff);
+            border-radius: 15px;
+            border: 2px solid #007bff;
+        }
+
+        .biometric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .biometric-sensor {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .biometric-sensor:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+
+        .biometric-sensor.active {
+            background: #28a745;
+            color: white;
+        }
+
+        .machine-learning-challenge {
+            background: linear-gradient(145deg, #ff9a56, #ffad56);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            color: white;
+        }
+
+        .pattern-recognition-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .pattern-tile {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .pattern-tile:hover {
+            transform: scale(1.1);
+        }
+
+        .adaptive-difficulty-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .difficulty-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .realtime-analysis {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(0,0,0,0.9);
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 11px;
+            max-width: 250px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .multi-modal-verification {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .verification-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .verification-step {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .verification-step:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .verification-step.completed {
+            background: #28a745;
+        }
+
+        .hidden { display: none !important; }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .rotating {
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden honeypot fields -->
+    <input type="text" class="honeypot" name="real_name" tabindex="-1" autocomplete="off">
+    <input type="email" class="honeypot" name="real_email" tabindex="-1" autocomplete="off">
+    <input type="url" class="honeypot" name="website_url" tabindex="-1" autocomplete="off">
+    
+    <!-- Fingerprinting canvases -->
+    <canvas id="fingerprint-canvas" class="fingerprint-canvas"></canvas>
+    <canvas id="webgl-canvas" class="fingerprint-canvas"></canvas>
+    <canvas id="audio-canvas" class="fingerprint-canvas"></canvas>
+
+    <!-- Security Indicator -->
+    <div id="security-indicator" class="security-indicator security-low">
+        🛡️ Security: ANALYZING
+    </div>
+
+    <!-- Behavioral Tracker -->
+    <div id="behavioral-tracker" class="behavioral-tracker">
+        <div><strong>Behavioral Analysis</strong></div>
+        <div>Mouse Movements: <span id="mouse-count">0</span></div>
+        <div>Keystrokes: <span id="key-count">0</span></div>
+        <div>Behavior Score: <span id="behavior-score">0</span></div>
+        <div>Threat Level: <span id="threat-level">LOW</span></div>
+    </div>
+
+    <!-- Real-time Analysis -->
+    <div id="realtime-analysis" class="realtime-analysis">
+        <div style="color: #fff; margin-bottom: 10px;"><strong>REAL-TIME ANALYSIS</strong></div>
+        <div id="analysis-log"></div>
+    </div>
+
+    <!-- Neural Pattern Display -->
+    <div id="neural-pattern-display" class="neural-pattern-display">
+        <div style="color: #fff; margin-bottom: 5px;">NEURAL PATTERNS</div>
+        <div id="neural-log"></div>
+    </div>
+
+    <!-- Proof of Work Miner -->
+    <div id="proof-of-work-miner" class="proof-of-work-miner">
+        <div><strong>⛏️ Proof of Work</strong></div>
+        <div>Difficulty: <span id="pow-difficulty">1</span></div>
+        <div>Nonce: <span id="pow-nonce">0</span></div>
+        <div>Hash Rate: <span id="pow-hashrate">0</span> H/s</div>
+        <div>Progress: <span id="pow-progress">0%</span></div>
+    </div>
+
+    <div class="master-container">
+        <!-- Platform Header -->
+        <div class="platform-header">
+            <h1>🔬 ULTIMATE ANTI-BOT TESTING ENVIRONMENT</h1>
+            <p>Comprehensive Multi-Modal Poll Automation Challenge Platform</p>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px;">
+                <span>🎯 Multi-Tab</span>
+                <span>🪟 Multi-Window</span>
+                <span>📋 Multi-Questionnaire</span>
+                <span>🧠 AI-Enhanced</span>
+                <span>🛡️ Military-Grade Protection</span>
+            </div>
+        </div>
+
+        <!-- Multi-Window Controller -->
+        <div class="multi-window-controller">
+            <h3>🪟 Multi-Window Test Environment</h3>
+            <p>This platform will spawn multiple windows, tabs, and require coordination across different contexts</p>
+            <button class="action-button btn-primary" onclick="antiBotSystem.spawnTestWindows()">
+                Launch Multi-Window Test Suite
+            </button>
+            <div class="window-grid" id="window-status-grid">
+                <div class="window-card">
+                    <div><strong>Main Window</strong></div>
+                    <div id="main-status">Active</div>
+                </div>
+                <div class="window-card">
+                    <div><strong>Verification Window</strong></div>
+                    <div id="verify-status">Pending</div>
+                </div>
+                <div class="window-card">
+                    <div><strong>Challenge Window</strong></div>
+                    <div id="challenge-status">Pending</div>
+                </div>
+                <div class="window-card">
+                    <div><strong>Completion Window</strong></div>
+                    <div id="completion-status">Pending</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Spawner -->
+        <div class="tab-spawner">
+            <h3>🎯 Multi-Tab Challenge System</h3>
+            <p>Click the button below to spawn multiple questionnaire tabs that must be completed in sequence</p>
+            <button class="action-button btn-primary" onclick="antiBotSystem.spawnMultipleTabs()">
+                🚀 Launch Multi-Tab Questionnaires
+            </button>
+            <div style="margin-top: 15px;">
+                <span>Active Tabs: <span id="active-tab-count">1</span></span> |
+                <span>Completed: <span id="completed-tab-count">0</span></span> |
+                <span>Failed: <span id="failed-tab-count">0</span></span>
+            </div>
+        </div>
+
+        <!-- Multi-Modal Verification -->
+        <div class="multi-modal-verification">
+            <h3>🔒 Multi-Modal Verification Challenge</h3>
+            <p>Complete all verification steps to prove human identity</p>
+            <div class="verification-steps">
+                <div class="verification-step" id="step-mouse" onclick="antiBotSystem.completeVerificationStep('mouse')">
+                    🖱️ Mouse Pattern
+                </div>
+                <div class="verification-step" id="step-keyboard" onclick="antiBotSystem.completeVerificationStep('keyboard')">
+                    ⌨️ Typing Rhythm
+                </div>
+                <div class="verification-step" id="step-attention" onclick="antiBotSystem.completeVerificationStep('attention')">
+                    👁️ Attention Tracking
+                </div>
+                <div class="verification-step" id="step-biometric" onclick="antiBotSystem.completeVerificationStep('biometric')">
+                    🫵 Biometric Scan
+                </div>
+                <div class="verification-step" id="step-cognitive" onclick="antiBotSystem.completeVerificationStep('cognitive')">
+                    🧠 Cognitive Challenge
+                </div>
+            </div>
+        </div>
+
+        <!-- Machine Learning Challenge -->
+        <div class="machine-learning-challenge">
+            <h3>🤖 AI Pattern Recognition Challenge</h3>
+            <p>Select the patterns that match the AI-generated sequence</p>
+            <div>Difficulty Level: <span id="ml-difficulty">1</span>/10</div>
+            <div class="adaptive-difficulty-bar">
+                <div class="difficulty-fill" id="difficulty-fill"></div>
+            </div>
+            <div class="pattern-recognition-grid" id="pattern-grid">
+                <!-- Generated dynamically -->
+            </div>
+            <button class="action-button btn-success" onclick="antiBotSystem.checkPatternRecognition()">
+                Submit Pattern
+            </button>
+        </div>
+
+        <!-- Advanced Biometric Scanner -->
+        <div class="advanced-biometric-scanner">
+            <h3>🔬 Advanced Biometric Analysis</h3>
+            <p>Complete biometric verification using multiple sensors</p>
+            <div class="biometric-grid">
+                <div class="biometric-sensor" id="fingerprint-sensor" onclick="antiBotSystem.scanBiometric('fingerprint')">
+                    👆 Fingerprint Scan
+                </div>
+                <div class="biometric-sensor" id="retina-sensor" onclick="antiBotSystem.scanBiometric('retina')">
+                    👁️ Retina Scan
+                </div>
+                <div class="biometric-sensor" id="voice-sensor" onclick="antiBotSystem.scanBiometric('voice')">
+                    🎙️ Voice Pattern
+                </div>
+                <div class="biometric-sensor" id="facial-sensor" onclick="antiBotSystem.scanBiometric('facial')">
+                    😊 Facial Recognition
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Questionnaire Grid -->
+        <div class="multi-questionnaire-grid">
+            <!-- Questionnaire 1: Demographics + Behavioral -->
+            <div class="questionnaire-card active" id="questionnaire-1">
+                <div class="card-header">
+                    <div class="card-title">📊 Demographics & Behavior</div>
+                    <div class="card-status status-active">ACTIVE</div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question-title">Age Range (with keystroke analysis)</div>
+                    <select class="form-control" name="age" onchange="antiBotSystem.trackSelection('age', this.value)">
+                        <option value="">Select age...</option>
+                        <option value="18-24">18-24 years</option>
+                        <option value="25-34">25-34 years</option>
+                        <option value="35-44">35-44 years</option>
+                        <option value="45-54">45-54 years</option>
+                        <option value="55+">55+ years</option>
+                    </select>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Location (requires mouse precision)</div>
+                    <div class="radio-group">
+                        <label class="option-item" onclick="antiBotSystem.trackMousePrecision(event, 'location', 'north-america')">
+                            <input type="radio" name="location" value="north-america">
+                            North America
+                        </label>
+                        <label class="option-item" onclick="antiBotSystem.trackMousePrecision(event, 'location', 'europe')">
+                            <input type="radio" name="location" value="europe">
+                            Europe
+                        </label>
+                        <label class="option-item" onclick="antiBotSystem.trackMousePrecision(event, 'location', 'asia')">
+                            <input type="radio" name="location" value="asia">
+                            Asia
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Detailed Feedback (typing pattern analysis)</div>
+                    <textarea class="form-control" name="feedback" rows="4" 
+                              placeholder="Please describe your experience in detail (minimum 50 characters)..."
+                              oninput="antiBotSystem.analyzeTypingPattern(event)"></textarea>
+                </div>
+
+                <button class="action-button btn-primary" onclick="antiBotSystem.completeQuestionnaire(1)">
+                    Complete Demographics
+                </button>
+            </div>
+
+            <!-- Questionnaire 2: Attention Verification -->
+            <div class="questionnaire-card" id="questionnaire-2">
+                <div class="card-header">
+                    <div class="card-title">👁️ Attention & Media Verification</div>
+                    <div class="card-status status-pending">PENDING</div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Video Attention Challenge</div>
+                    <div class="attention-media">
+                        <div class="video-container" id="attention-video" onclick="antiBotSystem.startVideoChallenge()">
+                            🎥 Click to start attention verification video
+                        </div>
+                    </div>
+                    <div id="video-question" class="hidden">
+                        <div class="question-title">What color sequence appeared in the video?</div>
+                        <div class="radio-group">
+                            <label class="option-item">
+                                <input type="radio" name="video-sequence" value="red-blue-green">
+                                Red → Blue → Green
+                            </label>
+                            <label class="option-item">
+                                <input type="radio" name="video-sequence" value="blue-green-red">
+                                Blue → Green → Red
+                            </label>
+                            <label class="option-item">
+                                <input type="radio" name="video-sequence" value="green-red-blue">
+                                Green → Red → Blue
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Audio Pattern Recognition</div>
+                    <div class="audio-container">
+                        <button class="action-button btn-secondary" onclick="antiBotSystem.playAudioChallenge()">
+                            🔊 Play Audio Pattern
+                        </button>
+                        <div id="audio-question" class="hidden">
+                            <div style="margin-top: 15px;">
+                                <div class="question-title">How many distinct tones did you hear?</div>
+                                <input type="number" class="form-control" name="audio-tones" min="1" max="10" style="width: 100px; margin: 0 auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="action-button btn-primary" onclick="antiBotSystem.completeQuestionnaire(2)">
+                    Complete Attention Test
+                </button>
+            </div>
+
+            <!-- Questionnaire 3: Cognitive & Security -->
+            <div class="questionnaire-card" id="questionnaire-3">
+                <div class="card-header">
+                    <div class="card-title">🧠 Cognitive & Security Challenge</div>
+                    <div class="card-status status-pending">PENDING</div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Dynamic Math Challenge</div>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div id="math-problem" style="font-size: 24px; font-weight: bold; margin-bottom: 15px;">
+                            Loading challenge...
+                        </div>
+                        <input type="number" id="math-answer" class="form-control" style="max-width: 150px; margin: 0 auto;">
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Logic Sequence Puzzle</div>
+                    <div id="logic-puzzle" style="text-align: center; margin: 15px 0;">
+                        <div style="font-size: 18px; margin-bottom: 10px;">2, 4, 8, 16, ?, 64</div>
+                        <input type="number" class="form-control" name="logic-answer" style="max-width: 100px; margin: 0 auto;">
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Memory Pattern Test</div>
+                    <div id="memory-pattern" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0;">
+                        <!-- Generated dynamically -->
+                    </div>
+                    <button class="action-button btn-secondary" onclick="antiBotSystem.startMemoryTest()">
+                        Start Memory Test
+                    </button>
+                </div>
+
+                <button class="action-button btn-primary" onclick="antiBotSystem.completeQuestionnaire(3)">
+                    Complete Cognitive Test
+                </button>
+            </div>
+
+            <!-- Questionnaire 4: Final Verification -->
+            <div class="questionnaire-card" id="questionnaire-4">
+                <div class="card-header">
+                    <div class="card-title">🔒 Final Multi-Layer Verification</div>
+                    <div class="card-status status-pending">PENDING</div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Advanced CAPTCHA Challenge</div>
+                    <div id="advanced-captcha">
+                        <div style="text-align: center; margin: 15px 0;">
+                            <div style="font-size: 16px; margin-bottom: 10px;">Select all squares containing traffic lights:</div>
+                            <div class="captcha-grid" id="captcha-grid">
+                                <!-- Generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Proof of Work Verification</div>
+                    <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                        <div>Computing cryptographic proof...</div>
+                        <div class="progress-ring">
+                            <svg width="60" height="60">
+                                <circle class="progress-ring-circle" cx="30" cy="30" r="25"></circle>
+                            </svg>
+                        </div>
+                        <div id="pow-status">Initializing...</div>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-title">Final Human Verification</div>
+                    <div style="text-align: center;">
+                        <label class="option-item" style="justify-content: center;">
+                            <input type="checkbox" name="human-verification" required>
+                            I certify that I am a human completing this survey manually
+                        </label>
+                    </div>
+                </div>
+
+                <button class="action-button btn-success" onclick="antiBotSystem.completeQuestionnaire(4)">
+                    🎯 Submit Final Verification
+                </button>
+            </div>
+        </div>
+
+        <!-- Master Control Panel -->
+        <div style="background: linear-gradient(135deg, #2c3e50, #34495e); color: white; padding: 25px; border-radius: 15px; text-align: center;">
+            <h3>🎮 Master Control Panel</h3>
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+                <button class="action-button btn-primary" onclick="antiBotSystem.resetAllSystems()">
+                    🔄 Reset All Systems
+                </button>
+                <button class="action-button btn-secondary" onclick="antiBotSystem.generateReport()">
+                    📊 Generate Analysis Report
+                </button>
+                <button class="action-button btn-danger" onclick="antiBotSystem.triggerEmergencyChallenge()">
+                    🚨 Emergency Challenge
+                </button>
+                <button class="action-button btn-success" onclick="antiBotSystem.completeAllQuestionnaires()">
+                    ✅ Auto-Complete (Testing)
+                </button>
+            </div>
+            <div style="margin-top: 15px; font-size: 14px;">
+                Overall Progress: <span id="overall-progress">0%</span> | 
+                Security Score: <span id="security-score">0</span>/100 |
+                Threat Level: <span id="master-threat-level">UNKNOWN</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Challenge Overlays -->
+    <div id="challenge-overlay" class="challenge-overlay">
+        <div class="challenge-modal">
+            <h3 id="challenge-title">🛡️ Security Challenge</h3>
+            <div id="challenge-content">
+                <!-- Dynamic content -->
+            </div>
+            <div style="margin-top: 20px;">
+                <button class="action-button btn-primary" onclick="antiBotSystem.submitChallenge()">
+                    Submit Response
+                </button>
+                <button class="action-button btn-secondary" onclick="antiBotSystem.closeChallenge()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ULTIMATE ANTI-BOT SYSTEM - Comprehensive Testing Environment
+        class UltimateAntiBotSystem {
+            constructor() {
+                this.initialized = false;
+                this.startTime = Date.now();
+                
+                // Tracking systems
+                this.mouseMovements = [];
+                this.keystrokePatterns = [];
+                this.interactionTiming = [];
+                this.clickPrecision = [];
+                this.scrollBehavior = [];
+                this.focusEvents = [];
+                
+                // Behavioral analysis
+                this.behaviorScore = 0;
+                this.threatLevel = 'UNKNOWN';
+                this.securityScore = 0;
+                this.suspiciousActivities = [];
+                
+                // Multi-window tracking
+                this.spawnedWindows = [];
+                this.spawnedTabs = [];
+                this.activeTabCount = 1;
+                this.completedTabCount = 0;
+                this.failedTabCount = 0;
+                
+                // Verification systems
+                this.verificationSteps = {
+                    mouse: false,
+                    keyboard: false,
+                    attention: false,
+                    biometric: false,
+                    cognitive: false
+                };
+                
+                // Questionnaire tracking
+                this.completedQuestionnaires = new Set();
+                this.questionnaireData = {};
+                
+                // Challenge systems
+                this.currentChallenge = null;
+                this.challengeAttempts = 0;
+                this.proofOfWorkCompleted = false;
+                
+                // Device fingerprinting
+                this.deviceFingerprint = {};
+                
+                // Neural pattern analysis
+                this.neuralPatterns = [];
+                this.patternSequence = [];
+                
+                // Machine learning challenges
+                this.mlDifficulty = 1;
+                this.patternChallenges = [];
+                
+                this.init();
+            }
+
+            async init() {
+                console.log('🚀 Initializing Ultimate Anti-Bot System...');
+                
+                // Initialize all tracking systems
+                this.initializeAdvancedMouseTracking();
+                this.initializeKeystrokeAnalysis();
+                this.initializeDeviceFingerprinting();
+                this.initializeBehavioralAnalysis();
+                this.initializeNeuralPatternAnalysis();
+                this.initializeProofOfWork();
+                this.initializeMachineLearningChallenges();
+                this.setupAdvancedEventListeners();
+                this.generateDynamicChallenges();
+                
+                // Start monitoring systems
+                this.startRealTimeAnalysis();
+                this.startBehavioralTracking();
+                this.startSecurityMonitoring();
+                
+                this.initialized = true;
+                this.updateAllDisplays();
+                
+                console.log('✅ Ultimate Anti-Bot System Active');
+            }
+
+            initializeAdvancedMouseTracking() {
+                let mouseTrail = [];
+                let velocities = [];
+                let accelerations = [];
+                let lastPosition = { x: 0, y: 0 };
+                let lastVelocity = { x: 0, y: 0 };
+                let lastTime = 0;
+
+                document.addEventListener('mousemove', (e) => {
+                    const now = performance.now();
+                    const dt = now - lastTime;
+                    
+                    if (dt > 8) { // 120 FPS max
+                        const currentPosition = { x: e.clientX, y: e.clientY };
+                        
+                        // Calculate velocity
+                        const velocity = {
+                            x: dt > 0 ? (currentPosition.x - lastPosition.x) / dt : 0,
+                            y: dt > 0 ? (currentPosition.y - lastPosition.y) / dt : 0
+                        };
+                        
+                        // Calculate acceleration
+                        const acceleration = {
+                            x: dt > 0 ? (velocity.x - lastVelocity.x) / dt : 0,
+                            y: dt > 0 ? (velocity.y - lastVelocity.y) / dt : 0
+                        };
+                        
+                        const movement = {
+                            x: currentPosition.x,
+                            y: currentPosition.y,
+                            timestamp: now,
+                            velocity: Math.sqrt(velocity.x ** 2 + velocity.y ** 2),
+                            acceleration: Math.sqrt(acceleration.x ** 2 + acceleration.y ** 2),
+                            pressure: e.pressure || 0,
+                            tiltX: e.tiltX || 0,
+                            tiltY: e.tiltY || 0,
+                            twist: e.twist || 0
+                        };
+                        
+                        this.mouseMovements.push(movement);
+                        velocities.push(movement.velocity);
+                        accelerations.push(movement.acceleration);
+                        
+                        // Keep only recent data
+                        if (this.mouseMovements.length > 1000) {
+                            this.mouseMovements = this.mouseMovements.slice(-500);
+                        }
+                        if (velocities.length > 100) {
+                            velocities = velocities.slice(-50);
+                        }
+                        if (accelerations.length > 100) {
+                            accelerations = accelerations.slice(-50);
+                        }
+                        
+                        lastPosition = currentPosition;
+                        lastVelocity = velocity;
+                        lastTime = now;
+                        
+                        // Analyze patterns in real-time
+                        if (this.mouseMovements.length > 20) {
+                            this.analyzeAdvancedMouseBehavior(velocities, accelerations);
+                        }
+                    }
+                });
+
+                // Click precision tracking
+                document.addEventListener('click', (e) => {
+                    const target = e.target;
+                    const rect = target.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const distance = Math.sqrt((e.clientX - centerX) ** 2 + (e.clientY - centerY) ** 2);
+                    
+                    this.clickPrecision.push({
+                        distance: distance,
+                        targetSize: Math.min(rect.width, rect.height),
+                        timestamp: performance.now(),
+                        target: target.tagName
+                    });
+                    
+                    if (this.clickPrecision.length > 50) {
+                        this.clickPrecision = this.clickPrecision.slice(-25);
+                    }
+                });
+            }
+
+            analyzeAdvancedMouseBehavior(velocities, accelerations) {
+                // Human-like movement analysis
+                const avgVelocity = velocities.reduce((a, b) => a + b, 0) / velocities.length;
+                const velocityVariation = this.calculateStandardDeviation(velocities);
+                const avgAcceleration = accelerations.reduce((a, b) => a + b, 0) / accelerations.length;
+                const accelerationVariation = this.calculateStandardDeviation(accelerations);
+                
+                // Fitts' Law analysis
+                const clickPrecisionScore = this.analyzeFittsLaw();
+                
+                // Jerk analysis (change in acceleration)
+                const jerkiness = this.calculateJerkiness();
+                
+                // Update behavior score
+                let mouseScore = 0;
+                
+                // Natural velocity patterns
+                if (avgVelocity > 0.1 && avgVelocity < 2.0 && velocityVariation > 0.2) {
+                    mouseScore += 10;
+                } else if (avgVelocity === 0 || velocityVariation < 0.05) {
+                    mouseScore -= 15; // Too perfect = bot
+                }
+                
+                // Natural acceleration patterns
+                if (accelerationVariation > 0.1) {
+                    mouseScore += 8;
+                }
+                
+                // Click precision analysis
+                if (clickPrecisionScore > 0.5 && clickPrecisionScore < 0.95) {
+                    mouseScore += 12; // Good but not perfect
+                } else if (clickPrecisionScore > 0.98) {
+                    mouseScore -= 10; // Too perfect
+                }
+                
+                // Jerkiness indicates human micro-corrections
+                if (jerkiness > 0.01 && jerkiness < 0.5) {
+                    mouseScore += 6;
+                }
+                
+                this.behaviorScore += mouseScore * 0.1; // Weight the contribution
+                this.logAnalysis(`Mouse: vel=${avgVelocity.toFixed(3)}, var=${velocityVariation.toFixed(3)}, score=${mouseScore}`);
+            }
+
+            initializeKeystrokeAnalysis() {
+                let keyDownTimes = {};
+                let dwellTimes = [];
+                let flightTimes = [];
+                let lastKeyUp = 0;
+
+                document.addEventListener('keydown', (e) => {
+                    const now = performance.now();
+                    keyDownTimes[e.code] = now;
+                    
+                    // Calculate flight time (time between key releases)
+                    if (lastKeyUp > 0) {
+                        const flightTime = now - lastKeyUp;
+                        flightTimes.push(flightTime);
+                        if (flightTimes.length > 50) {
+                            flightTimes = flightTimes.slice(-25);
+                        }
+                    }
+                });
+
+                document.addEventListener('keyup', (e) => {
+                    const now = performance.now();
+                    lastKeyUp = now;
+                    
+                    if (keyDownTimes[e.code]) {
+                        const dwellTime = now - keyDownTimes[e.code];
+                        dwellTimes.push(dwellTime);
+                        
+                        this.keystrokePatterns.push({
+                            key: e.code,
+                            dwellTime: dwellTime,
+                            timestamp: now,
+                            ctrlKey: e.ctrlKey,
+                            shiftKey: e.shiftKey,
+                            altKey: e.altKey
+                        });
+                        
+                        delete keyDownTimes[e.code];
+                        
+                        if (dwellTimes.length > 100) {
+                            dwellTimes = dwellTimes.slice(-50);
+                        }
+                        
+                        // Analyze typing patterns
+                        if (dwellTimes.length > 10 && flightTimes.length > 10) {
+                            this.analyzeTypingRhythm(dwellTimes, flightTimes);
+                        }
+                    }
+                });
+            }
+
+            analyzeTypingRhythm(dwellTimes, flightTimes) {
+                const avgDwell = dwellTimes.reduce((a, b) => a + b, 0) / dwellTimes.length;
+                const dwellVariation = this.calculateStandardDeviation(dwellTimes);
+                const avgFlight = flightTimes.reduce((a, b) => a + b, 0) / flightTimes.length;
+                const flightVariation = this.calculateStandardDeviation(flightTimes);
+                
+                let keyboardScore = 0;
+                
+                // Human typing has natural variation
+                if (dwellVariation > 20 && avgDwell > 50 && avgDwell < 300) {
+                    keyboardScore += 8;
+                } else if (dwellVariation < 5 || avgDwell < 20) {
+                    keyboardScore -= 12; // Too consistent = bot
+                }
+                
+                if (flightVariation > 30 && avgFlight > 80 && avgFlight < 500) {
+                    keyboardScore += 8;
+                } else if (flightVariation < 10) {
+                    keyboardScore -= 12;
+                }
+                
+                this.behaviorScore += keyboardScore * 0.1;
+                this.logAnalysis(`Keyboard: dwell=${avgDwell.toFixed(1)}ms, flight=${avgFlight.toFixed(1)}ms, score=${keyboardScore}`);
+            }
+
+            initializeDeviceFingerprinting() {
+                // Enhanced canvas fingerprinting
+                const canvas = document.getElementById('fingerprint-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = 300;
+                canvas.height = 150;
+                
+                // Complex drawing for fingerprinting
+                ctx.fillStyle = "rgb(200,0,0)";
+                ctx.fillRect(10, 10, 50, 50);
+                ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+                ctx.fillRect(30, 30, 50, 50);
+                ctx.font = "16px Arial";
+                ctx.fillText("AntiBot Test 🤖", 10, 100);
+                ctx.beginPath();
+                ctx.arc(150, 75, 30, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                this.deviceFingerprint.canvas = canvas.toDataURL();
+                
+                // WebGL fingerprinting
+                try {
+                    const webglCanvas = document.getElementById('webgl-canvas');
+                    const gl = webglCanvas.getContext('webgl');
+                    if (gl) {
+                        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                        if (debugInfo) {
+                            this.deviceFingerprint.webgl = {
+                                vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
+                                renderer: gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL),
+                                version: gl.getParameter(gl.VERSION),
+                                shadingLanguageVersion: gl.getParameter(gl.SHADING_LANGUAGE_VERSION)
+                            };
+                        }
+                    }
+                } catch (e) {
+                    this.logAnalysis('WebGL fingerprinting failed');
+                }
+                
+                // Audio context fingerprinting
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const analyser = audioCtx.createAnalyser();
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(analyser);
+                    oscillator.frequency.value = 1000;
+                    gainNode.gain.value = 0;
+                    oscillator.start();
+                    
+                    const buffer = new Float32Array(analyser.frequencyBinCount);
+                    analyser.getFloatFrequencyData(buffer);
+                    
+                    this.deviceFingerprint.audio = {
+                        sampleRate: audioCtx.sampleRate,
+                        state: audioCtx.state,
+                        bufferSum: buffer.reduce((a, b) => a + b, 0)
+                    };
+                    
+                    oscillator.stop();
+                } catch (e) {
+                    this.logAnalysis('Audio fingerprinting failed');
+                }
+                
+                // Additional device properties
+                this.deviceFingerprint.screen = {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth
+                };
+                
+                this.deviceFingerprint.navigator = {
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    platform: navigator.platform,
+                    cookieEnabled: navigator.cookieEnabled,
+                    doNotTrack: navigator.doNotTrack,
+                    hardwareConcurrency: navigator.hardwareConcurrency,
+                    maxTouchPoints: navigator.maxTouchPoints
+                };
+                
+                this.deviceFingerprint.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                
+                console.log('Device fingerprint generated:', Object.keys(this.deviceFingerprint));
+            }
+
+            initializeBehavioralAnalysis() {
+                // Focus/blur tracking
+                let focusStartTime = Date.now();
+                
+                document.addEventListener('visibilitychange', () => {
+                    const now = Date.now();
+                    if (document.hidden) {
+                        const focusDuration = now - focusStartTime;
+                        this.focusEvents.push({ type: 'blur', duration: focusDuration, timestamp: now });
+                        this.behaviorScore -= 3; // Penalty for leaving
+                        this.logAnalysis(`Tab hidden after ${focusDuration}ms focus`);
+                    } else {
+                        focusStartTime = now;
+                        this.focusEvents.push({ type: 'focus', timestamp: now });
+                        this.behaviorScore += 1; // Small bonus for returning
+                        this.logAnalysis('Tab focused');
+                    }
+                });
+                
+                // Advanced scroll behavior analysis
+                let scrollData = [];
+                let lastScrollTime = 0;
+                let lastScrollY = 0;
+                
+                window.addEventListener('scroll', () => {
+                    const now = performance.now();
+                    const currentY = window.scrollY;
+                    
+                    if (lastScrollTime > 0) {
+                        const timeDelta = now - lastScrollTime;
+                        const yDelta = currentY - lastScrollY;
+                        const velocity = timeDelta > 0 ? yDelta / timeDelta : 0;
+                        
+                        scrollData.push({
+                            velocity: Math.abs(velocity),
+                            direction: yDelta > 0 ? 'down' : 'up',
+                            timestamp: now,
+                            position: currentY
+                        });
+                        
+                        if (scrollData.length > 50) {
+                            scrollData = scrollData.slice(-25);
+                        }
+                        
+                        this.scrollBehavior = scrollData;
+                        
+                        // Analyze scroll patterns
+                        if (scrollData.length > 10) {
+                            this.analyzeScrollPatterns(scrollData);
+                        }
+                    }
+                    
+                    lastScrollTime = now;
+                    lastScrollY = currentY;
+                });
+                
+                // Page interaction tracking
+                let interactionCount = 0;
+                ['click', 'keydown', 'scroll', 'mousemove'].forEach(eventType => {
+                    document.addEventListener(eventType, () => {
+                        interactionCount++;
+                        if (interactionCount % 50 === 0) {
+                            this.behaviorScore += 2; // Bonus for sustained interaction
+                        }
+                    });
+                });
+            }
+
+            analyzeScrollPatterns(scrollData) {
+                const velocities = scrollData.map(s => s.velocity);
+                const avgVelocity = velocities.reduce((a, b) => a + b, 0) / velocities.length;
+                const velocityVariation = this.calculateStandardDeviation(velocities);
+                
+                // Check for direction changes (human-like)
+                let directionChanges = 0;
+                for (let i = 1; i < scrollData.length; i++) {
+                    if (scrollData[i].direction !== scrollData[i-1].direction) {
+                        directionChanges++;
+                    }
+                }
+                
+                let scrollScore = 0;
+                
+                if (avgVelocity > 0.1 && avgVelocity < 10 && velocityVariation > 0.5) {
+                    scrollScore += 5;
+                }
+                
+                if (directionChanges > 2) {
+                    scrollScore += 3; // Natural reading behavior
+                }
+                
+                this.behaviorScore += scrollScore * 0.05;
+                this.logAnalysis(`Scroll: vel=${avgVelocity.toFixed(2)}, changes=${directionChanges}, score=${scrollScore}`);
+            }
+
+            initializeNeuralPatternAnalysis() {
+                // Simulate neural network pattern analysis
+                setInterval(() => {
+                    if (this.mouseMovements.length > 10 && this.keystrokePatterns.length > 5) {
+                        const pattern = this.generateNeuralPattern();
+                        this.neuralPatterns.push(pattern);
+                        
+                        if (this.neuralPatterns.length > 20) {
+                            this.neuralPatterns = this.neuralPatterns.slice(-10);
+                        }
+                        
+                        this.updateNeuralDisplay();
+                    }
+                }, 2000);
+            }
+
+            generateNeuralPattern() {
+                const recentMouse = this.mouseMovements.slice(-10);
+                const recentKeys = this.keystrokePatterns.slice(-5);
+                
+                const mouseEntropy = this.calculateEntropy(recentMouse.map(m => Math.floor(m.velocity * 100)));
+                const keyEntropy = this.calculateEntropy(recentKeys.map(k => k.dwellTime));
+                
+                const pattern = {
+                    timestamp: Date.now(),
+                    mouseEntropy: mouseEntropy,
+                    keyEntropy: keyEntropy,
+                    complexity: (mouseEntropy + keyEntropy) / 2,
+                    humanLikelihood: this.calculateHumanLikelihood(mouseEntropy, keyEntropy)
+                };
+                
+                if (pattern.humanLikelihood > 0.7) {
+                    this.behaviorScore += 5;
+                } else if (pattern.humanLikelihood < 0.3) {
+                    this.behaviorScore -= 8;
+                }
+                
+                return pattern;
+            }
+
+            calculateEntropy(values) {
+                const counts = {};
+                values.forEach(v => counts[v] = (counts[v] || 0) + 1);
+                
+                const total = values.length;
+                let entropy = 0;
+                
+                Object.values(counts).forEach(count => {
+                    const p = count / total;
+                    entropy -= p * Math.log2(p);
+                });
+                
+                return entropy;
+            }
+
+            calculateHumanLikelihood(mouseEntropy, keyEntropy) {
+                // Simple heuristic - humans have moderate entropy
+                const mouseScore = mouseEntropy > 1 && mouseEntropy < 4 ? 1 : 0;
+                const keyScore = keyEntropy > 1 && keyEntropy < 3 ? 1 : 0;
+                return (mouseScore + keyScore) / 2;
+            }
+
+            initializeProofOfWork() {
+                setTimeout(() => {
+                    this.startProofOfWork();
+                }, 3000);
+            }
+
+            startProofOfWork() {
+                const display = document.getElementById('proof-of-work-miner');
+                display.style.display = 'block';
+                
+                const difficulty = Math.floor(Math.random() * 5) + 3;
+                const target = Math.floor(Math.random() * 1000000) + 100000;
+                let nonce = 0;
+                let hashRate = 0;
+                let startTime = Date.now();
+                
+                document.getElementById('pow-difficulty').textContent = difficulty;
+                
+                const solve = () => {
+                    const iterations = 1000;
+                    for (let i = 0; i < iterations; i++) {
+                        const hash = this.simpleHash(target + nonce);
+                        if (hash < Math.pow(10, 6 - difficulty)) {
+                            this.proofOfWorkCompleted = true;
+                            this.behaviorScore += 20;
+                            display.style.display = 'none';
+                            
+                            const duration = Date.now() - startTime;
+                            this.logAnalysis(`Proof of work completed: nonce=${nonce}, time=${duration}ms`);
+                            return;
+                        }
+                        nonce++;
+                    }
+                    
+                    // Update display
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    hashRate = Math.floor(nonce / elapsed);
+                    const progress = Math.min(99, (nonce / (target / 1000)) * 100);
+                    
+                    document.getElementById('pow-nonce').textContent = nonce;
+                    document.getElementById('pow-hashrate').textContent = hashRate;
+                    document.getElementById('pow-progress').textContent = Math.floor(progress) + '%';
+                    
+                    if (!this.proofOfWorkCompleted) {
+                        setTimeout(solve, 10);
+                    }
+                };
+                
+                solve();
+            }
+
+            simpleHash(input) {
+                let hash = 0;
+                const str = input.toString();
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash);
+            }
+
+            initializeMachineLearningChallenges() {
+                this.generatePatternChallenge();
+                this.generateMathChallenge();
+                this.generateCaptchaChallenge();
+            }
+
+            generatePatternChallenge() {
+                const grid = document.getElementById('pattern-grid');
+                grid.innerHTML = '';
+                
+                const patterns = ['🔴', '🟡', '🟢', '🔵', '⚫', '⚪', '🟤', '🟣'];
+                const sequence = [];
+                
+                for (let i = 0; i < 16; i++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'pattern-tile';
+                    
+                    if (i < 12) {
+                        // Generate pattern
+                        const pattern = patterns[i % 4];
+                        tile.textContent = pattern;
+                        tile.style.background = this.getPatternColor(pattern);
+                        sequence.push(pattern);
+                    } else {
+                        // Create selection tiles
+                        tile.textContent = '?';
+                        tile.style.background = '#ddd';
+                        tile.onclick = () => this.selectPattern(tile, i);
+                    }
+                    
+                    grid.appendChild(tile);
+                }
+                
+                this.patternSequence = sequence;
+            }
+
+            getPatternColor(pattern) {
+                const colors = {
+                    '🔴': '#ffebee', '🟡': '#fffde7', '🟢': '#e8f5e8',
+                    '🔵': '#e3f2fd', '⚫': '#f5f5f5', '⚪': '#ffffff',
+                    '🟤': '#efebe9', '🟣': '#f3e5f5'
+                };
+                return colors[pattern] || '#f0f0f0';
+            }
+
+            selectPattern(tile, index) {
+                const patterns = ['🔴', '🟡', '🟢', '🔵'];
+                const expectedPattern = patterns[(index - 12) % 4];
+                
+                tile.textContent = expectedPattern;
+                tile.style.background = this.getPatternColor(expectedPattern);
+                tile.onclick = null;
+                
+                // Check if correct
+                const correctPattern = this.patternSequence[index - 12];
+                if (expectedPattern === correctPattern) {
+                    tile.style.borderColor = '#28a745';
+                    this.behaviorScore += 3;
+                } else {
+                    tile.style.borderColor = '#dc3545';
+                    this.behaviorScore -= 2;
+                }
+            }
+
+            generateMathChallenge() {
+                const operations = [
+                    { a: 15, b: 7, op: '+', answer: 22 },
+                    { a: 24, b: 8, op: '*', answer: 192 },
+                    { a: 64, b: 8, op: '/', answer: 8 },
+                    { a: 45, b: 17, op: '-', answer: 28 }
+                ];
+                
+                const challenge = operations[Math.floor(Math.random() * operations.length)];
+                document.getElementById('math-problem').textContent = `${challenge.a} ${challenge.op} ${challenge.b} = ?`;
+                this.currentMathAnswer = challenge.answer;
+            }
+
+            generateCaptchaChallenge() {
+                const grid = document.getElementById('captcha-grid');
+                grid.innerHTML = '';
+                
+                const images = ['🚦', '🚗', '🚌', '🚲', '🛵', '🏠', '🌳', '☁️', '🔄'];
+                const correctAnswers = new Set();
+                
+                for (let i = 0; i < 9; i++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'captcha-image';
+                    
+                    const isTrafficLight = Math.random() < 0.3;
+                    if (isTrafficLight) {
+                        tile.textContent = '🚦';
+                        correctAnswers.add(i);
+                    } else {
+                        tile.textContent = images[Math.floor(Math.random() * (images.length - 1)) + 1];
+                    }
+                    
+                    tile.onclick = () => this.selectCaptchaImage(tile, i);
+                    grid.appendChild(tile);
+                }
+                
+                this.captchaCorrectAnswers = correctAnswers;
+            }
+
+            selectCaptchaImage(tile, index) {
+                tile.classList.toggle('selected');
+                
+                if (!this.captchaSelectedImages) {
+                    this.captchaSelectedImages = new Set();
+                }
+                
+                if (tile.classList.contains('selected')) {
+                    this.captchaSelectedImages.add(index);
+                } else {
+                    this.captchaSelectedImages.delete(index);
+                }
+            }
+
+            // Event handlers and user interactions
+            trackSelection(fieldName, value) {
+                const now = performance.now();
+                this.interactionTiming.push({
+                    field: fieldName,
+                    value: value,
+                    timestamp: now,
+                    type: 'selection'
+                });
+                
+                this.behaviorScore += 1;
+                this.logAnalysis(`Selection: ${fieldName} = ${value}`);
+            }
+
+            trackMousePrecision(event, fieldName, value) {
+                const rect = event.target.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const distance = Math.sqrt((event.clientX - centerX) ** 2 + (event.clientY - centerY) ** 2);
+                
+                this.clickPrecision.push({
+                    field: fieldName,
+                    distance: distance,
+                    targetSize: Math.min(rect.width, rect.height),
+                    timestamp: performance.now()
+                });
+                
+                // Analyze precision
+                if (distance < rect.width / 4) {
+                    this.behaviorScore += 2; // Good precision
+                } else if (distance > rect.width) {
+                    this.behaviorScore -= 1; // Poor precision
+                }
+                
+                this.trackSelection(fieldName, value);
+            }
+
+            analyzeTypingPattern(event) {
+                const now = performance.now();
+                const text = event.target.value;
+                
+                if (text.length > 0) {
+                    this.interactionTiming.push({
+                        field: 'typing',
+                        textLength: text.length,
+                        timestamp: now,
+                        type: 'typing'
+                    });
+                    
+                    // Analyze typing speed and patterns
+                    const recentTyping = this.interactionTiming
+                        .filter(t => t.type === 'typing' && now - t.timestamp < 10000)
+                        .slice(-10);
+                    
+                    if (recentTyping.length > 1) {
+                        const speeds = [];
+                        for (let i = 1; i < recentTyping.length; i++) {
+                            const timeDiff = recentTyping[i].timestamp - recentTyping[i-1].timestamp;
+                            const charsDiff = recentTyping[i].textLength - recentTyping[i-1].textLength;
+                            if (timeDiff > 0 && charsDiff > 0) {
+                                speeds.push(charsDiff / timeDiff * 1000); // chars per second
+                            }
+                        }
+                        
+                        if (speeds.length > 0) {
+                            const avgSpeed = speeds.reduce((a, b) => a + b, 0) / speeds.length;
+                            const speedVariation = this.calculateStandardDeviation(speeds);
+                            
+                            // Human typing has natural variation and reasonable speed
+                            if (avgSpeed > 1 && avgSpeed < 15 && speedVariation > 0.5) {
+                                this.behaviorScore += 3;
+                            } else if (avgSpeed > 20 || speedVariation < 0.1) {
+                                this.behaviorScore -= 5; // Too fast or too consistent
+                            }
+                            
+                            this.logAnalysis(`Typing: speed=${avgSpeed.toFixed(1)} cps, var=${speedVariation.toFixed(2)}`);
+                        }
+                    }
+                }
+            }
+
+            // Multi-window and multi-tab operations
+            spawnTestWindows() {
+                console.log('🪟 Spawning test windows...');
+                
+                // Verification window
+                const verifyWindow = window.open('', 'verify', 'width=400,height=300');
+                verifyWindow.document.write(`
+                    <html>
+                    <head><title>Verification Window</title></head>
+                    <body style="font-family: Arial; text-align: center; padding: 50px;">
+                        <h2>🔐 Verification Required</h2>
+                        <p>Please click the button below to verify your identity:</p>
+                        <button onclick="window.opener.antiBotSystem.completeWindowVerification('verify')" 
+                                style="padding: 15px 30px; font-size: 16px; background: #28a745; color: white; border: none; border-radius: 5px;">
+                            Verify Identity
+                        </button>
+                    </body>
+                    </html>
+                `);
+                
+                // Challenge window
+                const challengeWindow = window.open('', 'challenge', 'width=500,height=400');
+                challengeWindow.document.write(`
+                    <html>
+                    <head><title>Challenge Window</title></head>
+                    <body style="font-family: Arial; text-align: center; padding: 30px;">
+                        <h2>🧩 Cognitive Challenge</h2>
+                        <p>Solve this puzzle to continue:</p>
+                        <div style="font-size: 24px; margin: 20px 0;">
+                            If it takes 5 machines 5 minutes to make 5 widgets,<br>
+                            how long would it take 100 machines to make 100 widgets?
+                        </div>
+                        <input type="number" id="puzzle-answer" style="padding: 10px; font-size: 16px; width: 100px;">
+                        <br><br>
+                        <button onclick="window.opener.antiBotSystem.submitPuzzleAnswer(document.getElementById('puzzle-answer').value)" 
+                                style="padding: 15px 30px; font-size: 16px; background: #007bff; color: white; border: none; border-radius: 5px;">
+                            Submit Answer
+                        </button>
+                    </body>
+                    </html>
+                `);
+                
+                this.spawnedWindows = [verifyWindow, challengeWindow];
+                this.updateWindowStatus();
+            }
+
+            completeWindowVerification(windowType) {
+                document.getElementById(`${windowType}-status`).textContent = 'Completed';
+                this.behaviorScore += 10;
+                this.logAnalysis(`Window verification completed: ${windowType}`);
+                this.updateWindowStatus();
+            }
+
+            submitPuzzleAnswer(answer) {
+                const correct = parseInt(answer) === 5; // Correct answer is 5 minutes
+                if (correct) {
+                    this.behaviorScore += 15;
+                    document.getElementById('challenge-status').textContent = 'Completed';
+                    this.logAnalysis('Puzzle solved correctly');
+                } else {
+                    this.behaviorScore -= 5;
+                    this.logAnalysis(`Puzzle incorrect: answered ${answer}, expected 5`);
+                }
+                this.updateWindowStatus();
+            }
+
+            spawnMultipleTabs() {
+                console.log('🎯 Spawning multiple questionnaire tabs...');
+                
+                for (let i = 1; i <= 3; i++) {
+                    const tab = window.open('', `questionnaire-${i}`, '');
+                    tab.document.write(this.generateTabQuestionnaire(i));
+                    this.spawnedTabs.push(tab);
+                    this.activeTabCount++;
+                }
+                
+                this.updateTabCounts();
+            }
+
+            generateTabQuestionnaire(tabNumber) {
+                const questions = {
+                    1: {
+                        title: 'Personal Preferences',
+                        question: 'What is your favorite color?',
+                        options: ['Red', 'Blue', 'Green', 'Yellow', 'Purple']
+                    },
+                    2: {
+                        title: 'Technology Usage',
+                        question: 'How often do you use smartphones?',
+                        options: ['Daily', 'Weekly', 'Monthly', 'Rarely', 'Never']
+                    },
+                    3: {
+                        title: 'Lifestyle Habits',
+                        question: 'What time do you usually wake up?',
+                        options: ['Before 6 AM', '6-8 AM', '8-10 AM', '10-12 PM', 'After 12 PM']
+                    }
+                };
+                
+                const q = questions[tabNumber];
+                
+                return `
+                    <html>
+                    <head><title>${q.title}</title></head>
+                    <body style="font-family: Arial; padding: 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+                        <div style="background: white; color: #333; padding: 30px; border-radius: 15px; max-width: 500px; margin: 0 auto;">
+                            <h2>${q.title}</h2>
+                            <p style="font-size: 18px; margin: 20px 0;">${q.question}</p>
+                            <form>
+                                ${q.options.map((option, index) => `
+                                    <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                        <input type="radio" name="answer" value="${option}" style="margin-right: 10px;">
+                                        ${option}
+                                    </label>
+                                `).join('')}
+                            </form>
+                            <button onclick="window.opener.antiBotSystem.submitTabAnswer(${tabNumber}, document.querySelector('input[name=answer]:checked')?.value)" 
+                                    style="padding: 15px 30px; font-size: 16px; background: #28a745; color: white; border: none; border-radius: 5px; margin-top: 20px;">
+                                Submit Answer
+                            </button>
+                            <p style="font-size: 12px; margin-top: 20px; color: #666;">
+                                Tab ${tabNumber} of 3 - Complete all tabs to continue
+                            </p>
+                        </div>
+                    </body>
+                    </html>
+                `;
+            }
+
+            submitTabAnswer(tabNumber, answer) {
+                if (answer) {
+                    this.completedTabCount++;
+                    this.activeTabCount--;
+                    this.behaviorScore += 8;
+                    this.logAnalysis(`Tab ${tabNumber} completed: ${answer}`);
+                } else {
+                    this.failedTabCount++;
+                    this.behaviorScore -= 3;
+                    this.logAnalysis(`Tab ${tabNumber} failed: no answer selected`);
+                }
+                
+                this.updateTabCounts();
+                
+                // Close the tab
+                const tabWindow = this.spawnedTabs.find(tab => tab.name === `questionnaire-${tabNumber}`);
+                if (tabWindow) {
+                    tabWindow.close();
+                }
+            }
+
+            // Verification step completions
+            completeVerificationStep(stepType) {
+                if (this.verificationSteps[stepType]) return; // Already completed
+                
+                this.verificationSteps[stepType] = true;
+                document.getElementById(`step-${stepType}`).classList.add('completed');
+                this.behaviorScore += 12;
+                this.logAnalysis(`Verification step completed: ${stepType}`);
+                
+                // Check if all steps completed
+                const allCompleted = Object.values(this.verificationSteps).every(v => v);
+                if (allCompleted) {
+                    this.behaviorScore += 25;
+                    this.logAnalysis('All verification steps completed!');
+                }
+                
+                this.updateAllDisplays();
+            }
+
+            scanBiometric(sensorType) {
+                const sensor = document.getElementById(`${sensorType}-sensor`);
+                sensor.classList.add('active');
+                sensor.textContent = `${sensor.textContent} ✓`;
+                
+                this.behaviorScore += 6;
+                this.logAnalysis(`Biometric scan: ${sensorType}`);
+                
+                setTimeout(() => {
+                    this.completeVerificationStep('biometric');
+                }, 1000);
+            }
+
+            // Challenge systems
+            startVideoChallenge() {
+                const video = document.getElementById('attention-video');
+                const colors = ['🔴 Red', '🔵 Blue', '🟢 Green'];
+                let colorIndex = 0;
+                
+                video.textContent = '🎥 Playing... Watch carefully!';
+                
+                const interval = setInterval(() => {
+                    video.style.background = ['#ff6b6b', '#4ecdc4', '#45b7d1'][colorIndex];
+                    video.textContent = `🎥 ${colors[colorIndex]}`;
+                    colorIndex++;
+                    
+                    if (colorIndex >= colors.length) {
+                        clearInterval(interval);
+                        video.style.background = '#28a745';
+                        video.textContent = '✅ Video Complete';
+                        document.getElementById('video-question').classList.remove('hidden');
+                        this.correctVideoSequence = 'red-blue-green';
+                        this.completeVerificationStep('attention');
+                    }
+                }, 2000);
+            }
+
+            playAudioChallenge() {
+                const tones = [440, 554, 659, 880]; // Musical notes
+                let toneIndex = 0;
+                
+                const playTone = (frequency, duration) => {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    oscillator.frequency.value = frequency;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                    
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + duration);
+                };
+                
+                const playSequence = () => {
+                    if (toneIndex < tones.length) {
+                        playTone(tones[toneIndex], 0.5);
+                        toneIndex++;
+                        setTimeout(playSequence, 800);
+                    } else {
+                        document.getElementById('audio-question').classList.remove('hidden');
+                        this.correctAudioTones = tones.length;
+                    }
+                };
+                
+                playSequence();
+            }
+
+            startMemoryTest() {
+                const grid = document.getElementById('memory-pattern');
+                const patterns = ['🔴', '🟡', '🟢', '🔵'];
+                const sequence = [];
+                
+                // Generate random sequence
+                for (let i = 0; i < 6; i++) {
+                    sequence.push(patterns[Math.floor(Math.random() * patterns.length)]);
+                }
+                
+                // Show sequence
+                grid.innerHTML = '';
+                sequence.forEach((pattern, index) => {
+                    const tile = document.createElement('div');
+                    tile.style.cssText = 'padding: 20px; font-size: 24px; background: #f0f0f0; border-radius: 8px; text-align: center;';
+                    tile.textContent = pattern;
+                    grid.appendChild(tile);
+                });
+                
+                // Hide after 3 seconds and allow input
+                setTimeout(() => {
+                    grid.innerHTML = '';
+                    sequence.forEach((_, index) => {
+                        const input = document.createElement('select');
+                        input.style.cssText = 'padding: 10px; margin: 5px;';
+                        input.innerHTML = '<option value="">?</option>' + 
+                            patterns.map(p => `<option value="${p}">${p}</option>`).join('');
+                        grid.appendChild(input);
+                    });
+                    
+                    this.memorySequence = sequence;
+                    this.completeVerificationStep('cognitive');
+                }, 3000);
+            }
+
+            checkPatternRecognition() {
+                // Simple pattern recognition check
+                const expectedNext = this.patternSequence[0]; // Simplified
+                const userSelections = Array.from(document.querySelectorAll('.pattern-tile.selected'));
+                
+                let correct = 0;
+                userSelections.forEach(tile => {
+                    if (tile.textContent === expectedNext) {
+                        correct++;
+                    }
+                });
+                
+                if (correct > 0) {
+                    this.behaviorScore += correct * 5;
+                    this.mlDifficulty = Math.min(10, this.mlDifficulty + 1);
+                    this.logAnalysis(`Pattern recognition: ${correct} correct`);
+                } else {
+                    this.behaviorScore -= 5;
+                    this.logAnalysis('Pattern recognition failed');
+                }
+                
+                this.updateDifficultyBar();
+                this.generatePatternChallenge(); // New challenge
+            }
+
+            // Questionnaire completions
+            completeQuestionnaire(questionnaireId) {
+                if (this.completedQuestionnaires.has(questionnaireId)) return;
+                
+                const card = document.getElementById(`questionnaire-${questionnaireId}`);
+                
+                // Validate questionnaire
+                let isValid = true;
+                const requiredFields = card.querySelectorAll('input[required], select[required], textarea[required]');
+                
+                for (let field of requiredFields) {
+                    if (field.type === 'radio') {
+                        const name = field.name;
+                        const checked = card.querySelector(`input[name="${name}"]:checked`);
+                        if (!checked) {
+                            isValid = false;
+                            break;
+                        }
+                    } else {
+                        if (!field.value.trim()) {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                }
+                
+                // Special validations
+                if (questionnaireId === 3) {
+                    const mathAnswer = document.getElementById('math-answer').value;
+                    if (parseInt(mathAnswer) !== this.currentMathAnswer) {
+                        alert('Incorrect answer to the math problem. Please try again.');
+                        this.generateMathChallenge();
+                        return;
+                    }
+                }
+                
+                if (questionnaireId === 4) {
+                    // Validate CAPTCHA
+                    if (!this.captchaSelectedImages || 
+                        !this.setsEqual(this.captchaSelectedImages, this.captchaCorrectAnswers)) {
+                        alert('CAPTCHA verification failed. Please try again.');
+                        this.generateCaptchaChallenge();
+                        return;
+                    }
+                    
+                    if (!this.proofOfWorkCompleted) {
+                        alert('Please wait for proof of work to complete.');
+                        return;
+                    }
+                }
+                
+                if (!isValid) {
+                    alert('Please complete all required fields.');
+                    return;
+                }
+                
+                // Mark as completed
+                this.completedQuestionnaires.add(questionnaireId);
+                card.classList.remove('active');
+                card.classList.add('completed');
+                card.querySelector('.card-status').textContent = 'COMPLETED';
+                card.querySelector('.card-status').className = 'card-status status-completed';
+                
+                this.behaviorScore += 20;
+                this.logAnalysis(`Questionnaire ${questionnaireId} completed`);
+                
+                // Activate next questionnaire
+                if (questionnaireId < 4) {
+                    const nextCard = document.getElementById(`questionnaire-${questionnaireId + 1}`);
+                    nextCard.classList.add('active');
+                    nextCard.querySelector('.card-status').textContent = 'ACTIVE';
+                    nextCard.querySelector('.card-status').className = 'card-status status-active';
+                }
+                
+                this.updateAllDisplays();
+                
+                // Check if all completed
+                if (this.completedQuestionnaires.size === 4) {
+                    this.completeAllQuestionnaires();
+                }
+            }
+
+            completeAllQuestionnaires() {
+                this.behaviorScore += 50;
+                this.logAnalysis('All questionnaires completed!');
+                
+                // Show completion message
+                setTimeout(() => {
+                    this.showCompletionMessage();
+                }, 1000);
+            }
+
+            showCompletionMessage() {
+                const finalScore = this.calculateFinalScore();
+                const isHuman = finalScore >= 70;
+                
+                document.body.innerHTML = `
+                    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; 
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); 
+                                font-family: Arial;">
+                        <div style="background: white; padding: 50px; border-radius: 20px; text-align: center; 
+                                    max-width: 600px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);">
+                            <h1 style="color: ${isHuman ? '#28a745' : '#dc3545'}; margin-bottom: 30px;">
+                                ${isHuman ? '✅ HUMAN VERIFIED' : '🤖 BOT DETECTED'}
+                            </h1>
+                            
+                            <div style="background: #f8f9fa; padding: 30px; border-radius: 15px; margin: 20px 0;">
+                                <h3>Comprehensive Analysis Results</h3>
+                                
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
+                                    <div>
+                                        <strong>Final Score:</strong><br>
+                                        <span style="font-size: 24px; color: ${isHuman ? '#28a745' : '#dc3545'}">
+                                            ${finalScore}/100
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <strong>Behavior Score:</strong><br>
+                                        <span style="font-size: 20px;">${Math.floor(this.behaviorScore)}</span>
+                                    </div>
+                                    <div>
+                                        <strong>Mouse Movements:</strong><br>
+                                        ${this.mouseMovements.length}
+                                    </div>
+                                    <div>
+                                        <strong>Keystroke Patterns:</strong><br>
+                                        ${this.keystrokePatterns.length}
+                                    </div>
+                                    <div>
+                                        <strong>Total Time:</strong><br>
+                                        ${Math.floor((Date.now() - this.startTime) / 1000)}s
+                                    </div>
+                                    <div>
+                                        <strong>Completed Tasks:</strong><br>
+                                        ${this.completedQuestionnaires.size}/4
+                                    </div>
+                                </div>
+                                
+                                <div style="margin: 20px 0; padding: 20px; background: ${isHuman ? '#d4edda' : '#f8d7da'}; 
+                                            border-radius: 10px;">
+                                    <h4>Security Assessment</h4>
+                                    <p><strong>Verification Steps:</strong> ${Object.values(this.verificationSteps).filter(v => v).length}/5</p>
+                                    <p><strong>Proof of Work:</strong> ${this.proofOfWorkCompleted ? 'Completed' : 'Failed'}</p>
+                                    <p><strong>Neural Patterns:</strong> ${this.neuralPatterns.length} analyzed</p>
+                                    <p><strong>Threat Level:</strong> ${this.calculateThreatLevel()}</p>
+                                </div>
+                                
+                                <div style="margin: 20px 0; font-size: 14px; color: #666;">
+                                    <h4>Advanced Features Tested:</h4>
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: left;">
+                                        <div>✓ Multi-Tab Navigation</div>
+                                        <div>✓ Multi-Window Coordination</div>
+                                        <div>✓ Mouse Behavior Analysis</div>
+                                        <div>✓ Keystroke Dynamics</div>
+                                        <div>✓ Attention Verification</div>
+                                        <div>✓ Cognitive Challenges</div>
+                                        <div>✓ Biometric Simulation</div>
+                                        <div>✓ Pattern Recognition</div>
+                                        <div>✓ Proof of Work</div>
+                                        <div>✓ Device Fingerprinting</div>
+                                        <div>✓ Neural Pattern Analysis</div>
+                                        <div>✓ Machine Learning Challenges</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <p style="margin-top: 30px; color: #666;">
+                                ${isHuman ? 
+                                    'Congratulations! You have successfully passed all advanced anti-bot verification systems.' :
+                                    'Automated behavior detected. This would trigger additional security measures in a real system.'
+                                }
+                            </p>
+                            
+                            <button onclick="location.reload()" 
+                                    style="padding: 15px 30px; font-size: 16px; background: #007bff; color: white; 
+                                           border: none; border-radius: 8px; margin-top: 20px; cursor: pointer;">
+                                Run Test Again
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Utility and analysis methods
+            calculateStandardDeviation(values) {
+                if (values.length === 0) return 0;
+                const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+                return Math.sqrt(variance);
+            }
+
+            calculateFittsLaw() {
+                if (this.clickPrecision.length === 0) return 0.5;
+                
+                const recentClicks = this.clickPrecision.slice(-20);
+                const avgDistance = recentClicks.reduce((a, b) => a + b.distance, 0) / recentClicks.length;
+                const avgTargetSize = recentClicks.reduce((a, b) => a + b.targetSize, 0) / recentClicks.length;
+                
+                // Ideal precision would be clicking near center
+                const precisionScore = Math.max(0, 1 - (avgDistance / (avgTargetSize / 2)));
+                return precisionScore;
+            }
+
+            calculateJerkiness() {
+                if (this.mouseMovements.length < 3) return 0;
+                
+                const recent = this.mouseMovements.slice(-20);
+                let totalJerk = 0;
+                
+                for (let i = 2; i < recent.length; i++) {
+                    const a1 = recent[i-1].acceleration;
+                    const a2 = recent[i].acceleration;
+                    const dt = recent[i].timestamp - recent[i-1].timestamp;
+                    
+                    if (dt > 0) {
+                        totalJerk += Math.abs(a2 - a1) / dt;
+                    }
+                }
+                
+                return totalJerk / (recent.length - 2);
+            }
+
+            setsEqual(a, b) {
+                return a.size === b.size && [...a].every(value => b.has(value));
+            }
+
+            calculateFinalScore() {
+                let score = 0;
+                
+                // Behavior score (40 points max)
+                score += Math.min(40, Math.max(0, this.behaviorScore * 0.5));
+                
+                // Questionnaire completion (20 points)
+                score += this.completedQuestionnaires.size * 5;
+                
+                // Verification steps (20 points)
+                score += Object.values(this.verificationSteps).filter(v => v).length * 4;
+                
+                // Time analysis (10 points)
+                const totalTime = Date.now() - this.startTime;
+                if (totalTime > 60000 && totalTime < 1800000) { // 1-30 minutes
+                    score += 10;
+                } else if (totalTime > 30000) {
+                    score += 5;
+                }
+                
+                // Interaction diversity (10 points)
+                if (this.mouseMovements.length > 100) score += 3;
+                if (this.keystrokePatterns.length > 20) score += 3;
+                if (this.clickPrecision.length > 10) score += 2;
+                if (this.interactionTiming.length > 15) score += 2;
+                
+                return Math.min(100, score);
+            }
+
+            calculateThreatLevel() {
+                const score = this.calculateFinalScore();
+                if (score >= 80) return 'LOW';
+                if (score >= 60) return 'MEDIUM';
+                if (score >= 40) return 'HIGH';
+                return 'CRITICAL';
+            }
+
+            // Real-time monitoring and updates
+            startRealTimeAnalysis() {
+                setInterval(() => {
+                    this.updateSecurityScore();
+                    this.updateThreatLevel();
+                    this.analyzeCurrentBehavior();
+                }, 2000);
+                
+                document.getElementById('realtime-analysis').style.display = 'block';
+            }
+
+            startBehavioralTracking() {
+                document.getElementById('behavioral-tracker').style.display = 'block';
+                
+                setInterval(() => {
+                    document.getElementById('mouse-count').textContent = this.mouseMovements.length;
+                    document.getElementById('key-count').textContent = this.keystrokePatterns.length;
+                    document.getElementById('behavior-score').textContent = Math.floor(this.behaviorScore);
+                    document.getElementById('threat-level').textContent = this.calculateThreatLevel();
+                }, 1000);
+            }
+
+            startSecurityMonitoring() {
+                setInterval(() => {
+                    this.checkHoneypots();
+                    this.analyzeInteractionPatterns();
+                    this.updateSecurityIndicator();
+                }, 3000);
+            }
+
+            checkHoneypots() {
+                const honeypots = document.querySelectorAll('.honeypot');
+                honeypots.forEach(honeypot => {
+                    if (honeypot.value.trim() !== '') {
+                        this.behaviorScore -= 100;
+                        this.suspiciousActivities.push({
+                            type: 'honeypot_filled',
+                            field: honeypot.name,
+                            value: honeypot.value,
+                            timestamp: Date.now()
+                        });
+                        this.logAnalysis(`🚨 HONEYPOT TRIGGERED: ${honeypot.name} = "${honeypot.value}"`);
+                        this.triggerEmergencyChallenge();
+                    }
+                });
+            }
+
+            analyzeInteractionPatterns() {
+                // Check for bot-like patterns
+                const recentInteractions = this.interactionTiming.slice(-20);
+                
+                if (recentInteractions.length > 10) {
+                    const intervals = [];
+                    for (let i = 1; i < recentInteractions.length; i++) {
+                        intervals.push(recentInteractions[i].timestamp - recentInteractions[i-1].timestamp);
+                    }
+                    
+                    const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                    const intervalVariation = this.calculateStandardDeviation(intervals);
+                    
+                    // Too regular = suspicious
+                    if (intervalVariation < 10 && avgInterval < 100) {
+                        this.behaviorScore -= 15;
+                        this.suspiciousActivities.push({
+                            type: 'regular_intervals',
+                            avgInterval: avgInterval,
+                            variation: intervalVariation,
+                            timestamp: Date.now()
+                        });
+                        this.logAnalysis(`🚨 Suspicious regular intervals: ${avgInterval}ms ±${intervalVariation}ms`);
+                    }
+                }
+            }
+
+            logAnalysis(message) {
+                const log = document.getElementById('analysis-log');
+                const timestamp = new Date().toLocaleTimeString();
+                log.innerHTML = `[${timestamp}] ${message}<br>` + log.innerHTML;
+                
+                // Keep only last 20 entries
+                const lines = log.innerHTML.split('<br>');
+                if (lines.length > 20) {
+                    log.innerHTML = lines.slice(0, 20).join('<br>');
+                }
+            }
+
+            updateNeuralDisplay() {
+                const display = document.getElementById('neural-pattern-display');
+                display.style.display = 'block';
+                
+                const log = document.getElementById('neural-log');
+                if (this.neuralPatterns.length > 0) {
+                    const latest = this.neuralPatterns[this.neuralPatterns.length - 1];
+                    const pattern = `H:${latest.humanLikelihood.toFixed(2)} E:${latest.complexity.toFixed(2)}`;
+                    log.innerHTML = pattern + '<br>' + log.innerHTML;
+                    
+                    const lines = log.innerHTML.split('<br>');
+                    if (lines.length > 10) {
+                        log.innerHTML = lines.slice(0, 10).join('<br>');
+                    }
+                }
+            }
+
+            updateDifficultyBar() {
+                const fill = document.getElementById('difficulty-fill');
+                const percentage = (this.mlDifficulty / 10) * 100;
+                fill.style.width = percentage + '%';
+                document.getElementById('ml-difficulty').textContent = this.mlDifficulty;
+            }
+
+            updateTabCounts() {
+                document.getElementById('active-tab-count').textContent = this.activeTabCount;
+                document.getElementById('completed-tab-count').textContent = this.completedTabCount;
+                document.getElementById('failed-tab-count').textContent = this.failedTabCount;
+            }
+
+            updateWindowStatus() {
+                // Implementation for window status updates
+                console.log('Window status updated');
+            }
+
+            updateSecurityScore() {
+                this.securityScore = this.calculateFinalScore();
+                document.getElementById('security-score').textContent = this.securityScore;
+            }
+
+            updateThreatLevel() {
+                this.threatLevel = this.calculateThreatLevel();
+                document.getElementById('master-threat-level').textContent = this.threatLevel;
+            }
+
+            updateSecurityIndicator() {
+                const indicator = document.getElementById('security-indicator');
+                const score = this.calculateFinalScore();
+                
+                if (score >= 70) {
+                    indicator.className = 'security-indicator security-high';
+                    indicator.textContent = '🛡️ Security: HIGH';
+                } else if (score >= 40) {
+                    indicator.className = 'security-indicator security-medium';
+                    indicator.textContent = '⚠️ Security: MEDIUM';
+                } else {
+                    indicator.className = 'security-indicator security-low';
+                    indicator.textContent = '🚨 Security: LOW';
+                }
+            }
+
+            updateAllDisplays() {
+                this.updateSecurityScore();
+                this.updateThreatLevel();
+                this.updateSecurityIndicator();
+                
+                const progress = (this.completedQuestionnaires.size / 4) * 100;
+                document.getElementById('overall-progress').textContent = Math.floor(progress) + '%';
+            }
+
+            analyzeCurrentBehavior() {
+                // Real-time behavior analysis
+                const recent = {
+                    mouse: this.mouseMovements.slice(-10),
+                    keys: this.keystrokePatterns.slice(-5),
+                    interactions: this.interactionTiming.slice(-5)
+                };
+                
+                let riskFactors = 0;
+                
+                // Check for automation signs
+                if (recent.mouse.length > 5) {
+                    const velocities = recent.mouse.map(m => m.velocity);
+                    const avgVel = velocities.reduce((a, b) => a + b, 0) / velocities.length;
+                    const velVar = this.calculateStandardDeviation(velocities);
+                    
+                    if (avgVel === 0 || velVar < 0.01) riskFactors++;
+                    if (avgVel > 10) riskFactors++;
+                }
+                
+                if (recent.keys.length > 3) {
+                    const dwells = recent.keys.map(k => k.dwellTime);
+                    const dwellVar = this.calculateStandardDeviation(dwells);
+                    
+                    if (dwellVar < 5) riskFactors++;
+                }
+                
+                // Update analysis
+                if (riskFactors > 2) {
+                    this.logAnalysis(`🚨 High risk detected: ${riskFactors} factors`);
+                    this.behaviorScore -= 5;
+                } else if (riskFactors === 0 && recent.mouse.length > 0) {
+                    this.behaviorScore += 1;
+                }
+            }
+
+            // Master control functions
+            resetAllSystems() {
+                location.reload();
+            }
+
+            generateReport() {
+                const report = {
+                    sessionId: crypto.randomBytes(8).toString('hex'),
+                    timestamp: new Date().toISOString(),
+                    duration: Date.now() - this.startTime,
+                    finalScore: this.calculateFinalScore(),
+                    behaviorScore: this.behaviorScore,
+                    threatLevel: this.calculateThreatLevel(),
+                    
+                    questionnaires: {
+                        completed: this.completedQuestionnaires.size,
+                        total: 4,
+                        completionRate: this.completedQuestionnaires.size / 4
+                    },
+                    
+                    verificationSteps: this.verificationSteps,
+                    
+                    interactions: {
+                        mouseMovements: this.mouseMovements.length,
+                        keystrokePatterns: this.keystrokePatterns.length,
+                        clickPrecision: this.clickPrecision.length,
+                        interactionTiming: this.interactionTiming.length
+                    },
+                    
+                    challenges: {
+                        proofOfWorkCompleted: this.proofOfWorkCompleted,
+                        mlDifficulty: this.mlDifficulty,
+                        challengeAttempts: this.challengeAttempts
+                    },
+                    
+                    multiWindow: {
+                        spawnedWindows: this.spawnedWindows.length,
+                        spawnedTabs: this.spawnedTabs.length,
+                        completedTabs: this.completedTabCount,
+                        failedTabs: this.failedTabCount
+                    },
+                    
+                    neuralAnalysis: {
+                        patternsAnalyzed: this.neuralPatterns.length,
+                        avgHumanLikelihood: this.neuralPatterns.length > 0 ? 
+                            this.neuralPatterns.reduce((a, b) => a + b.humanLikelihood, 0) / this.neuralPatterns.length : 0
+                    },
+                    
+                    suspiciousActivities: this.suspiciousActivities,
+                    deviceFingerprint: Object.keys(this.deviceFingerprint)
+                };
+                
+                console.log('📊 Comprehensive Analysis Report:', report);
+                
+                // Download report
+                const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `antibot-report-${report.sessionId}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('Analysis report downloaded successfully!');
+            }
+
+            triggerEmergencyChallenge() {
+                this.currentChallenge = 'emergency';
+                this.challengeAttempts++;
+                
+                document.getElementById('challenge-title').textContent = '🚨 Emergency Security Challenge';
+                document.getElementById('challenge-content').innerHTML = `
+                    <div style="background: #f8d7da; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #721c24;">Suspicious Activity Detected!</h4>
+                        <p>Our system has detected automated behavior. Please complete the following challenges to continue:</p>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5>Advanced CAPTCHA</h5>
+                        <div style="background: #f0f0f0; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                            <div style="font-family: monospace; font-size: 20px; letter-spacing: 3px; text-decoration: line-through;">
+                                X7M9K2
+                            </div>
+                        </div>
+                        <input type="text" id="emergency-captcha" placeholder="Enter the characters above" style="width: 100%; padding: 10px; margin: 10px 0;">
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5>Cognitive Challenge</h5>
+                        <p>A farmer has 17 sheep. All but 9 die. How many sheep are left?</p>
+                        <input type="number" id="emergency-cognitive" placeholder="Your answer" style="width: 100px; padding: 10px; margin: 10px 0;">
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5>Pattern Recognition</h5>
+                        <p>Click the squares in ascending numerical order:</p>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0;">
+                            ${[3, 1, 4, 1, 5, 9, 2, 6, 5].map((num, index) => 
+                                `<div onclick="antiBotSystem.selectEmergencyPattern(${index}, ${num})" 
+                                      style="padding: 20px; background: #e9ecef; border-radius: 8px; text-align: center; cursor: pointer; font-size: 18px;">
+                                    ${num}
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('challenge-overlay').style.display = 'flex';
+                this.emergencyPatternSequence = [];
+                this.emergencyPatternExpected = [1, 1, 2, 3, 4, 5, 5, 6, 9]; // Sorted order
+            }
+
+            selectEmergencyPattern(index, value) {
+                this.emergencyPatternSequence.push(value);
+                event.target.style.background = '#28a745';
+                event.target.style.color = 'white';
+                event.target.onclick = null;
+            }
+
+            submitChallenge() {
+                if (this.currentChallenge === 'emergency') {
+                    const captcha = document.getElementById('emergency-captcha').value.toUpperCase();
+                    const cognitive = parseInt(document.getElementById('emergency-cognitive').value);
+                    
+                    let passed = 0;
+                    let total = 3;
+                    
+                    // Check CAPTCHA
+                    if (captcha === 'X7M9K2') {
+                        passed++;
+                        this.logAnalysis('Emergency CAPTCHA passed');
+                    } else {
+                        this.logAnalysis(`Emergency CAPTCHA failed: ${captcha}`);
+                    }
+                    
+                    // Check cognitive (answer is 9)
+                    if (cognitive === 9) {
+                        passed++;
+                        this.logAnalysis('Emergency cognitive challenge passed');
+                    } else {
+                        this.logAnalysis(`Emergency cognitive failed: ${cognitive}`);
+                    }
+                    
+                    // Check pattern
+                    if (JSON.stringify(this.emergencyPatternSequence.slice(0, 5)) === JSON.stringify([1, 1, 2, 3, 4])) {
+                        passed++;
+                        this.logAnalysis('Emergency pattern recognition passed');
+                    } else {
+                        this.logAnalysis(`Emergency pattern failed: ${JSON.stringify(this.emergencyPatternSequence)}`);
+                    }
+                    
+                    if (passed >= 2) {
+                        this.behaviorScore += 30;
+                        this.logAnalysis(`Emergency challenge passed: ${passed}/${total}`);
+                        this.closeChallenge();
+                    } else {
+                        this.behaviorScore -= 20;
+                        alert(`Challenge failed: ${passed}/${total} correct. Please try again.`);
+                        this.triggerEmergencyChallenge();
+                    }
+                }
+            }
+
+            closeChallenge() {
+                document.getElementById('challenge-overlay').style.display = 'none';
+                this.currentChallenge = null;
+            }
+
+            // Setup advanced event listeners
+            setupAdvancedEventListeners() {
+                // Page visibility changes
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        this.logAnalysis('Page hidden - potential tab switching');
+                        this.behaviorScore -= 2;
+                    } else {
+                        this.logAnalysis('Page visible - returned focus');
+                        this.behaviorScore += 1;
+                    }
+                });
+                
+                // Prevent right-click (common bot detection)
+                document.addEventListener('contextmenu', (e) => {
+                    this.logAnalysis('Right-click detected');
+                    this.behaviorScore += 2; // Humans sometimes right-click
+                });
+                
+                // Prevent copy/paste (forms)
+                document.addEventListener('paste', (e) => {
+                    this.logAnalysis('Paste operation detected');
+                    this.behaviorScore -= 3; // Suspicious for forms
+                });
+                
+                // Detect developer tools
+                let devtools = {open: false, orientation: null};
+                const threshold = 160;
+                
+                setInterval(() => {
+                    if (window.outerHeight - window.innerHeight > threshold || 
+                        window.outerWidth - window.innerWidth > threshold) {
+                        if (!devtools.open) {
+                            devtools.open = true;
+                            this.logAnalysis('🚨 Developer tools opened');
+                            this.behaviorScore -= 25;
+                        }
+                    } else {
+                        if (devtools.open) {
+                            devtools.open = false;
+                            this.logAnalysis('Developer tools closed');
+                        }
+                    }
+                }, 500);
+                
+                // Monitor for automation frameworks
+                if (window.webdriver || 
+                    window.phantom || 
+                    window.callPhantom || 
+                    window._phantom ||
+                    window.Buffer ||
+                    window.emit ||
+                    window.spawn) {
+                    this.logAnalysis('🚨 Automation framework detected');
+                    this.behaviorScore -= 50;
+                }
+                
+                // Check for headless browser
+                if (navigator.webdriver === true ||
+                    navigator.plugins.length === 0 ||
+                    /HeadlessChrome/.test(navigator.userAgent)) {
+                    this.logAnalysis('🚨 Headless browser detected');
+                    this.behaviorScore -= 40;
+                }
+            }
+
+            generateDynamicChallenges() {
+                // Generate all dynamic content
+                this.generateMathChallenge();
+                this.generateCaptchaChallenge();
+                this.generatePatternChallenge();
+                
+                console.log('🎲 Dynamic challenges generated');
+            }
+        }
+
+        // Initialize the ultimate system when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.antiBotSystem = new UltimateAntiBotSystem();
+            
+            // Update all displays periodically
+            setInterval(() => {
+                if (window.antiBotSystem && window.antiBotSystem.initialized) {
+                    window.antiBotSystem.updateAllDisplays();
+                }
+            }, 5000);
+            
+            console.log('🔬 Ultimate Anti-Bot Testing Environment Ready');
+        });
+    </script>
+</body>
+</html>

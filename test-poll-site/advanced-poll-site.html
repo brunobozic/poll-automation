@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Survey Platform - Anti-Bot Testing Site</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .survey-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .survey-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .question-group {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .question-group:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .question-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-option, .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .radio-option:hover, .checkbox-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .radio-option input, .checkbox-option input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .anti-bot-challenges {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .challenge-modal {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .captcha-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px dashed #dee2e6;
+        }
+
+        .attention-verification {
+            margin: 20px 0;
+        }
+
+        .attention-video {
+            width: 100%;
+            max-width: 400px;
+            height: 225px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .mouse-tracker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .page-indicator {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #6c757d;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .verification-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Advanced anti-bot CSS */
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            visibility: hidden;
+        }
+
+        .timing-check {
+            display: none;
+        }
+
+        /* Canvas fingerprinting elements */
+        #fingerprint-canvas {
+            position: absolute;
+            top: -1000px;
+            left: -1000px;
+            width: 1px;
+            height: 1px;
+        }
+
+        /* Behavioral analysis indicators */
+        .interaction-zone {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Media attention verification */
+        .media-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .proof-of-work {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mouse tracking canvas -->
+    <canvas id="mouse-tracker" class="mouse-tracker"></canvas>
+    
+    <!-- Fingerprinting canvas -->
+    <canvas id="fingerprint-canvas"></canvas>
+    
+    <!-- Verification status -->
+    <div id="verification-status" class="verification-status">
+        🛡️ Anti-Bot Protection Active
+    </div>
+
+    <!-- Proof of work indicator -->
+    <div id="proof-of-work" class="proof-of-work">
+        Computing proof of work... <span id="pow-progress">0%</span>
+    </div>
+
+    <div class="container">
+        <!-- Survey Header -->
+        <div class="survey-header">
+            <h1>🔬 Advanced Survey Research Platform</h1>
+            <p>Advanced Anti-Bot Protection Testing Environment</p>
+            <div class="page-indicator">
+                Page <span id="current-page">1</span> of <span id="total-pages">4</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Survey Form -->
+        <form id="survey-form" class="survey-form interaction-zone">
+            <!-- Honeypot fields -->
+            <input type="text" name="name_real" class="honeypot" tabindex="-1" autocomplete="off">
+            <input type="email" name="email_real" class="honeypot" tabindex="-1" autocomplete="off">
+            <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">
+            
+            <!-- Timing check -->
+            <input type="hidden" name="form_start_time" class="timing-check" id="form-start-time">
+            <input type="hidden" name="page_load_time" class="timing-check" id="page-load-time">
+
+            <!-- Page 1: Demographics with Behavioral Analysis -->
+            <div id="page-1" class="survey-page">
+                <div class="question-group" data-question="age">
+                    <div class="question-title">What is your age range? *</div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="age" value="18-24" required>
+                            <span>18-24 years</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="age" value="25-34" required>
+                            <span>25-34 years</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="age" value="35-44" required>
+                            <span>35-44 years</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="age" value="45-54" required>
+                            <span>45-54 years</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="age" value="55+" required>
+                            <span>55+ years</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-group" data-question="location">
+                    <div class="question-title">What is your primary location? *</div>
+                    <select class="form-control" name="location" required>
+                        <option value="">Select your location...</option>
+                        <option value="north-america">North America</option>
+                        <option value="europe">Europe</option>
+                        <option value="asia">Asia</option>
+                        <option value="oceania">Oceania</option>
+                        <option value="south-america">South America</option>
+                        <option value="africa">Africa</option>
+                    </select>
+                </div>
+
+                <div class="question-group" data-question="interests">
+                    <div class="question-title">What are your interests? (Select all that apply) *</div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="interests" value="technology">
+                            <span>Technology & Innovation</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="interests" value="sports">
+                            <span>Sports & Fitness</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="interests" value="arts">
+                            <span>Arts & Culture</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="interests" value="business">
+                            <span>Business & Finance</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="interests" value="travel">
+                            <span>Travel & Adventure</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="interests" value="education">
+                            <span>Education & Learning</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2: Preferences with Media Attention Verification -->
+            <div id="page-2" class="survey-page hidden">
+                <div class="question-group" data-question="media-attention">
+                    <div class="question-title">Media Attention Verification *</div>
+                    <p>Please watch the following video and answer the question below:</p>
+                    <div class="media-container">
+                        <div class="attention-video" id="attention-video">
+                            🎥 Sample Video Content<br>
+                            <small>Watch for 10 seconds</small>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div class="question-title">What color was predominantly shown in the video? *</div>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="video-color" value="red" required>
+                                <span>Red</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="video-color" value="blue" required>
+                                <span>Blue</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="video-color" value="green" required>
+                                <span>Green</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="video-color" value="yellow" required>
+                                <span>Yellow</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group" data-question="shopping">
+                    <div class="question-title">How often do you shop online? *</div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="shopping" value="daily" required>
+                            <span>Daily</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shopping" value="weekly" required>
+                            <span>Weekly</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shopping" value="monthly" required>
+                            <span>Monthly</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shopping" value="rarely" required>
+                            <span>Rarely</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shopping" value="never" required>
+                            <span>Never</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 3: Cognitive Challenge -->
+            <div id="page-3" class="survey-page hidden">
+                <div class="question-group" data-question="math">
+                    <div class="question-title">Cognitive Challenge *</div>
+                    <p>Please solve this simple problem to continue:</p>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 15px 0; text-align: center;">
+                        <div id="math-problem" style="font-size: 24px; font-weight: bold; margin-bottom: 15px;">
+                            Loading...
+                        </div>
+                        <input type="number" id="math-answer" class="form-control" style="max-width: 200px; margin: 0 auto;" required>
+                    </div>
+                </div>
+
+                <div class="question-group" data-question="satisfaction">
+                    <div class="question-title">Rate your overall satisfaction with this survey so far: *</div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="satisfaction" value="1" required>
+                            <span>⭐ Very Dissatisfied</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="satisfaction" value="2" required>
+                            <span>⭐⭐ Dissatisfied</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="satisfaction" value="3" required>
+                            <span>⭐⭐⭐ Neutral</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="satisfaction" value="4" required>
+                            <span>⭐⭐⭐⭐ Satisfied</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="satisfaction" value="5" required>
+                            <span>⭐⭐⭐⭐⭐ Very Satisfied</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-group" data-question="feedback">
+                    <div class="question-title">Additional feedback (optional):</div>
+                    <textarea class="form-control" name="feedback" rows="4" placeholder="Please share any additional thoughts..."></textarea>
+                </div>
+            </div>
+
+            <!-- Page 4: Final Verification -->
+            <div id="page-4" class="survey-page hidden">
+                <div class="question-group" data-question="final-verification">
+                    <div class="question-title">Final Verification</div>
+                    <p>Please complete the following verification steps:</p>
+                    
+                    <div class="captcha-container" id="captcha-container">
+                        <div style="text-align: center; padding: 20px;">
+                            <div id="captcha-challenge" style="font-size: 18px; margin-bottom: 15px;">
+                                Loading CAPTCHA...
+                            </div>
+                            <input type="text" id="captcha-input" class="form-control" placeholder="Enter the characters shown above" style="max-width: 300px; margin: 0 auto;" required>
+                        </div>
+                    </div>
+
+                    <div style="margin: 20px 0; text-align: center;">
+                        <label class="checkbox-option" style="justify-content: center;">
+                            <input type="checkbox" id="confirm-human" required>
+                            <span>I confirm that I am a human completing this survey</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation-buttons">
+                <button type="button" id="prev-btn" class="btn btn-secondary hidden">Previous</button>
+                <div></div>
+                <button type="button" id="next-btn" class="btn btn-primary">Next</button>
+                <button type="submit" id="submit-btn" class="btn btn-primary hidden">Submit Survey</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Anti-Bot Challenge Modal -->
+    <div id="anti-bot-challenges" class="anti-bot-challenges">
+        <div class="challenge-modal">
+            <h3>🛡️ Security Verification</h3>
+            <p>Our system has detected unusual activity. Please complete the verification below:</p>
+            
+            <div class="captcha-container">
+                <div id="modal-captcha-challenge">
+                    Advanced CAPTCHA Challenge
+                </div>
+                <input type="text" id="modal-captcha-input" class="form-control" placeholder="Enter verification code">
+            </div>
+            
+            <div class="attention-verification">
+                <p>Please watch this short verification video:</p>
+                <div class="attention-video">
+                    🎬 Verification Video
+                </div>
+            </div>
+            
+            <button type="button" id="verify-btn" class="btn btn-primary">Verify Identity</button>
+        </div>
+    </div>
+
+    <script>
+        // Advanced Anti-Bot Protection System
+        class AdvancedAntiBotSystem {
+            constructor() {
+                this.initialized = false;
+                this.mouseMovements = [];
+                this.keystrokePatterns = [];
+                this.interactionTiming = [];
+                this.behaviorScore = 0;
+                this.deviceFingerprint = '';
+                this.proofOfWorkSolved = false;
+                this.attentionVerified = false;
+                this.currentPage = 1;
+                this.totalPages = 4;
+                this.startTime = Date.now();
+                this.pageStartTimes = {};
+                
+                this.init();
+            }
+
+            async init() {
+                console.log('🛡️ Initializing Advanced Anti-Bot Protection...');
+                
+                // Initialize all protection systems
+                this.initializeMouseTracking();
+                this.initializeKeystrokeAnalysis();
+                this.initializeDeviceFingerprinting();
+                this.initializeBehavioralAnalysis();
+                this.initializeTimingAnalysis();
+                this.initializeMediaAttentionVerification();
+                this.initializeProofOfWork();
+                this.initializeFormProtection();
+                this.setupPageNavigation();
+                this.generateMathProblem();
+                this.generateCaptcha();
+                
+                // Set form start time
+                document.getElementById('form-start-time').value = this.startTime;
+                document.getElementById('page-load-time').value = Date.now();
+                
+                this.initialized = true;
+                this.updateVerificationStatus();
+                
+                console.log('✅ Anti-Bot Protection Active');
+            }
+
+            initializeMouseTracking() {
+                let mouseTrail = [];
+                let lastMouseTime = 0;
+                
+                document.addEventListener('mousemove', (e) => {
+                    const now = Date.now();
+                    const timeDelta = now - lastMouseTime;
+                    
+                    if (timeDelta > 10) { // Throttle to 100 FPS max
+                        const movement = {
+                            x: e.clientX,
+                            y: e.clientY,
+                            timestamp: now,
+                            velocity: timeDelta > 0 ? Math.sqrt(Math.pow(e.movementX, 2) + Math.pow(e.movementY, 2)) / timeDelta : 0,
+                            pressure: e.pressure || 0
+                        };
+                        
+                        this.mouseMovements.push(movement);
+                        mouseTrail.push(movement);
+                        
+                        // Keep only last 100 movements
+                        if (this.mouseMovements.length > 1000) {
+                            this.mouseMovements = this.mouseMovements.slice(-500);
+                        }
+                        
+                        if (mouseTrail.length > 20) {
+                            mouseTrail = mouseTrail.slice(-10);
+                        }
+                        
+                        lastMouseTime = now;
+                    }
+                });
+
+                // Detect human-like mouse patterns
+                setInterval(() => {
+                    if (this.mouseMovements.length > 50) {
+                        this.analyzeMouseBehavior();
+                    }
+                }, 5000);
+            }
+
+            analyzeMouseBehavior() {
+                const recent = this.mouseMovements.slice(-50);
+                
+                // Analyze patterns
+                const velocities = recent.map(m => m.velocity).filter(v => v > 0);
+                const avgVelocity = velocities.reduce((a, b) => a + b, 0) / velocities.length;
+                
+                // Check for human-like variation
+                const velocityVariation = this.calculateVariation(velocities);
+                const isHumanLike = velocityVariation > 0.1 && avgVelocity > 0.1 && avgVelocity < 10;
+                
+                if (isHumanLike) {
+                    this.behaviorScore += 5;
+                } else if (avgVelocity === 0 || velocityVariation < 0.05) {
+                    this.behaviorScore -= 10; // Suspicious: too perfect or no movement
+                }
+                
+                console.log(`Mouse behavior analysis: Score ${this.behaviorScore}, Avg Velocity: ${avgVelocity.toFixed(2)}, Variation: ${velocityVariation.toFixed(3)}`);
+            }
+
+            calculateVariation(values) {
+                if (values.length < 2) return 0;
+                const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+                return Math.sqrt(variance) / mean;
+            }
+
+            initializeKeystrokeAnalysis() {
+                let lastKeyTime = 0;
+                let keyPressHistory = [];
+                
+                document.addEventListener('keydown', (e) => {
+                    const now = Date.now();
+                    const timeSinceLastKey = now - lastKeyTime;
+                    
+                    if (lastKeyTime > 0) {
+                        keyPressHistory.push({
+                            key: e.key,
+                            timeDelta: timeSinceLastKey,
+                            timestamp: now
+                        });
+                        
+                        // Keep last 50 keystrokes
+                        if (keyPressHistory.length > 50) {
+                            keyPressHistory = keyPressHistory.slice(-25);
+                        }
+                        
+                        // Analyze typing patterns
+                        if (keyPressHistory.length > 10) {
+                            this.analyzeKeystrokePatterns(keyPressHistory);
+                        }
+                    }
+                    
+                    lastKeyTime = now;
+                });
+            }
+
+            analyzeKeystrokePatterns(history) {
+                const intervals = history.map(h => h.timeDelta);
+                const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                const variation = this.calculateVariation(intervals);
+                
+                // Human typing has natural variation
+                if (variation > 0.2 && avgInterval > 50 && avgInterval < 1000) {
+                    this.behaviorScore += 3;
+                } else if (variation < 0.1 || avgInterval < 20) {
+                    this.behaviorScore -= 5; // Too regular = bot
+                }
+            }
+
+            initializeDeviceFingerprinting() {
+                // Canvas fingerprinting
+                const canvas = document.getElementById('fingerprint-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                ctx.fillStyle = "rgb(200,0,0)";
+                ctx.fillRect(10, 10, 50, 50);
+                ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+                ctx.fillRect(30, 30, 50, 50);
+                ctx.font = "16px Arial";
+                ctx.fillText("AntiBot Test", 10, 100);
+                
+                this.deviceFingerprint = canvas.toDataURL();
+                
+                // WebGL fingerprinting
+                try {
+                    const gl = canvas.getContext('webgl');
+                    if (gl) {
+                        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                        if (debugInfo) {
+                            this.deviceFingerprint += gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+                            this.deviceFingerprint += gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                        }
+                    }
+                } catch (e) {
+                    console.log('WebGL fingerprinting failed');
+                }
+                
+                // Audio context fingerprinting
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const analyser = audioCtx.createAnalyser();
+                    this.deviceFingerprint += analyser.fftSize.toString();
+                } catch (e) {
+                    console.log('Audio fingerprinting failed');
+                }
+                
+                console.log('Device fingerprint generated:', this.deviceFingerprint.substring(0, 50) + '...');
+            }
+
+            initializeBehavioralAnalysis() {
+                // Track focus/blur events
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        this.behaviorScore -= 2; // Penalty for leaving tab
+                    } else {
+                        this.behaviorScore += 1; // Small bonus for returning
+                    }
+                });
+                
+                // Track scroll behavior
+                let scrollVelocities = [];
+                let lastScrollTime = 0;
+                let lastScrollY = 0;
+                
+                window.addEventListener('scroll', () => {
+                    const now = Date.now();
+                    const currentY = window.scrollY;
+                    
+                    if (lastScrollTime > 0) {
+                        const timeDelta = now - lastScrollTime;
+                        const yDelta = Math.abs(currentY - lastScrollY);
+                        const velocity = timeDelta > 0 ? yDelta / timeDelta : 0;
+                        
+                        scrollVelocities.push(velocity);
+                        if (scrollVelocities.length > 20) {
+                            scrollVelocities = scrollVelocities.slice(-10);
+                        }
+                        
+                        // Analyze scroll patterns
+                        if (scrollVelocities.length > 5) {
+                            const avgVelocity = scrollVelocities.reduce((a, b) => a + b, 0) / scrollVelocities.length;
+                            if (avgVelocity > 0.1 && avgVelocity < 5) {
+                                this.behaviorScore += 1;
+                            }
+                        }
+                    }
+                    
+                    lastScrollTime = now;
+                    lastScrollY = currentY;
+                });
+            }
+
+            initializeTimingAnalysis() {
+                this.pageStartTimes[this.currentPage] = Date.now();
+                
+                // Track time spent on each form element
+                document.querySelectorAll('input, select, textarea').forEach(element => {
+                    let focusTime = 0;
+                    
+                    element.addEventListener('focus', () => {
+                        focusTime = Date.now();
+                    });
+                    
+                    element.addEventListener('blur', () => {
+                        if (focusTime > 0) {
+                            const timeSpent = Date.now() - focusTime;
+                            this.interactionTiming.push({
+                                element: element.name || element.id,
+                                timeSpent: timeSpent,
+                                timestamp: Date.now()
+                            });
+                            
+                            // Human-like timing analysis
+                            if (timeSpent > 500 && timeSpent < 30000) {
+                                this.behaviorScore += 2;
+                            } else if (timeSpent < 100) {
+                                this.behaviorScore -= 3; // Too fast = suspicious
+                            }
+                        }
+                    });
+                });
+            }
+
+            initializeMediaAttentionVerification() {
+                const video = document.getElementById('attention-video');
+                let videoWatchTime = 0;
+                let videoStartTime = 0;
+                
+                // Simulate video attention tracking
+                video.addEventListener('click', () => {
+                    if (videoStartTime === 0) {
+                        videoStartTime = Date.now();
+                        video.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4)';
+                        video.innerHTML = '🎥 Video Playing...<br><small>Watch for verification</small>';
+                        
+                        // Simulate video duration
+                        setTimeout(() => {
+                            if (Date.now() - videoStartTime >= 8000) { // Watched for at least 8 seconds
+                                this.attentionVerified = true;
+                                this.behaviorScore += 10;
+                                video.style.background = '#28a745';
+                                video.innerHTML = '✅ Video Watched<br><small>Verification complete</small>';
+                                console.log('Attention verification passed');
+                            }
+                        }, 10000);
+                    }
+                });
+            }
+
+            initializeProofOfWork() {
+                if (this.proofOfWorkSolved) return;
+                
+                document.getElementById('proof-of-work').style.display = 'block';
+                
+                // Simple proof of work challenge
+                const startTime = Date.now();
+                const target = Math.floor(Math.random() * 100000) + 50000;
+                let nonce = 0;
+                let progress = 0;
+                
+                const solve = () => {
+                    for (let i = 0; i < 1000; i++) {
+                        const hash = this.simpleHash(target + nonce);
+                        if (hash < 1000) {
+                            this.proofOfWorkSolved = true;
+                            this.behaviorScore += 15;
+                            document.getElementById('proof-of-work').style.display = 'none';
+                            console.log(`Proof of work solved! Nonce: ${nonce}, Time: ${Date.now() - startTime}ms`);
+                            return;
+                        }
+                        nonce++;
+                    }
+                    
+                    progress = Math.min(99, (nonce / target) * 100);
+                    document.getElementById('pow-progress').textContent = Math.floor(progress) + '%';
+                    
+                    if (!this.proofOfWorkSolved) {
+                        setTimeout(solve, 10);
+                    }
+                };
+                
+                setTimeout(solve, 1000);
+            }
+
+            simpleHash(input) {
+                let hash = 0;
+                for (let i = 0; i < input.toString().length; i++) {
+                    const char = input.toString().charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32-bit integer
+                }
+                return Math.abs(hash);
+            }
+
+            initializeFormProtection() {
+                // Check for automated form filling
+                const form = document.getElementById('survey-form');
+                let rapidFills = 0;
+                const fillTimes = [];
+                
+                form.addEventListener('input', (e) => {
+                    const now = Date.now();
+                    fillTimes.push(now);
+                    
+                    // Check for suspiciously rapid filling
+                    if (fillTimes.length > 1) {
+                        const timeDelta = now - fillTimes[fillTimes.length - 2];
+                        if (timeDelta < 50) { // Less than 50ms between inputs
+                            rapidFills++;
+                            if (rapidFills > 5) {
+                                this.behaviorScore -= 20;
+                                this.triggerAdvancedChallenge();
+                            }
+                        }
+                    }
+                    
+                    // Keep only last 10 fill times
+                    if (fillTimes.length > 10) {
+                        fillTimes.splice(0, fillTimes.length - 10);
+                    }
+                });
+                
+                // Honeypot validation
+                setInterval(() => {
+                    const honeypots = document.querySelectorAll('.honeypot');
+                    honeypots.forEach(honeypot => {
+                        if (honeypot.value.trim() !== '') {
+                            this.behaviorScore -= 50;
+                            console.log('Honeypot field filled - bot detected!');
+                            this.triggerAdvancedChallenge();
+                        }
+                    });
+                }, 2000);
+            }
+
+            triggerAdvancedChallenge() {
+                console.log('🚨 Triggering advanced challenge due to suspicious behavior');
+                document.getElementById('anti-bot-challenges').style.display = 'flex';
+                this.generateModalCaptcha();
+            }
+
+            generateModalCaptcha() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let captcha = '';
+                for (let i = 0; i < 6; i++) {
+                    captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                
+                document.getElementById('modal-captcha-challenge').innerHTML = `
+                    <div style="font-family: monospace; font-size: 24px; letter-spacing: 5px; background: #f0f0f0; padding: 15px; border-radius: 5px;">
+                        ${captcha}
+                    </div>
+                `;
+                
+                this.modalCaptchaAnswer = captcha;
+            }
+
+            generateMathProblem() {
+                const a = Math.floor(Math.random() * 20) + 1;
+                const b = Math.floor(Math.random() * 20) + 1;
+                const operations = ['+', '-', '*'];
+                const op = operations[Math.floor(Math.random() * operations.length)];
+                
+                let answer;
+                switch (op) {
+                    case '+': answer = a + b; break;
+                    case '-': answer = a - b; break;
+                    case '*': answer = a * b; break;
+                }
+                
+                document.getElementById('math-problem').textContent = `${a} ${op} ${b} = ?`;
+                this.mathAnswer = answer;
+            }
+
+            generateCaptcha() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let captcha = '';
+                for (let i = 0; i < 5; i++) {
+                    captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                
+                document.getElementById('captcha-challenge').innerHTML = `
+                    <div style="font-family: monospace; font-size: 20px; letter-spacing: 3px; background: #e9ecef; padding: 10px; border-radius: 5px; text-decoration: line-through; color: #495057;">
+                        ${captcha}
+                    </div>
+                `;
+                
+                this.captchaAnswer = captcha;
+            }
+
+            setupPageNavigation() {
+                const nextBtn = document.getElementById('next-btn');
+                const prevBtn = document.getElementById('prev-btn');
+                const submitBtn = document.getElementById('submit-btn');
+                
+                nextBtn.addEventListener('click', () => this.nextPage());
+                prevBtn.addEventListener('click', () => this.prevPage());
+                submitBtn.addEventListener('click', (e) => this.submitForm(e));
+                
+                document.getElementById('verify-btn').addEventListener('click', () => {
+                    this.verifyModalChallenge();
+                });
+            }
+
+            nextPage() {
+                if (!this.validateCurrentPage()) {
+                    return;
+                }
+                
+                if (this.currentPage < this.totalPages) {
+                    document.getElementById(`page-${this.currentPage}`).classList.add('hidden');
+                    this.currentPage++;
+                    document.getElementById(`page-${this.currentPage}`).classList.remove('hidden');
+                    
+                    this.pageStartTimes[this.currentPage] = Date.now();
+                    this.updateProgress();
+                    this.updateNavigation();
+                    this.behaviorScore += 3; // Bonus for normal progression
+                }
+            }
+
+            prevPage() {
+                if (this.currentPage > 1) {
+                    document.getElementById(`page-${this.currentPage}`).classList.add('hidden');
+                    this.currentPage--;
+                    document.getElementById(`page-${this.currentPage}`).classList.remove('hidden');
+                    
+                    this.updateProgress();
+                    this.updateNavigation();
+                }
+            }
+
+            validateCurrentPage() {
+                const currentPageElement = document.getElementById(`page-${this.currentPage}`);
+                const requiredFields = currentPageElement.querySelectorAll('[required]');
+                
+                for (let field of requiredFields) {
+                    if (field.type === 'radio' || field.type === 'checkbox') {
+                        const name = field.name;
+                        const checked = currentPageElement.querySelector(`input[name="${name}"]:checked`);
+                        if (!checked) {
+                            field.focus();
+                            alert(`Please complete the required field: ${name}`);
+                            return false;
+                        }
+                    } else {
+                        if (!field.value.trim()) {
+                            field.focus();
+                            alert('Please complete all required fields');
+                            return false;
+                        }
+                    }
+                }
+                
+                // Special validations
+                if (this.currentPage === 3) {
+                    const mathInput = document.getElementById('math-answer');
+                    if (parseInt(mathInput.value) !== this.mathAnswer) {
+                        alert('Incorrect answer to the math problem. Please try again.');
+                        mathInput.focus();
+                        return false;
+                    }
+                }
+                
+                if (this.currentPage === 4) {
+                    const captchaInput = document.getElementById('captcha-input');
+                    if (captchaInput.value.toUpperCase() !== this.captchaAnswer) {
+                        alert('Incorrect CAPTCHA. Please try again.');
+                        this.generateCaptcha();
+                        captchaInput.value = '';
+                        captchaInput.focus();
+                        return false;
+                    }
+                }
+                
+                return true;
+            }
+
+            verifyModalChallenge() {
+                const captchaInput = document.getElementById('modal-captcha-input');
+                if (captchaInput.value.toUpperCase() === this.modalCaptchaAnswer) {
+                    this.behaviorScore += 10;
+                    document.getElementById('anti-bot-challenges').style.display = 'none';
+                    console.log('Advanced challenge passed');
+                } else {
+                    alert('Incorrect verification code. Please try again.');
+                    this.generateModalCaptcha();
+                    captchaInput.value = '';
+                }
+            }
+
+            updateProgress() {
+                const progress = (this.currentPage / this.totalPages) * 100;
+                document.getElementById('progress-fill').style.width = progress + '%';
+                document.getElementById('current-page').textContent = this.currentPage;
+            }
+
+            updateNavigation() {
+                const nextBtn = document.getElementById('next-btn');
+                const prevBtn = document.getElementById('prev-btn');
+                const submitBtn = document.getElementById('submit-btn');
+                
+                prevBtn.classList.toggle('hidden', this.currentPage === 1);
+                nextBtn.classList.toggle('hidden', this.currentPage === this.totalPages);
+                submitBtn.classList.toggle('hidden', this.currentPage !== this.totalPages);
+            }
+
+            updateVerificationStatus() {
+                const status = document.getElementById('verification-status');
+                const checks = [
+                    this.behaviorScore > 20,
+                    this.proofOfWorkSolved,
+                    this.mouseMovements.length > 10,
+                    this.keystrokePatterns.length > 5
+                ];
+                
+                const passedChecks = checks.filter(Boolean).length;
+                
+                if (passedChecks >= 3) {
+                    status.style.background = '#28a745';
+                    status.textContent = '✅ Verification Passed';
+                } else if (passedChecks >= 2) {
+                    status.style.background = '#ffc107';
+                    status.textContent = '⚠️ Partial Verification';
+                } else {
+                    status.style.background = '#dc3545';
+                    status.textContent = '🛡️ Anti-Bot Protection Active';
+                }
+                
+                status.style.display = 'block';
+            }
+
+            submitForm(e) {
+                e.preventDefault();
+                
+                if (!this.validateCurrentPage()) {
+                    return;
+                }
+                
+                // Final security check
+                const finalScore = this.calculateFinalScore();
+                
+                if (finalScore < 50) {
+                    alert('Security verification failed. Please ensure you are completing this survey manually.');
+                    this.triggerAdvancedChallenge();
+                    return;
+                }
+                
+                // Collect all form data with security metrics
+                const formData = new FormData(document.getElementById('survey-form'));
+                const securityData = {
+                    behaviorScore: this.behaviorScore,
+                    finalScore: finalScore,
+                    mouseMovements: this.mouseMovements.length,
+                    keystrokePatterns: this.keystrokePatterns.length,
+                    deviceFingerprint: this.deviceFingerprint.substring(0, 100),
+                    totalTime: Date.now() - this.startTime,
+                    pageTimings: this.pageStartTimes,
+                    proofOfWorkSolved: this.proofOfWorkSolved,
+                    attentionVerified: this.attentionVerified
+                };
+                
+                console.log('Survey submitted with security data:', securityData);
+                
+                // Simulate submission
+                document.querySelector('.survey-form').innerHTML = `
+                    <div style="text-align: center; padding: 50px;">
+                        <h2>✅ Survey Submitted Successfully!</h2>
+                        <p>Thank you for completing our advanced security survey.</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h4>Security Analysis Results:</h4>
+                            <p><strong>Behavior Score:</strong> ${this.behaviorScore}</p>
+                            <p><strong>Final Security Score:</strong> ${finalScore}/100</p>
+                            <p><strong>Mouse Movements:</strong> ${this.mouseMovements.length}</p>
+                            <p><strong>Total Time:</strong> ${Math.floor((Date.now() - this.startTime) / 1000)} seconds</p>
+                            <p><strong>Status:</strong> ${finalScore >= 50 ? '✅ Human Verified' : '⚠️ Suspicious Activity'}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            calculateFinalScore() {
+                let score = 0;
+                
+                // Behavior score contribution (max 40 points)
+                score += Math.min(40, Math.max(0, this.behaviorScore));
+                
+                // Time-based analysis (max 20 points)
+                const totalTime = Date.now() - this.startTime;
+                if (totalTime > 30000 && totalTime < 600000) { // 30 seconds to 10 minutes
+                    score += 20;
+                } else if (totalTime > 15000) {
+                    score += 10;
+                }
+                
+                // Interaction diversity (max 20 points)
+                if (this.mouseMovements.length > 50) score += 10;
+                if (this.keystrokePatterns.length > 10) score += 5;
+                if (this.interactionTiming.length > 5) score += 5;
+                
+                // Security challenge completion (max 20 points)
+                if (this.proofOfWorkSolved) score += 10;
+                if (this.attentionVerified) score += 10;
+                
+                return Math.min(100, score);
+            }
+        }
+
+        // Initialize the system when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.antiBotSystem = new AdvancedAntiBotSystem();
+            
+            // Update verification status periodically
+            setInterval(() => {
+                if (window.antiBotSystem && window.antiBotSystem.initialized) {
+                    window.antiBotSystem.updateVerificationStatus();
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
