@@ -1,0 +1,68 @@
+{
+  "deviceId": "dev_f98e40df586ba4f089c1d289fcc67b50",
+  "createdAt": 1750357702373,
+  "lastUsed": 1750357711017,
+  "profile": {
+    "type": "mobile",
+    "brand": "Generic",
+    "model": "Device"
+  },
+  "location": {
+    "region": "US",
+    "country": "United States"
+  },
+  "network": {
+    "type": "wifi",
+    "carrier": null
+  },
+  "browser": {
+    "name": "Chrome",
+    "version": "120.0.0.0"
+  },
+  "fingerprint": {
+    "id": "dev_f98e40df586ba4f089c1d289fcc67b50",
+    "type": "mobile"
+  },
+  "persistentData": {
+    "cookies": [],
+    "localStorage": [],
+    "sessionStorage": [],
+    "indexedDB": [],
+    "webSQL": [],
+    "fileSystem": []
+  },
+  "usage": {
+    "sessionCount": 2,
+    "totalTime": 0,
+    "lastSession": 1750357711017,
+    "dailyUsage": {
+      "2025-06-19": 2
+    },
+    "weeklyUsage": {},
+    "monthlyUsage": {}
+  },
+  "health": {
+    "score": 1,
+    "lastCheck": 1750357702373,
+    "issues": [],
+    "uptime": 1
+  },
+  "metrics": {
+    "successRate": null,
+    "detectionRate": 0,
+    "performanceScore": 1,
+    "reliabilityScore": 1
+  },
+  "rotation": {
+    "strategy": "time_based",
+    "scheduledAt": null,
+    "reason": null,
+    "generation": 1
+  },
+  "security": {
+    "compromised": false,
+    "suspiciousActivity": false,
+    "detectionEvents": [],
+    "lastDetection": null
+  }
+}

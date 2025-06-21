@@ -1,0 +1,68 @@
+{
+  "deviceId": "dev_85678f405db4bae3f3e78ec9e1c5fa30",
+  "createdAt": 1750402054577,
+  "lastUsed": 1750402054577,
+  "profile": {
+    "type": "desktop",
+    "brand": "Generic",
+    "model": "Device"
+  },
+  "location": {
+    "region": "US",
+    "country": "United States"
+  },
+  "network": {
+    "type": "wifi",
+    "carrier": null
+  },
+  "browser": {
+    "name": "Chrome",
+    "version": "120.0.0.0"
+  },
+  "fingerprint": {
+    "id": "dev_85678f405db4bae3f3e78ec9e1c5fa30",
+    "type": "desktop"
+  },
+  "persistentData": {
+    "cookies": [],
+    "localStorage": [],
+    "sessionStorage": [],
+    "indexedDB": [],
+    "webSQL": [],
+    "fileSystem": []
+  },
+  "usage": {
+    "sessionCount": 1,
+    "totalTime": 0,
+    "lastSession": 1750402054577,
+    "dailyUsage": {
+      "2025-06-20": 1
+    },
+    "weeklyUsage": {},
+    "monthlyUsage": {}
+  },
+  "health": {
+    "score": 1,
+    "lastCheck": 1750402054577,
+    "issues": [],
+    "uptime": 1
+  },
+  "metrics": {
+    "successRate": null,
+    "detectionRate": 0,
+    "performanceScore": 1,
+    "reliabilityScore": 1
+  },
+  "rotation": {
+    "strategy": "time_based",
+    "scheduledAt": null,
+    "reason": null,
+    "generation": 1
+  },
+  "security": {
+    "compromised": false,
+    "suspiciousActivity": false,
+    "detectionEvents": [],
+    "lastDetection": null
+  }
+}

@@ -59,25 +59,45 @@ class EmailAccountManager {
     async initialize() {
         this.log('🚀 Initializing Email Account Manager...');
         
-        this.browser = await chromium.launch({
-            headless: this.options.headless,
-            args: [
-                '--disable-blink-features=AutomationControlled',
-                '--disable-web-security',
-                '--disable-features=VizDisplayCompositor',
-                '--no-first-run'
-            ]
-        });
+        try {
+            this.browser = await chromium.launch({
+                headless: this.options.headless,
+                args: [
+                    '--disable-blink-features=AutomationControlled',
+                    '--disable-web-security',
+                    '--disable-features=VizDisplayCompositor',
+                    '--no-first-run',
+                    '--disable-background-timer-throttling',
+                    '--disable-backgrounding-occluded-windows',
+                    '--disable-renderer-backgrounding',
+                    '--no-sandbox',
+                    '--disable-dev-shm-usage'
+                ]
+            });
+            
+            this.log('🌐 Browser launched successfully');
 
-        this.page = await this.browser.newPage();
-        
-        // Set realistic user agent using headers
-        await this.page.setExtraHTTPHeaders({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
-        });
-        await this.page.setViewportSize({ width: 1366, height: 768 });
-
-        this.log('✅ Email Account Manager initialized');
+            const context = await this.browser.newContext({
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                viewport: { width: 1366, height: 768 },
+                locale: 'en-US',
+                timezoneId: 'America/New_York'
+            });
+            
+            this.page = await context.newPage();
+            this.log('📄 New page created');
+            
+            // Add error handlers
+            this.page.on('close', () => this.log('⚠️ Page closed'));
+            this.page.on('crash', () => this.log('💥 Page crashed'));
+            this.browser.on('close', () => this.log('⚠️ Browser closed'));
+            
+            this.log('✅ Email Account Manager initialized');
+            
+        } catch (error) {
+            this.log(`❌ Initialization failed: ${error.message}`);
+            throw error;
+        }
     }
 
     /**
@@ -89,45 +109,67 @@ class EmailAccountManager {
         
         this.log(`📧 Creating new email account (Session: ${sessionId})...`);
 
-        try {
-            // Auto-select service if not specified
-            if (service === 'auto') {
-                service = this.selectBestService();
-            }
-
-            const serviceConfig = this.getServiceConfig(service);
-            if (!serviceConfig) {
-                throw new Error(`Unsupported email service: ${service}`);
-            }
-
-            this.log(`🎯 Using service: ${serviceConfig.name} (${serviceConfig.difficulty})`);
-
-            // Execute service-specific creation method
-            const result = await this[serviceConfig.method + 'CreateAccount'](sessionId, options);
-            
-            if (result.success) {
-                const account = {
-                    ...result,
-                    service: serviceConfig.name,
-                    sessionId: sessionId,
-                    createdAt: Date.now(),
-                    duration: Date.now() - startTime,
-                    status: 'active',
-                    verificationPending: false
-                };
-
-                this.activeAccounts.set(result.email, account);
-                this.log(`✅ Email account created: ${result.email} (${account.duration}ms)`);
+        // Add retry logic for network issues
+        let lastError;
+        const maxRetries = 3;
+        
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                this.log(`🔄 Attempt ${attempt}/${maxRetries}...`);
                 
-                return account;
-            } else {
-                throw new Error(result.error || 'Account creation failed');
-            }
+                // Auto-select service if not specified
+                if (service === 'auto') {
+                    service = this.selectBestService();
+                }
 
-        } catch (error) {
-            this.log(`❌ Email account creation failed (${sessionId}): ${error.message}`);
-            throw error;
+                const serviceConfig = this.getServiceConfig(service);
+                if (!serviceConfig) {
+                    throw new Error(`Unsupported email service: ${service}`);
+                }
+
+                this.log(`🎯 Using service: ${serviceConfig.name} (${serviceConfig.difficulty})`);
+
+                // Execute service-specific creation method
+                const result = await this[serviceConfig.method + 'CreateAccount'](sessionId, options);
+            
+                if (result.success) {
+                    const account = {
+                        ...result,
+                        service: serviceConfig.name,
+                        sessionId: sessionId,
+                        createdAt: Date.now(),
+                        duration: Date.now() - startTime,
+                        status: 'active',
+                        verificationPending: false
+                    };
+
+                    this.activeAccounts.set(result.email, account);
+                    this.log(`✅ Email account created: ${result.email} (${account.duration}ms)`);
+                    
+                    return account;
+                } else {
+                    throw new Error(result.error || 'Account creation failed');
+                }
+
+            } catch (error) {
+                lastError = error;
+                this.log(`❌ Attempt ${attempt} failed: ${error.message}`);
+                
+                if (attempt < maxRetries) {
+                    this.log(`⏳ Waiting before retry...`);
+                    await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
+                    
+                    // Try different service on retry
+                    if (attempt === 2 && service === 'tempmail') {
+                        service = 'tenminute';
+                        this.log(`🔄 Switching to backup service: 10MinuteMail`);
+                    }
+                }
+            }
         }
+        
+        this.log(`❌ All ${maxRetries} attempts failed`);
+        throw lastError;
     }
 
     /**
@@ -137,20 +179,62 @@ class EmailAccountManager {
         this.log(`📨 Creating TempMail account (${sessionId})...`);
         
         try {
-            await this.page.goto('https://temp-mail.org', { waitUntil: 'networkidle' });
-            await this.page.waitForTimeout(2000);
+            this.log(`🌐 Navigating to https://temp-mail.org...`);
+            const response = await this.page.goto('https://temp-mail.org', { 
+                waitUntil: 'domcontentloaded',
+                timeout: 60000 
+            });
+            this.log(`📡 Navigation response: ${response.status()} ${response.statusText()}`);
+            
+            this.log(`⏳ Waiting for page to stabilize...`);
+            await this.page.waitForTimeout(3000);
+            
+            this.log(`🔍 Current URL: ${this.page.url()}`);
+            this.log(`📋 Page title: ${await this.page.title()}`);
 
             // Get the auto-generated email address
             const emailSelector = '#mail';
-            await this.page.waitForSelector(emailSelector);
-            const email = await this.page.$eval(emailSelector, el => el.value);
+            this.log(`🔍 Looking for email input: ${emailSelector}`);
+            
+            try {
+                await this.page.waitForSelector(emailSelector, { timeout: 10000 });
+                this.log(`✅ Found email input field`);
+            } catch (e) {
+                this.log(`❌ Email input not found, page content: ${(await this.page.content()).substring(0, 500)}...`);
+                throw new Error(`Email input selector not found: ${emailSelector}`);
+            }
+            
+            // Wait for the email to actually load (not just "Loading...")
+            this.log(`⏳ Waiting for email to be generated...`);
+            let email = null;
+            let attempts = 0;
+            const maxEmailAttempts = 10;
+            
+            while (attempts < maxEmailAttempts) {
+                email = await this.page.$eval(emailSelector, el => el.value);
+                this.log(`📧 Email attempt ${attempts + 1}: ${email}`);
+                
+                if (email && email !== 'Loading...' && email.includes('@')) {
+                    this.log(`✅ Valid email retrieved: ${email}`);
+                    break;
+                }
+                
+                attempts++;
+                await this.page.waitForTimeout(2000);
+            }
 
-            if (!email) {
-                throw new Error('Could not retrieve email address from TempMail');
+            if (!email || email === 'Loading...' || !email.includes('@')) {
+                throw new Error(`Could not retrieve valid email address from TempMail after ${maxEmailAttempts} attempts`);
             }
 
             // Check if inbox is accessible
-            await this.page.waitForSelector('#inbox', { timeout: 5000 });
+            this.log(`🔍 Looking for inbox: #inbox`);
+            try {
+                await this.page.waitForSelector('#inbox', { timeout: 10000 });
+                this.log(`✅ Inbox found and accessible`);
+            } catch (e) {
+                this.log(`⚠️ Inbox not immediately accessible, but email retrieved successfully`);
+            }
             
             return {
                 success: true,
@@ -179,8 +263,11 @@ class EmailAccountManager {
         this.log(`📨 Creating 10MinuteMail account (${sessionId})...`);
         
         try {
-            await this.page.goto('https://10minutemail.com', { waitUntil: 'networkidle' });
-            await this.page.waitForTimeout(2000);
+            await this.page.goto('https://10minutemail.com', { 
+                waitUntil: 'domcontentloaded',
+                timeout: 60000 
+            });
+            await this.page.waitForTimeout(3000);
 
             // Get the auto-generated email address
             const emailSelector = '#mailAddress';
