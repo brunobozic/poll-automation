@@ -178,6 +178,24 @@ const setupDatabase = async () => {
     }
 
     await createTables();
+    
+    // Also set up registration logging tables
+    const RegistrationLogger = require('./registration-logger');
+    const registrationLogger = new RegistrationLogger('./data/polls.db');
+    await registrationLogger.initialize();
+    await registrationLogger.close();
+    
+    // Set up feedback loop database tables
+    const { setupFeedbackLoopDatabase } = require('./feedback-loop-setup');
+    await setupFeedbackLoopDatabase('./data/polls.db');
+    
+    // Set up enhanced storage system tables
+    const EnhancedStorageSystem = require('./enhanced-storage-system');
+    const mockAI = { analyzeContent: async () => 'mock' };
+    const enhancedStorage = new EnhancedStorageSystem(mockAI);
+    await enhancedStorage.initialize();
+    await enhancedStorage.close();
+    
     await insertSampleData();
     console.log('Database setup completed successfully!');
   } catch (error) {

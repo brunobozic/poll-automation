@@ -114,15 +114,23 @@ class RegistrationLogger {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 registration_id INTEGER,
                 step_id INTEGER,
+                interaction_type TEXT DEFAULT 'form_analysis',
                 prompt TEXT NOT NULL,
+                prompt_length INTEGER DEFAULT 0,
                 response TEXT,
+                response_length INTEGER DEFAULT 0,
                 model_used TEXT NOT NULL,
                 tokens_used INTEGER,
+                input_tokens INTEGER,
+                output_tokens INTEGER,
                 cost_usd DECIMAL(10, 6),
                 processing_time_ms INTEGER,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 success BOOLEAN DEFAULT 1,
                 error_message TEXT,
+                confidence_score REAL,
+                response_quality_score REAL,
                 FOREIGN KEY (registration_id) REFERENCES registration_attempts (id),
                 FOREIGN KEY (step_id) REFERENCES registration_steps (id)
             )`,
@@ -259,6 +267,28 @@ class RegistrationLogger {
                 last_seen DATETIME DEFAULT CURRENT_TIMESTAMP,
                 yield_importance REAL,
                 FOREIGN KEY (site_id) REFERENCES survey_sites (id)
+            )`,
+
+            // Registration failures table
+            `CREATE TABLE IF NOT EXISTS registration_failures (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                registration_id INTEGER,
+                step_name TEXT NOT NULL,
+                error_message TEXT,
+                context TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id)
+            )`,
+
+            // LLM insights table
+            `CREATE TABLE IF NOT EXISTS llm_insights (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                interaction_id INTEGER NOT NULL,
+                insight_type TEXT NOT NULL,
+                insight_data TEXT,
+                analysis_version TEXT DEFAULT '1.0',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (interaction_id) REFERENCES ai_interactions (id)
             )`
         ];
 
@@ -386,21 +416,28 @@ class RegistrationLogger {
     async logFormInteraction(interactionData) {
         const query = `
             INSERT INTO form_interactions (
-                step_id, field_name, field_type, field_selector, input_value,
-                ai_generated, interaction_type, success, error_message
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                step_id, registration_id, field_name, field_type, field_selector, field_label,
+                input_value, ai_generated, interaction_type, success, retry_count, 
+                error_message, response_time_ms, validation_passed, honeypot_detected
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const values = [
             interactionData.stepId,
+            interactionData.registrationId,
             interactionData.fieldName,
             interactionData.fieldType,
             interactionData.fieldSelector,
+            interactionData.fieldLabel || null,
             interactionData.inputValue,
             interactionData.aiGenerated ? 1 : 0,
             interactionData.interactionType,
             interactionData.success ? 1 : 0,
-            interactionData.errorMessage || null
+            interactionData.retryCount || 0,
+            interactionData.errorMessage || null,
+            interactionData.responseTimeMs || null,
+            interactionData.validationPassed !== false ? 1 : 0,
+            interactionData.honeypotDetected ? 1 : 0
         ];
 
         const result = await this.runQuery(query, values);
@@ -737,6 +774,287 @@ class RegistrationLogger {
     async getUserProfile(registrationId) {
         const query = 'SELECT * FROM user_profiles WHERE registration_id = ?';
         return await this.getQuery(query, [registrationId]);
+    }
+
+    /**
+     * Enhanced method to log email account with full access credentials
+     */
+    async logEnhancedEmailAccount(emailData) {
+        const query = `
+            INSERT INTO email_accounts (
+                email, service, password, session_id, inbox_url, login_url,
+                username_for_service, password_for_service, access_token,
+                verified_at, status, metadata, max_usage_limit
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        
+        const values = [
+            emailData.email,
+            emailData.service,
+            emailData.password,
+            emailData.sessionId,
+            emailData.inboxUrl || null,
+            emailData.loginUrl || null,
+            emailData.usernameForService || null,
+            emailData.passwordForService || null,
+            emailData.accessToken || null,
+            emailData.verifiedAt || null,
+            emailData.status || 'active',
+            JSON.stringify(emailData.metadata || {}),
+            emailData.maxUsageLimit || 10
+        ];
+
+        const result = await this.runQuery(query, values);
+        const emailId = result.lastID;
+        
+        console.log(`📧 Enhanced email account logged: ${emailData.email} (ID: ${emailId})`);
+        return emailId;
+    }
+
+    /**
+     * Log site credentials when successfully registering/logging into a site
+     */
+    async logSiteCredentials(credentialsData) {
+        const query = `
+            INSERT OR REPLACE INTO site_credentials (
+                site_id, email_id, username, password, login_url,
+                last_login, login_successful, session_data, notes
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const values = [
+            credentialsData.siteId,
+            credentialsData.emailId,
+            credentialsData.username,
+            credentialsData.password,
+            credentialsData.loginUrl,
+            new Date().toISOString(),
+            credentialsData.loginSuccessful ? 1 : 0,
+            JSON.stringify(credentialsData.sessionData || {}),
+            credentialsData.notes || null
+        ];
+
+        const result = await this.runQuery(query, values);
+        console.log(`🔑 Site credentials logged: ${credentialsData.username} for site ${credentialsData.siteId}`);
+        return result.lastID;
+    }
+
+    /**
+     * Enhanced AI interaction logging with detailed insights
+     */
+    async logEnhancedAIInteraction(aiData) {
+        const query = `
+            INSERT INTO ai_interactions (
+                registration_id, step_id, interaction_type, prompt, prompt_length,
+                response, response_length, model_used, tokens_used, input_tokens,
+                output_tokens, cost_usd, processing_time_ms, success, error_message,
+                confidence_score, response_quality_score
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const values = [
+            aiData.registrationId || null,
+            aiData.stepId || null,
+            aiData.interactionType || 'form_analysis',
+            aiData.prompt,
+            aiData.prompt ? aiData.prompt.length : 0,
+            aiData.response,
+            aiData.response ? aiData.response.length : 0,
+            aiData.modelUsed,
+            aiData.tokensUsed || null,
+            aiData.inputTokens || null,
+            aiData.outputTokens || null,
+            aiData.costUsd || null,
+            aiData.processingTimeMs || null,
+            aiData.success ? 1 : 0,
+            aiData.errorMessage || null,
+            aiData.confidenceScore || null,
+            aiData.responseQualityScore || null
+        ];
+
+        const result = await this.runQuery(query, values);
+        
+        // If we have insight data, log it separately
+        if (aiData.insightData) {
+            await this.logLLMInsights(result.lastID, aiData.insightData);
+        }
+        
+        console.log(`🤖 Enhanced AI interaction logged: ${aiData.modelUsed} - ${(aiData.prompt || '').substring(0, 50)}...`);
+        return result.lastID;
+    }
+
+    /**
+     * Log LLM insights from enhanced logging system
+     */
+    async logLLMInsights(interactionId, insightData) {
+        for (const [insightType, data] of Object.entries(insightData)) {
+            const query = `
+                INSERT INTO llm_insights (
+                    interaction_id, insight_type, insight_data, analysis_version
+                ) VALUES (?, ?, ?, ?)
+            `;
+
+            await this.runQuery(query, [
+                interactionId,
+                insightType,
+                JSON.stringify(data),
+                '1.0'
+            ]);
+        }
+        
+        console.log(`🧠 LLM insights logged: ${Object.keys(insightData).join(', ')}`);
+    }
+
+    /**
+     * Log registration failure with LLM analysis
+     */
+    async logRegistrationFailure(registrationId, failureData) {
+        const query = `
+            UPDATE registration_attempts 
+            SET status = 'failed',
+                success = 0,
+                error_message = ?,
+                failure_reason = ?,
+                llm_failure_analysis = ?,
+                completed_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        `;
+
+        await this.runQuery(query, [
+            failureData.errorMessage,
+            failureData.failureReason, // LLM-generated explanation
+            failureData.llmAnalysis,   // Detailed LLM reasoning
+            registrationId
+        ]);
+
+        console.log(`❌ Registration failure logged with LLM analysis: ${failureData.failureReason}`);
+    }
+
+    /**
+     * Enhanced method to get email usage history for a specific site
+     */
+    async getEmailUsageForSite(siteName) {
+        const query = `
+            SELECT 
+                ea.email,
+                ea.service,
+                ea.usage_count,
+                ra.success,
+                ra.started_at,
+                ra.failure_reason,
+                sc.username as site_username,
+                sc.login_successful
+            FROM email_accounts ea
+            LEFT JOIN registration_attempts ra ON ea.id = ra.email_id
+            LEFT JOIN survey_sites ss ON ss.site_name = ra.target_site
+            LEFT JOIN site_credentials sc ON (ea.id = sc.email_id AND ss.id = sc.site_id)
+            WHERE ss.site_name = ? OR ra.target_site = ?
+            ORDER BY ra.started_at DESC
+        `;
+        
+        return await this.allQuery(query, [siteName, siteName]);
+    }
+
+    /**
+     * Get available emails for reuse (not at usage limit)
+     */
+    async getAvailableEmails() {
+        const query = `
+            SELECT 
+                ea.*,
+                COUNT(ra.id) as total_registrations,
+                SUM(ra.success) as successful_registrations
+            FROM email_accounts ea
+            LEFT JOIN registration_attempts ra ON ea.id = ra.email_id
+            WHERE ea.status = 'active' 
+            AND ea.usage_count < ea.max_usage_limit
+            GROUP BY ea.id
+            ORDER BY ea.usage_count ASC, ea.created_at DESC
+        `;
+        
+        return await this.allQuery(query);
+    }
+
+    /**
+     * Get comprehensive site intelligence with all related data
+     */
+    async getComprehensiveSiteIntelligence(siteName) {
+        const siteQuery = `
+            SELECT * FROM survey_sites WHERE site_name = ?
+        `;
+        
+        const site = await this.getQuery(siteQuery, [siteName]);
+        if (!site) {
+            console.log(`⚠️ Site not found: ${siteName}`);
+            return null;
+        }
+
+        const intelligence = {
+            site: site,
+            defenses: await this.getSiteDefenses(site.id),
+            questions: await this.getSiteQuestions(site.id),
+            registrationHistory: await this.allQuery(`
+                SELECT ra.*, ea.email, ea.service
+                FROM registration_attempts ra
+                JOIN email_accounts ea ON ra.email_id = ea.id
+                WHERE ra.site_id = ? OR ra.target_site = ?
+                ORDER BY ra.started_at DESC
+            `, [site.id, siteName]),
+            credentials: await this.allQuery(`
+                SELECT sc.*, ea.email
+                FROM site_credentials sc
+                JOIN email_accounts ea ON sc.email_id = ea.id
+                WHERE sc.site_id = ?
+            `, [site.id]),
+            aiInteractions: await this.allQuery(`
+                SELECT ai.*, ra.target_site
+                FROM ai_interactions ai
+                JOIN registration_attempts ra ON ai.registration_id = ra.id
+                WHERE ra.site_id = ? OR ra.target_site = ?
+                ORDER BY ai.timestamp DESC
+            `, [site.id, siteName])
+        };
+
+        return intelligence;
+    }
+
+    /**
+     * Update email usage count
+     */
+    async updateEmailUsage(emailId) {
+        const query = `
+            UPDATE email_accounts 
+            SET usage_count = usage_count + 1,
+                last_accessed = CURRENT_TIMESTAMP
+            WHERE id = ?
+        `;
+        
+        await this.runQuery(query, [emailId]);
+        console.log(`📈 Email usage count updated for ID: ${emailId}`);
+    }
+
+    /**
+     * Get email-site correlation matrix
+     */
+    async getEmailSiteMatrix() {
+        const query = `
+            SELECT * FROM email_site_correlation
+            ORDER BY registration_date DESC
+        `;
+        
+        return await this.allQuery(query);
+    }
+
+    /**
+     * Get site intelligence summary
+     */
+    async getSiteIntelligenceSummary() {
+        const query = `
+            SELECT * FROM site_intelligence_summary
+            ORDER BY successful_registrations DESC, avg_completion_time ASC
+        `;
+        
+        return await this.allQuery(query);
     }
 
     /**

@@ -250,14 +250,126 @@ node app.js db cleanup --days 30
 - `node app.js db stats` - Show database statistics
 
 ## Database Tables
-- `email_accounts` - All created email accounts with access data
-- `registration_attempts` - All registration attempts with outcomes
-- `registration_steps` - Detailed step-by-step logs
-- `form_interactions` - Every form field interaction
-- `registration_questions` - All questions asked during registration
-- `survey_sites` - Intelligence on survey sites and their patterns
-- `system_events` - System-wide events and errors
-- `detection_events` - Anti-bot detection events and countermeasures
+
+### Core Email & Registration Tracking
+- `email_accounts` - All created email accounts with access credentials (service, password, inbox URLs)
+- `registration_attempts` - All registration attempts with outcomes and site correlation
+- `registration_steps` - Detailed step-by-step logs with duration and status
+- `form_interactions` - Every form field interaction with AI-generated flags
+- `registration_questions` - All questions asked during registration with AI reasoning
+- `user_profiles` - Demographic profiles created for each registration
+- `ai_interactions` - All LLM prompts and responses with token usage and costs
+
+### Site Intelligence & Countermeasures  
+- `survey_sites` - Comprehensive intelligence on each survey site visited
+- `site_defenses` - All anti-bot countermeasures detected per site with bypass methods
+- `site_questions` - Repository of all questions seen on each site with frequency
+- `detection_events` - Real-time anti-bot detection events and responses
+- `performance_metrics` - Registration success rates and timing analytics
+- `system_events` - System-wide events, errors, and operational logs
+
+### Email-Site Correlation
+- **Email Usage Tracking**: Track which emails have been used on which sites
+- **Registration Success/Failure**: Correlate email accounts with successful/failed registrations
+- **Site-specific Intelligence**: Build knowledge base of each site's requirements and defenses
+- **Reusability Analysis**: Determine which emails can be reused for new registrations
+- **Failure Analysis**: Store detailed reasons why registrations failed for optimization
+
+## SQLite Priority Requirements
+
+### CRITICAL DATABASE FEATURES
+1. **Email-to-Site Correlation**: Every email must be linked to every site attempted
+2. **Access Credential Storage**: Store all usernames/passwords for email services AND registered sites
+3. **Failure Reason Logging**: LLM must explain WHY registrations failed and store reasoning
+4. **Countermeasure Intelligence**: Log all anti-bot measures detected per site
+5. **LLM Interaction Logging**: Store all prompts sent to LLM and responses received
+6. **Registration Question Repository**: Build database of all questions seen across sites
+7. **Process Flow Tracking**: Log each step of automation with insights for improvement
+8. **Site-specific Profiles**: Maintain demographic profiles used per site for consistency
+
+## PRIMARY GOAL: COUNTERMEASURE INTELLIGENCE GATHERING
+
+### **CORE OBJECTIVE**
+The primary goal is to **register on survey sites** (and later fill surveys) while comprehensively logging all activities to SQLite. This enables post-processing analysis of **countermeasures and challenges each survey site implements** for iterative improvement of our adaptation strategies.
+
+### **CRITICAL LOGGING REQUIREMENTS**
+
+#### 🤖 **LLM Interaction Logging (HIGHEST PRIORITY)**
+- **ALL prompts sent to LLM** must be stored verbatim in SQLite
+- **ALL LLM responses** must be captured and stored
+- **ESPECIALLY** prompts for site structure interpretation and autofill properties
+- **Token usage, processing time, and cost tracking** for optimization
+- **Confidence scores and reasoning patterns** for quality assessment
+
+#### ❌ **Failure Analysis (MISSION CRITICAL)**
+- **Comprehensive failure reports** for every unsuccessful registration
+- **LLM-generated failure analysis** explaining what went wrong and why
+- **Detailed countermeasure detection** with bypass attempt results
+- **Error categorization** (technical, anti-bot, site-specific, etc.)
+- **Actionable recommendations** for future improvement
+
+#### 🛡️ **Countermeasure Detection & Intelligence**
+- **Anti-bot measures catalog**: CAPTCHAs, honeypots, rate limiting, fingerprinting
+- **Defense sophistication levels**: Simple, intermediate, advanced, expert
+- **Bypass success/failure rates** per countermeasure type
+- **Evolution tracking**: How sites adapt their defenses over time
+- **Pattern recognition**: Common defense combinations and triggers
+
+#### 📊 **Site Intelligence Repository**
+- **Registration flow complexity**: Single-step vs multi-step processes
+- **Required fields analysis**: Mandatory vs optional information
+- **Verification requirements**: Email, phone, document verification
+- **Success probability scoring** based on historical data
+- **Optimal automation strategies** per site type
+
+### **SQLITE SCHEMA FOR INTELLIGENCE GATHERING**
+
+#### Core Intelligence Tables
+```sql
+-- LLM Interactions (CRITICAL)
+ai_interactions: Stores every prompt/response with analysis context
+llm_insights: Deep reasoning patterns and decision analysis
+
+-- Site Intelligence (ESSENTIAL)  
+survey_sites: Comprehensive site profiles and statistics
+site_defenses: All countermeasures detected per site
+site_questions: Repository of all registration questions
+
+-- Failure Analysis (MISSION CRITICAL)
+registration_attempts: Every attempt with success/failure correlation
+registration_steps: Step-by-step process breakdown
+detection_events: Real-time anti-bot detection incidents
+
+-- Email-Site Correlation (OPERATIONAL)
+email_accounts: Full email service access credentials
+site_credentials: Login credentials for successful registrations
+email_site_correlation: View for cross-reference analysis
+```
+
+#### Intelligence Gathering Workflow
+1. **Pre-Registration**: Log site reconnaissance and initial analysis
+2. **During Registration**: Capture all LLM prompts, responses, and decisions
+3. **Countermeasure Detection**: Log every anti-bot measure encountered
+4. **Failure Analysis**: Generate comprehensive LLM failure reports
+5. **Post-Processing**: Analyze patterns for strategy improvement
+
+### **ITERATIVE IMPROVEMENT STRATEGY**
+
+#### Data Analysis Loop
+1. **Collect**: Comprehensive logging of all registration attempts
+2. **Analyze**: LLM-powered analysis of failure patterns and countermeasures  
+3. **Adapt**: Update automation strategies based on intelligence gathered
+4. **Improve**: Refine prompts, detection, and bypass techniques
+5. **Repeat**: Continuous learning and adaptation cycle
+
+#### Key Intelligence Metrics
+- **Countermeasure effectiveness** against our current techniques
+- **Site evolution patterns** and defense upgrades over time
+- **LLM prompt optimization** for better site interpretation
+- **Success rate trends** across different site types and defense levels
+- **Resource efficiency** (time, tokens, cost) per successful registration
+
+This intelligence-driven approach ensures continuous improvement of automation capabilities while building a comprehensive database of survey site countermeasures and optimal bypass strategies.
 
 The system is designed to be professional, adaptive, and intelligent - capable of handling any survey registration form that exists or will be created in the future.
 

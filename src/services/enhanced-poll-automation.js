@@ -22,6 +22,9 @@ const { AdvancedAttentionHandler } = require('../verification/advanced-attention
 const AIService = require('../ai/ai-service');
 const DatabaseManager = require('../database/manager');
 const StealthBrowser = require('../browser/stealth');
+const EnhancedSelectorEngine = require('../automation/enhanced-selector-engine');
+const AdaptiveTimeoutManager = require('../automation/adaptive-timeout-manager');
+const StealthAutomationEngine = require('../automation/stealth-automation-engine');
 const axios = require('axios');
 
 class EnhancedPollAutomationService {
@@ -39,6 +42,11 @@ class EnhancedPollAutomationService {
         this.attentionHandler = null;
         this.masterCoordinator = null;
         this.orchestrator = null;
+        
+        // New adaptive components
+        this.selectorEngine = null;
+        this.timeoutManager = null;
+        this.stealthEngine = null;
         
         // Configuration
         this.llmServiceUrl = process.env.PYTHON_SERVICE_URL || 'http://127.0.0.1:5000';
@@ -125,6 +133,38 @@ class EnhancedPollAutomationService {
             // Note: AdvancedAttentionHandler may not have initialize method
             console.log('   ✅ Attention verification handler loaded');
             
+            // Initialize new adaptive components
+            this.selectorEngine = new EnhancedSelectorEngine(page, {
+                timeout: 30000,
+                adaptiveTimeout: true,
+                enableFallbacks: true,
+                enableLearning: true,
+                debugMode: true
+            });
+            console.log('   ✅ Enhanced selector engine loaded');
+            
+            this.timeoutManager = new AdaptiveTimeoutManager(page, {
+                baseTimeout: 30000,
+                minTimeout: 5000,
+                maxTimeout: 120000,
+                enableNetworkAdaptation: true,
+                enableSiteProfile: true,
+                enableProgressiveTimeout: true,
+                debugMode: true
+            });
+            console.log('   ✅ Adaptive timeout manager loaded');
+            
+            this.stealthEngine = new StealthAutomationEngine(page, {
+                enableMouseSimulation: true,
+                enableTypingVariation: true,
+                enableBehavioralMimicry: true,
+                enableFingerprintRandomization: true,
+                humanLikeDelays: true,
+                debugMode: true
+            });
+            await this.stealthEngine.initialize();
+            console.log('   ✅ Stealth automation engine loaded');
+            
             // Initialize master bypass coordinator with pre-initialized components
             this.masterCoordinator = new MasterBypassCoordinator();
             
@@ -157,7 +197,10 @@ class EnhancedPollAutomationService {
                 questionProcessor: this.challengeSolver,
                 humanBehaviorSystem: this.mouseSimulator,
                 multiTabHandler: this.multiTabHandler,
-                configManager: this.proxyManager
+                configManager: this.proxyManager,
+                selectorEngine: this.selectorEngine,
+                timeoutManager: this.timeoutManager,
+                stealthEngine: this.stealthEngine
             });
             console.log('   ✅ Unified poll orchestrator loaded');
             

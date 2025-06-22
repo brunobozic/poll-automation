@@ -156,6 +156,9 @@ class PollAutomationApp {
             // Initialize database
             await this.logger.initialize();
             
+            // Initialize email manager
+            await this.emailManager.initialize();
+            
             // Step 1: Email setup
             let email;
             if (options.email) {
@@ -163,7 +166,7 @@ class PollAutomationApp {
                 console.log(`📧 Using existing email: ${email}`);
             } else {
                 console.log('📧 Creating new email account...');
-                email = await this.emailManager.createAccount();
+                email = await this.emailManager.createEmailAccount();
                 console.log(`✅ Created email: ${email.address}`);
                 
                 // Save to database
@@ -188,19 +191,50 @@ class PollAutomationApp {
             // Navigate to site and find registration
             await page.goto(siteUrl);
             
-            // Try common registration paths
-            const registrationSelectors = [
-                'text=Get started', 'text=Sign up', 'text=Register', 'text=Join',
-                '.signup', '#signup', '[href*="signup"]', '[href*="register"]'
+            // Step 1: Handle cookie consent banners
+            console.log('🍪 Checking for cookie consent banners...');
+            const cookieSelectors = [
+                'text=Accept All', 'text=Accept all cookies', 'text=Accept', 'text=Allow all',
+                'button*=Accept', 'button*=Allow', '[id*="accept"]', '[id*="cookie"]',
+                '.cookie-accept', '.accept-cookies', '#cookie-accept', 
+                '[aria-label*="Accept"]', '[data-testid*="accept"]'
             ];
             
-            for (const selector of registrationSelectors) {
+            for (const selector of cookieSelectors) {
                 try {
-                    await page.click(selector, { timeout: 3000 });
+                    await page.click(selector, { timeout: 2000 });
+                    console.log(`✅ Accepted cookies using: ${selector}`);
+                    await page.waitForTimeout(1000);
                     break;
                 } catch (e) {
                     continue;
                 }
+            }
+            
+            // Step 2: Try common registration paths
+            console.log('🔍 Looking for registration/signup buttons...');
+            const registrationSelectors = [
+                'text=Sign up with email', 'text=Get started', 'text=Sign up', 'text=Register', 
+                'text=Join', 'text=Create account', 'text=Start free trial',
+                'button*=Sign up', 'button*=Register', 'button*=Get started',
+                '.signup', '#signup', '[href*="signup"]', '[href*="register"]',
+                'a*=Sign up', 'a*=Register', 'a*=Get started'
+            ];
+            
+            let registrationFound = false;
+            for (const selector of registrationSelectors) {
+                try {
+                    await page.click(selector, { timeout: 3000 });
+                    console.log(`✅ Clicked registration button: ${selector}`);
+                    registrationFound = true;
+                    break;
+                } catch (e) {
+                    continue;
+                }
+            }
+            
+            if (!registrationFound) {
+                console.log('⚠️ No obvious registration button found, continuing to form detection...');
             }
 
             // Wait for registration form
@@ -395,7 +429,8 @@ class PollAutomationApp {
     async createEmail() {
         try {
             await this.logger.initialize();
-            const email = await this.emailManager.createAccount();
+            await this.emailManager.initialize();
+            const email = await this.emailManager.createEmailAccount();
             await this.logger.logEmailAccount(email);
             
             console.log(chalk.green(`✅ Created email: ${email.address}`));

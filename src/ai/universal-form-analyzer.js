@@ -23,6 +23,9 @@ class UniversalFormAnalyzer {
             ...options
         };
         
+        // Generate unique session ID for correlation
+        this.sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
         // Cache for form patterns to improve performance
         this.formPatternCache = new Map();
         this.honeypotPatterns = new Set();
@@ -49,7 +52,18 @@ class UniversalFormAnalyzer {
             ]
         };
         
-        this.log('🧠 Universal Form Analyzer initialized');
+        this.log(`🧠 Universal Form Analyzer initialized (Session: ${this.sessionId})`);
+        
+        // Registration logger for database integration
+        this.registrationLogger = null;
+    }
+
+    /**
+     * Set registration logger for database integration
+     */
+    setRegistrationLogger(logger) {
+        this.registrationLogger = logger;
+        this.log('📊 Database logging enabled for LLM interactions');
     }
 
     /**
@@ -402,16 +416,39 @@ class UniversalFormAnalyzer {
     async performLLMAnalysis(pageData, siteName, options = {}) {
         this.log('🤖 Performing LLM analysis...');
         
-        // Prepare focused HTML for LLM
-        const focusedHTML = this.prepareFocusedHTML(pageData);
-        
-        const analysisPrompt = this.buildAnalysisPrompt(pageData, siteName, focusedHTML);
-        
         try {
+            // Prepare focused HTML for LLM with error handling
+            const focusedHTML = this.prepareFocusedHTML(pageData);
+            
+            // Build analysis prompt with validation
+            const analysisPrompt = this.buildAnalysisPrompt(pageData, siteName, focusedHTML);
+            
+            // Validate prompt before proceeding
+            if (!analysisPrompt || typeof analysisPrompt !== 'string') {
+                this.log('⚠️ Invalid analysis prompt generated, using fallback analysis');
+                return this.generateFallbackAnalysis(pageData, siteName, 'invalid_prompt');
+            }
+            
             this.log(`🔍 Sending analysis prompt to LLM (${analysisPrompt.length} chars)`);
             if (this.options.debugMode) {
                 this.log(`📝 Form HTML preview: ${focusedHTML.substring(0, 300)}...`);
             }
+            
+            // LOG THE PROMPT FOR DEBUGGING AND REFINEMENT
+            await this.logLLMInteraction({
+                type: 'REQUEST',
+                timestamp: new Date().toISOString(),
+                siteName: siteName,
+                promptLength: analysisPrompt.length,
+                prompt: analysisPrompt,
+                pageDataSummary: {
+                    url: pageData.url,
+                    formsCount: pageData.forms?.length || 0,
+                    elementsCount: pageData.allElements?.length || 0,
+                    hasRecaptcha: pageData.indicators?.hasRecaptcha,
+                    isSignup: pageData.indicators?.isSignup
+                }
+            });
             
             // Use direct AI call for form analysis instead of survey AI
             const response = await this.performDirectAIAnalysis(analysisPrompt, siteName);
@@ -420,14 +457,48 @@ class UniversalFormAnalyzer {
             
             this.log(`📨 Received LLM response (${typeof response}): ${typeof response === 'string' ? response.substring(0, 200) + '...' : JSON.stringify(response).substring(0, 200) + '...'}`);
             
+            // LOG THE RESPONSE FOR DEBUGGING AND REFINEMENT
+            await this.logLLMInteraction({
+                type: 'RESPONSE',
+                timestamp: new Date().toISOString(),
+                siteName: siteName,
+                responseLength: typeof response === 'string' ? response.length : JSON.stringify(response).length,
+                responseType: typeof response,
+                rawResponse: response,
+                responsePreview: typeof response === 'string' ? response.substring(0, 500) : JSON.stringify(response).substring(0, 500)
+            });
+            
             // Parse LLM response with robust error handling
             if (typeof response === 'string') {
                 try {
                     analysis = JSON.parse(response);
                     this.log(`✅ Successfully parsed JSON response`);
+                    
+                    // LOG SUCCESSFUL PARSING
+                    await this.logLLMInteraction({
+                        type: 'PARSE_SUCCESS',
+                        timestamp: new Date().toISOString(),
+                        siteName: siteName,
+                        parsedStructure: {
+                            fieldsCount: analysis.fields?.length || 0,
+                            checkboxesCount: analysis.checkboxes?.length || 0,
+                            honeypotsCount: analysis.honeypots?.length || 0,
+                            confidence: analysis.confidence || 0
+                        }
+                    });
+                    
                 } catch (parseError) {
                     this.log(`⚠️ Failed to parse LLM JSON response: ${parseError.message}`);
                     this.log(`Raw response: ${response.substring(0, 500)}...`);
+                    
+                    // LOG PARSING FAILURE
+                    await this.logLLMInteraction({
+                        type: 'PARSE_ERROR',
+                        timestamp: new Date().toISOString(),
+                        siteName: siteName,
+                        error: parseError.message,
+                        responsePreview: response.substring(0, 500)
+                    });
                     
                     // Try to extract JSON from response if it's embedded
                     const jsonMatch = response.match(/\{[\s\S]*\}/);
@@ -435,20 +506,61 @@ class UniversalFormAnalyzer {
                         try {
                             analysis = JSON.parse(jsonMatch[0]);
                             this.log(`✅ Extracted JSON from embedded response`);
+                            
+                            // LOG SUCCESSFUL EXTRACTION
+                            await this.logLLMInteraction({
+                                type: 'EXTRACT_SUCCESS',
+                                timestamp: new Date().toISOString(),
+                                siteName: siteName,
+                                extractedJson: jsonMatch[0].substring(0, 500)
+                            });
                         } catch (e) {
                             this.log('⚠️ Could not extract JSON from response, using fallback');
                             analysis = null;
+                            
+                            // LOG EXTRACTION FAILURE
+                            await this.logLLMInteraction({
+                                type: 'EXTRACT_FAILED',
+                                timestamp: new Date().toISOString(),
+                                siteName: siteName,
+                                error: e.message
+                            });
                         }
                     } else {
                         analysis = null;
+                        
+                        // LOG NO JSON FOUND
+                        await this.logLLMInteraction({
+                            type: 'NO_JSON_FOUND',
+                            timestamp: new Date().toISOString(),
+                            siteName: siteName,
+                            responseType: typeof response
+                        });
                     }
                 }
             } else if (typeof response === 'object' && response !== null) {
                 analysis = response;
                 this.log(`✅ Using object response directly`);
+                
+                // LOG OBJECT RESPONSE
+                await this.logLLMInteraction({
+                    type: 'OBJECT_RESPONSE',
+                    timestamp: new Date().toISOString(),
+                    siteName: siteName,
+                    objectStructure: Object.keys(response)
+                });
             } else {
                 this.log('⚠️ Unexpected LLM response format');
                 analysis = null;
+                
+                // LOG UNEXPECTED FORMAT
+                await this.logLLMInteraction({
+                    type: 'UNEXPECTED_FORMAT',
+                    timestamp: new Date().toISOString(),
+                    siteName: siteName,
+                    responseType: typeof response,
+                    responseValue: response
+                });
             }
             
             if (analysis && this.options.debugMode) {
@@ -458,102 +570,114 @@ class UniversalFormAnalyzer {
             // Enhance analysis with anti-bot detection (handles null/invalid analysis)
             analysis = await this.enhanceWithAntiBotDetection(analysis, pageData);
             
+            // Calculate dynamic confidence based on results and context
+            const dynamicConfidence = this.calculateDynamicConfidence(analysis, pageData, true);
+            analysis.confidence = dynamicConfidence;
+            analysis.confidenceReasoning = this.explainConfidence(analysis, pageData);
+            
+            // LOG FINAL ANALYSIS
+            await this.logLLMInteraction({
+                type: 'FINAL_ANALYSIS',
+                timestamp: new Date().toISOString(),
+                siteName: siteName,
+                finalAnalysis: {
+                    confidence: analysis.confidence || 0,
+                    dynamicConfidence: dynamicConfidence,
+                    confidenceReasoning: analysis.confidenceReasoning,
+                    fieldsCount: analysis.fields?.length || 0,
+                    checkboxesCount: analysis.checkboxes?.length || 0,
+                    honeypotsCount: analysis.honeypots?.length || 0,
+                    usedFallback: !analysis || analysis.source === 'fallback',
+                    siteContext: this.analyzeContext(pageData, siteName)
+                }
+            });
+            
             this.log(`🧠 LLM analysis completed: ${analysis.confidence || 0.5} confidence`);
             return analysis;
             
         } catch (error) {
             this.log(`❌ LLM analysis failed: ${error.message}`);
             this.log(`📚 Error stack: ${error.stack}`);
+            
+            // LOG ERROR
+            await this.logLLMInteraction({
+                type: 'ERROR',
+                timestamp: new Date().toISOString(),
+                siteName: siteName,
+                error: error.message,
+                stack: error.stack
+            });
+            
             // Return fallback analysis instead of throwing
             return await this.enhanceWithAntiBotDetection(null, pageData);
         }
     }
 
     /**
-     * Build comprehensive analysis prompt for LLM
+     * Build context-adaptive analysis prompt for LLM
      */
     buildAnalysisPrompt(pageData, siteName, focusedHTML) {
-        return `You are an expert web automation specialist analyzing a webpage for form automation.
+        // Validate inputs to prevent undefined errors
+        if (!pageData || typeof pageData !== 'object') {
+            this.log('⚠️ Invalid pageData provided to buildAnalysisPrompt, using defaults');
+            pageData = {
+                url: 'unknown',
+                indicators: { isSignup: false, isLogin: false, hasRecaptcha: false, hasFrames: false, hasAjaxForms: false },
+                pageText: '',
+                allElements: []
+            };
+        }
+        
+        if (!focusedHTML || typeof focusedHTML !== 'string') {
+            this.log('⚠️ Invalid focusedHTML provided, using fallback');
+            focusedHTML = '<form>No HTML content available</form>';
+        }
+        
+        const context = this.analyzeContext(pageData, siteName);
+        let prompt = `Expert web automation specialist: Analyze ${siteName} (${context.siteType}) for bot-friendly form automation.
 
-WEBSITE: ${siteName}
-URL: ${pageData.url}
-PAGE TYPE: ${pageData.indicators.isSignup ? 'SIGNUP' : pageData.indicators.isLogin ? 'LOGIN' : 'UNKNOWN'}
+URL: ${pageData.url} | TYPE: ${pageData.indicators.isSignup ? 'SIGNUP' : pageData.indicators.isLogin ? 'LOGIN' : 'UNKNOWN'}
+reCAPTCHA: ${pageData.indicators.hasRecaptcha} | iframes: ${pageData.indicators.hasFrames} | AJAX: ${pageData.indicators.hasAjaxForms}
+COMPLEXITY: ${context.complexity} | ELEMENTS: ${pageData.allElements?.length || 0}
 
-CONTEXT CLUES:
-- Has reCAPTCHA: ${pageData.indicators.hasRecaptcha}
-- Has iframes: ${pageData.indicators.hasFrames}
-- AJAX forms detected: ${pageData.indicators.hasAjaxForms}
+CONTENT: ${pageData.pageText.substring(0, 600)}
 
-PAGE CONTENT (first 1000 chars): ${pageData.pageText.substring(0, 1000)}
+HTML: ${focusedHTML.substring(0, 3500)}`;
 
-FORM HTML (cleaned and focused):
-${focusedHTML}
+        // Add context-specific guidance
+        if (context.siteType === 'enterprise') {
+            prompt += `\n\nENTERPRISE CONTEXT: Expect multi-step flows, complex validation, and sophisticated anti-bot measures.`;
+        } else if (context.siteType === 'form_builder') {
+            prompt += `\n\nFORM BUILDER CONTEXT: Professional forms with advanced features and potential bot detection.`;
+        }
 
-CRITICAL INSTRUCTIONS FOR BOT AUTOMATION:
-1. Identify ALL form elements (input, textarea, select, button) that a bot should interact with
-2. Detect and flag HONEYPOT/TRAP fields that bots must AVOID to prevent detection
-3. Provide EXACT, reliable CSS selectors for Playwright automation
-4. Distinguish between legitimate fields (fill these) and anti-bot traps (skip these)
-5. Help the bot understand which fields are real vs. decoys
+        if (context.complexity === 'high') {
+            prompt += `\nHIGH COMPLEXITY: Expect hidden fields, dynamic loading, and advanced honeypot techniques.`;
+        }
 
-HONEYPOT/TRAP DETECTION (AVOID THESE):
-- Hidden fields: display:none, visibility:hidden, opacity:0
-- Off-screen fields: positioned with left:-9999px, top:-9999px, etc.
-- Zero-size fields: width:0, height:0
-- Suspicious names: bot, spam, honeypot, trap, hidden, winnie_the_pooh, website, url, etc.
-- Negative tabindex: tabindex="-1"
-- Instructions to "leave blank": fields labeled "do not fill", "leave empty", etc.
-- Duplicate email/name fields (often one real, one trap)
-- Fields with CSS classes like: honeypot, bot-trap, spam-trap, hidden, invisible
+        prompt += `
 
-Return JSON in this EXACT format:
+EXAMPLES:
+✅ Real: <input type="email" name="email" placeholder="Enter email">
+❌ Trap: <input type="text" name="website" style="display:none">
+✅ Real: <input type="checkbox" name="terms"> I agree
+❌ Trap: <input type="checkbox" tabindex="-1" style="opacity:0">
+
+HONEYPOTS (AVOID): display:none, visibility:hidden, opacity:0, width:0, height:0, tabindex="-1", names: bot/spam/honeypot/trap/hidden/website/url
+
+CONFIDENCE: 0.9-1.0 Clear | 0.7-0.8 Minor issues | 0.5-0.6 Uncertain | 0.0-0.4 Manual review
+
+JSON:
 {
-  "analysis": "brief description of page purpose and form structure",
+  "analysis": "brief description",
   "confidence": 0.0-1.0,
   "pageType": "signup|login|contact|survey|other",
-  "formStrategy": "single_form|multi_step|ajax|standard",
-  
-  "fields": [
-    {
-      "purpose": "email|firstName|lastName|fullName|password|confirmPassword|phone|company|address|age|other",
-      "selector": "exact CSS selector (prefer #id, then [name], then specific path)",
-      "type": "text|email|password|tel|number|url|date|etc",
-      "required": true|false,
-      "importance": "critical|important|optional",
-      "reasoning": "why you identified this field this way",
-      "contextClues": "labels, nearby text, or other indicators"
-    }
-  ],
-  
-  "checkboxes": [
-    {
-      "purpose": "terms|privacy|newsletter|marketing|notifications|other",
-      "selector": "exact CSS selector",
-      "action": "check|uncheck|conditional",
-      "importance": "critical|important|optional",
-      "reasoning": "purpose and why it should be checked/unchecked"
-    }
-  ],
-  
-  "honeypots": [
-    {
-      "selector": "exact CSS selector",
-      "trapType": "hidden|positioned|zero_size|suspicious_name|negative_tabindex",
-      "reasoning": "why this is identified as a honeypot",
-      "action": "ignore|leave_empty"
-    }
-  ],
-  
-  "submitButton": {
-    "selector": "exact CSS selector for submit button",
-    "text": "button text",
-    "type": "button|input|ajax"
-  },
-  
-  "additionalNotes": "any special considerations, multi-step flows, CAPTCHA handling, etc."
-}
-
-Focus on accuracy and reliability. Provide selectors that will work consistently.`;
+  "fields": [{"purpose": "email|firstName|lastName|password|etc", "selector": "#id or [name] or path", "type": "text|email|password|etc", "required": bool, "importance": "critical|important|optional"}],
+  "checkboxes": [{"purpose": "terms|privacy|newsletter|etc", "selector": "exact selector", "action": "check|uncheck", "importance": "critical|important|optional"}],
+  "honeypots": [{"selector": "exact selector", "trapType": "hidden|suspicious_name|etc", "reasoning": "why honeypot"}],
+  "submitButton": {"selector": "exact selector", "text": "button text"},
+  "additionalNotes": "special considerations"
+}`;
     }
 
     /**
@@ -562,16 +686,28 @@ Focus on accuracy and reliability. Provide selectors that will work consistently
     prepareFocusedHTML(pageData) {
         let focusedHTML = '';
         
+        // Validate pageData structure
+        if (!pageData || typeof pageData !== 'object') {
+            this.log('⚠️ Invalid pageData in prepareFocusedHTML');
+            return '<form>No page data available</form>';
+        }
+        
+        // Ensure forms array exists
+        const forms = pageData.forms || [];
+        const allElements = pageData.allElements || [];
+        
         // Include form HTML
-        pageData.forms.forEach(form => {
+        forms.forEach(form => {
             focusedHTML += `<form id="${form.id}" class="${form.className}" action="${form.action}" method="${form.method}">\n`;
             focusedHTML += form.innerHTML;
             focusedHTML += '\n</form>\n\n';
         });
         
         // Include loose elements
-        pageData.allElements.forEach(element => {
-            focusedHTML += element.outerHTML + '\n';
+        allElements.forEach(element => {
+            if (element && element.outerHTML) {
+                focusedHTML += element.outerHTML + '\n';
+            }
         });
         
         // Clean up the HTML
@@ -1403,6 +1539,524 @@ Focus on accuracy and reliability. Provide selectors that will work consistently
             
             throw error;
         }
+    }
+
+    /**
+     * Enhanced LLM interaction logging with deep insights
+     */
+    async logLLMInteraction(logData) {
+        try {
+            const fs = require('fs').promises;
+            const path = require('path');
+            
+            // Create logs directory if it doesn't exist
+            const logsDir = path.join(process.cwd(), 'logs');
+            try {
+                await fs.access(logsDir);
+            } catch (e) {
+                await fs.mkdir(logsDir, { recursive: true });
+            }
+            
+            // Enhanced data enrichment for deeper insights
+            const enhancedLogData = {
+                ...logData,
+                sessionId: this.sessionId || `session_${Date.now()}`,
+                analysisContext: {
+                    promptTokenEstimate: this.estimateTokenCount(logData.prompt || ''),
+                    responseTokenEstimate: this.estimateTokenCount(logData.rawResponse || ''),
+                    promptComplexity: this.analyzePromptComplexity(logData.prompt || ''),
+                    responseStructure: this.analyzeResponseStructure(logData.rawResponse || ''),
+                    reasoningIndicators: this.extractReasoningIndicators(logData.rawResponse || ''),
+                    decisionPatterns: this.identifyDecisionPatterns(logData),
+                    contextClues: this.extractContextClues(logData)
+                },
+                performance: {
+                    requestTimestamp: logData.timestamp,
+                    estimatedLatency: logData.estimatedLatency || null,
+                    fallbackTriggered: logData.type === 'ERROR' || logData.usedFallback,
+                    confidenceLevel: logData.finalAnalysis?.confidence || logData.parsedStructure?.confidence || null
+                }
+            };
+            
+            // Create log file with timestamp
+            const timestamp = new Date().toISOString().split('T')[0];
+            const logFile = path.join(logsDir, `llm-insights-${timestamp}.jsonl`);
+            
+            // Write to JSONL format (one JSON object per line)
+            const logLine = JSON.stringify(enhancedLogData) + '\n';
+            await fs.appendFile(logFile, logLine);
+            
+            // **NEW: Log to database if registrationLogger is available**
+            if (this.registrationLogger && this.registrationLogger.isInitialized) {
+                try {
+                    const aiInteractionData = {
+                        registrationId: logData.registrationId || null,
+                        stepId: logData.stepId || null,
+                        interactionType: logData.type || 'form_analysis',
+                        prompt: logData.prompt || `Analysis request for ${logData.siteName || 'unknown site'}`,
+                        response: logData.rawResponse || logData.error || 'No response received',
+                        modelUsed: logData.model || 'gpt-4',
+                        tokensUsed: enhancedLogData.analysisContext.promptTokenEstimate + enhancedLogData.analysisContext.responseTokenEstimate,
+                        inputTokens: enhancedLogData.analysisContext.promptTokenEstimate,
+                        outputTokens: enhancedLogData.analysisContext.responseTokenEstimate,
+                        processingTimeMs: logData.processingTime || 0,
+                        success: logData.type !== 'ERROR',
+                        errorMessage: logData.error || null,
+                        confidenceScore: logData.confidence || 0.5,
+                        insightData: enhancedLogData.analysisContext
+                    };
+                    
+                    await this.registrationLogger.logEnhancedAIInteraction(aiInteractionData);
+                } catch (dbError) {
+                    console.error(`⚠️ Failed to log to database: ${dbError.message}`);
+                }
+            }
+            
+            // Also log to console in debug mode with insights
+            if (this.options.debugMode) {
+                console.log(`[LLM-INSIGHTS] ${logData.type}: ${logData.siteName}`);
+                if (enhancedLogData.analysisContext.reasoningIndicators.length > 0) {
+                    console.log(`  🧠 Reasoning: ${enhancedLogData.analysisContext.reasoningIndicators.join(', ')}`);
+                }
+                if (enhancedLogData.analysisContext.decisionPatterns.length > 0) {
+                    console.log(`  🎯 Patterns: ${enhancedLogData.analysisContext.decisionPatterns.join(', ')}`);
+                }
+            }
+            
+        } catch (error) {
+            // Don't throw errors from logging - just log to console
+            console.error(`❌ Failed to write enhanced LLM log: ${error.message}`);
+        }
+    }
+
+    /**
+     * Estimate token count for cost and performance analysis
+     */
+    estimateTokenCount(text) {
+        if (!text || typeof text !== 'string') return 0;
+        // Rough estimate: ~4 characters per token for English text
+        return Math.ceil(text.length / 4);
+    }
+
+    /**
+     * Analyze prompt complexity for optimization insights
+     */
+    analyzePromptComplexity(prompt) {
+        if (!prompt) return {};
+        
+        return {
+            instructionCount: (prompt.match(/^\d+\./gm) || []).length,
+            exampleCount: (prompt.match(/✅|❌/g) || []).length,
+            htmlContentLength: (prompt.match(/HTML:[\s\S]*?(?=\n\n|\n[A-Z]|$)/)?.[0] || '').length,
+            questionCount: (prompt.match(/\?/g) || []).length,
+            emphasisWords: (prompt.match(/\b(CRITICAL|MUST|EXACT|ALL)\b/g) || []).length,
+            technicalTerms: (prompt.match(/\b(CSS|selector|honeypot|tabindex|display|opacity)\b/gi) || []).length
+        };
+    }
+
+    /**
+     * Analyze response structure for understanding LLM behavior
+     */
+    analyzeResponseStructure(response) {
+        if (!response || typeof response !== 'string') return {};
+        
+        const hasJson = /\{[\s\S]*\}/.test(response);
+        const jsonMatches = response.match(/\{[\s\S]*?\}/g) || [];
+        
+        return {
+            hasValidJson: hasJson,
+            jsonBlockCount: jsonMatches.length,
+            responseLength: response.length,
+            hasExplanation: response.includes('because') || response.includes('reasoning'),
+            hasUncertainty: /uncertain|unclear|ambiguous|not sure/i.test(response),
+            hasConfidence: /confident|certain|clear/i.test(response),
+            structuralElements: {
+                hasFields: /\"fields\"\s*:/.test(response),
+                hasHoneypots: /\"honeypots\"\s*:/.test(response),
+                hasCheckboxes: /\"checkboxes\"\s*:/.test(response),
+                hasConfidenceScore: /\"confidence\"\s*:\s*[\d.]+/.test(response)
+            }
+        };
+    }
+
+    /**
+     * Extract reasoning indicators to understand LLM thought process
+     */
+    extractReasoningIndicators(response) {
+        if (!response || typeof response !== 'string') return [];
+        
+        const indicators = [];
+        const text = response.toLowerCase();
+        
+        // Look for reasoning patterns
+        if (text.includes('because')) indicators.push('causal_reasoning');
+        if (text.includes('therefore') || text.includes('thus')) indicators.push('logical_conclusion');
+        if (text.includes('however') || text.includes('but')) indicators.push('contrasting_analysis');
+        if (text.includes('likely') || text.includes('probably')) indicators.push('probabilistic_thinking');
+        if (text.includes('hidden') || text.includes('display:none')) indicators.push('honeypot_detection');
+        if (text.includes('suspicious') || text.includes('trap')) indicators.push('threat_assessment');
+        if (text.includes('form') && text.includes('field')) indicators.push('form_structure_analysis');
+        if (/confidence|certain|sure/.test(text)) indicators.push('confidence_expression');
+        if (/unclear|ambiguous|uncertain/.test(text)) indicators.push('uncertainty_acknowledgment');
+        
+        return indicators;
+    }
+
+    /**
+     * Identify decision patterns in LLM responses
+     */
+    identifyDecisionPatterns(logData) {
+        const patterns = [];
+        
+        if (logData.type === 'PARSE_SUCCESS') {
+            patterns.push('successful_json_generation');
+            
+            const structure = logData.parsedStructure;
+            if (structure) {
+                if (structure.fieldsCount > 0) patterns.push('field_identification');
+                if (structure.honeypotsCount > 0) patterns.push('honeypot_detection');
+                if (structure.checkboxesCount > 0) patterns.push('checkbox_analysis');
+                if (structure.confidence > 0.8) patterns.push('high_confidence_analysis');
+                if (structure.confidence < 0.5) patterns.push('low_confidence_analysis');
+            }
+        }
+        
+        if (logData.type === 'PARSE_ERROR') {
+            patterns.push('json_generation_failure');
+        }
+        
+        if (logData.type === 'EXTRACT_SUCCESS') {
+            patterns.push('json_recovery_success');
+        }
+        
+        if (logData.type === 'ERROR') {
+            patterns.push('llm_request_failure');
+        }
+        
+        if (logData.usedFallback) {
+            patterns.push('fallback_dependency');
+        }
+        
+        return patterns;
+    }
+
+    /**
+     * Extract context clues for understanding what influences LLM decisions
+     */
+    extractContextClues(logData) {
+        const clues = {};
+        
+        if (logData.pageDataSummary) {
+            clues.pageContext = {
+                hasRecaptcha: logData.pageDataSummary.hasRecaptcha,
+                isSignup: logData.pageDataSummary.isSignup,
+                formsCount: logData.pageDataSummary.formsCount,
+                elementsCount: logData.pageDataSummary.elementsCount,
+                siteComplexity: this.categorizeSiteComplexity(logData.pageDataSummary)
+            };
+        }
+        
+        if (logData.prompt) {
+            clues.promptCharacteristics = {
+                mentionsHoneypots: logData.prompt.includes('honeypot'),
+                hasExamples: logData.prompt.includes('✅') || logData.prompt.includes('❌'),
+                emphasizesBot: logData.prompt.includes('bot') || logData.prompt.includes('automation'),
+                providesConfidenceGuide: logData.prompt.includes('CONFIDENCE')
+            };
+        }
+        
+        return clues;
+    }
+
+    /**
+     * Categorize site complexity for analysis
+     */
+    categorizeSiteComplexity(pageData) {
+        const elements = pageData.elementsCount || 0;
+        const forms = pageData.formsCount || 0;
+        
+        if (elements > 50 && forms > 1) return 'high';
+        if (elements > 20 || forms > 0) return 'medium';
+        return 'low';
+    }
+
+    /**
+     * Analyze context for adaptive prompt generation
+     */
+    analyzeContext(pageData, siteName) {
+        const siteType = this.detectSiteType(siteName, pageData);
+        const complexity = this.assessSiteComplexity(pageData);
+        
+        return {
+            siteType,
+            complexity,
+            hasMultipleLanguages: this.detectMultiLanguage(pageData),
+            hasCookieConsent: this.detectCookieConsent(pageData),
+            hasSignupFlow: pageData.indicators?.isSignup || false,
+            elementDensity: (pageData.allElements?.length || 0) / Math.max(1, pageData.forms?.length || 1)
+        };
+    }
+
+    /**
+     * Detect site type based on domain and content
+     */
+    detectSiteType(siteName, pageData) {
+        const domain = siteName.toLowerCase();
+        const content = (pageData.pageText || '').toLowerCase();
+        
+        // Enterprise/business platforms
+        if (/formstack|salesforce|hubspot|marketo/.test(domain)) return 'enterprise';
+        
+        // Form builders
+        if (/wufoo|typeform|jotform|formbuilder|surveymonkey/.test(domain)) return 'form_builder';
+        
+        // Survey platforms  
+        if (/survey|poll|quiz|feedback/.test(domain) || /survey|poll|quiz|feedback/.test(content)) return 'survey_platform';
+        
+        // Social/community
+        if (/social|community|forum|discord|slack/.test(domain)) return 'social';
+        
+        // E-commerce
+        if (/shop|store|commerce|cart|buy/.test(domain) || /shop|buy|cart|checkout/.test(content)) return 'ecommerce';
+        
+        return 'general';
+    }
+
+    /**
+     * Assess site complexity for context-aware analysis
+     */
+    assessSiteComplexity(pageData) {
+        const elements = pageData.allElements?.length || 0;
+        const forms = pageData.forms?.length || 0;
+        const hasRecaptcha = pageData.indicators?.hasRecaptcha || false;
+        const hasFrames = pageData.indicators?.hasFrames || false;
+        const hasAjax = pageData.indicators?.hasAjaxForms || false;
+        
+        let complexityScore = 0;
+        
+        // Base element complexity
+        if (elements > 50) complexityScore += 3;
+        else if (elements > 25) complexityScore += 2;
+        else if (elements > 10) complexityScore += 1;
+        
+        // Form complexity
+        if (forms > 2) complexityScore += 2;
+        else if (forms > 0) complexityScore += 1;
+        
+        // Security measures
+        if (hasRecaptcha) complexityScore += 2;
+        if (hasFrames) complexityScore += 1;
+        if (hasAjax) complexityScore += 1;
+        
+        if (complexityScore >= 6) return 'high';
+        if (complexityScore >= 3) return 'medium';
+        return 'low';
+    }
+
+    /**
+     * Detect multi-language support
+     */
+    detectMultiLanguage(pageData) {
+        const content = (pageData.pageText || '').toLowerCase();
+        const elements = pageData.allElements || [];
+        
+        // Check for language selectors
+        const hasLanguageSelector = elements.some(el => 
+            /language|lang|deutsch|français|español|english/.test((el.textContent || '').toLowerCase()) ||
+            /language|lang/.test((el.className || '').toLowerCase())
+        );
+        
+        return hasLanguageSelector || /english|deutsch|français|español|中文|日本語/.test(content);
+    }
+
+    /**
+     * Detect cookie consent mechanisms
+     */
+    detectCookieConsent(pageData) {
+        const content = (pageData.pageText || '').toLowerCase();
+        const elements = pageData.allElements || [];
+        
+        return /cookie|privacy|gdpr|consent/.test(content) || 
+               elements.some(el => /cookie|privacy|consent/.test((el.textContent || '').toLowerCase()));
+    }
+
+    /**
+     * Calculate dynamic confidence based on multiple factors
+     */
+    calculateDynamicConfidence(analysis, pageData, navigationSuccess = true) {
+        let confidence = 0.5; // Base confidence
+        
+        // Form detection success
+        const fieldsFound = analysis.fields?.length || 0;
+        const honeypotsDetected = analysis.honeypots?.length || 0;
+        
+        if (fieldsFound > 0) {
+            confidence += 0.2;
+            if (fieldsFound >= 3) confidence += 0.1; // Multiple fields found
+        }
+        
+        // Honeypot detection indicates good anti-bot analysis
+        if (honeypotsDetected > 0) {
+            confidence += 0.1;
+            if (honeypotsDetected >= 3) confidence += 0.05; // Multiple honeypots detected
+        }
+        
+        // Navigation success
+        if (navigationSuccess) {
+            confidence += 0.1;
+        } else {
+            confidence -= 0.1; // Penalize navigation failures
+        }
+        
+        // Site complexity assessment
+        const complexity = this.assessSiteComplexity(pageData);
+        if (complexity === 'low' && fieldsFound > 0) confidence += 0.05; // Simple sites should be easier
+        if (complexity === 'high' && fieldsFound === 0) confidence -= 0.1; // Complex sites with no fields is suspicious
+        
+        // Validation errors
+        const errors = analysis.errors?.length || 0;
+        if (errors > 0) confidence -= (errors * 0.05);
+        
+        // Ensure confidence stays within bounds
+        return Math.max(0.0, Math.min(1.0, confidence));
+    }
+
+    /**
+     * Explain confidence score reasoning for transparency and debugging
+     */
+    explainConfidence(analysis, pageData, navigationSuccess = true) {
+        const fieldsFound = analysis.fields?.length || 0;
+        const honeypotsDetected = analysis.honeypots?.length || 0;
+        const errors = analysis.errors?.length || 0;
+        const complexity = this.assessSiteComplexity(pageData);
+        
+        const factors = [];
+        
+        // Base confidence explanation
+        factors.push('Base confidence: 0.5');
+        
+        // Form detection factors
+        if (fieldsFound > 0) {
+            factors.push(`+0.2 for ${fieldsFound} form field(s) detected`);
+            if (fieldsFound >= 3) {
+                factors.push('+0.1 for multiple fields (comprehensive form detection)');
+            }
+        } else {
+            factors.push('No form fields detected (concerning)');
+        }
+        
+        // Honeypot detection factors
+        if (honeypotsDetected > 0) {
+            factors.push(`+0.1 for ${honeypotsDetected} honeypot(s) detected (good anti-bot analysis)`);
+            if (honeypotsDetected >= 3) {
+                factors.push('+0.05 for multiple honeypots (excellent trap detection)');
+            }
+        } else {
+            factors.push('No honeypots detected (may indicate missed traps)');
+        }
+        
+        // Navigation factors
+        if (navigationSuccess) {
+            factors.push('+0.1 for successful page navigation');
+        } else {
+            factors.push('-0.1 for navigation failure (may affect form access)');
+        }
+        
+        // Complexity factors
+        if (complexity === 'low' && fieldsFound > 0) {
+            factors.push('+0.05 for successful analysis of simple site');
+        } else if (complexity === 'high' && fieldsFound === 0) {
+            factors.push('-0.1 for no fields found on complex site (suspicious)');
+        }
+        
+        // Error penalty factors
+        if (errors > 0) {
+            factors.push(`-${(errors * 0.05).toFixed(2)} for ${errors} validation error(s)`);
+        }
+        
+        // Final calculation
+        const finalConfidence = this.calculateDynamicConfidence(analysis, pageData, navigationSuccess);
+        factors.push(`Final confidence: ${(finalConfidence * 100).toFixed(1)}%`);
+        
+        return {
+            score: finalConfidence,
+            reasoning: factors,
+            summary: this.generateConfidenceSummary(finalConfidence, fieldsFound, honeypotsDetected, complexity)
+        };
+    }
+    
+    /**
+     * Generate human-readable confidence summary
+     */
+    generateConfidenceSummary(confidence, fieldsFound, honeypotsDetected, complexity) {
+        if (confidence >= 0.8) {
+            return `High confidence: Successfully detected ${fieldsFound} field(s) and ${honeypotsDetected} honeypot(s) on ${complexity} complexity site`;
+        } else if (confidence >= 0.6) {
+            return `Medium confidence: Partial form detection with some elements found but potential gaps`;
+        } else if (confidence >= 0.4) {
+            return `Low confidence: Limited form detection, may require manual review or alternative approach`;
+        } else {
+            return `Very low confidence: Significant detection issues, manual intervention recommended`;
+        }
+    }
+
+    /**
+     * Generate fallback analysis when LLM analysis fails
+     */
+    generateFallbackAnalysis(pageData, siteName, reason) {
+        this.log(`🔄 Generating fallback analysis for ${siteName} (reason: ${reason})`);
+        
+        const fallbackAnalysis = {
+            analysis: `Fallback analysis generated due to: ${reason}`,
+            confidence: 0.3,
+            pageType: 'unknown',
+            formStrategy: 'fallback',
+            fields: [],
+            checkboxes: [],
+            honeypots: [],
+            submitButton: null,
+            source: 'fallback',
+            fallbackReason: reason,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Try basic element detection if pageData is available
+        if (pageData && pageData.forms && Array.isArray(pageData.forms)) {
+            pageData.forms.forEach(form => {
+                if (form.elements && Array.isArray(form.elements)) {
+                    form.elements.forEach(element => {
+                        if (element.type === 'email' || element.name?.includes('email')) {
+                            fallbackAnalysis.fields.push({
+                                purpose: 'email',
+                                selector: this.generateSelector(element),
+                                type: element.type || 'text',
+                                required: element.required || false,
+                                importance: 'critical',
+                                source: 'fallback'
+                            });
+                        } else if (element.type === 'password') {
+                            fallbackAnalysis.fields.push({
+                                purpose: 'password',
+                                selector: this.generateSelector(element),
+                                type: 'password',
+                                required: element.required || false,
+                                importance: 'critical',
+                                source: 'fallback'
+                            });
+                        } else if (element.type === 'submit' || element.tagName === 'button') {
+                            fallbackAnalysis.submitButton = {
+                                selector: this.generateSelector(element),
+                                text: element.textContent || 'Submit',
+                                source: 'fallback'
+                            };
+                        }
+                    });
+                }
+            });
+        }
+        
+        this.log(`🔄 Fallback analysis generated: ${fallbackAnalysis.fields.length} fields found`);
+        return fallbackAnalysis;
     }
 
     /**
