@@ -1,36 +1,49 @@
-# Poll Automation Application
+# 🎯 UNIFIED POLL AUTOMATION APPLICATION v3.0
 
-A comprehensive AI-powered survey registration automation system with complete data correlation and advanced query capabilities.
+The ultimate consolidated AI-powered survey registration automation system with comprehensive anti-detection, advanced behavioral simulation, and intelligent data analysis.
+
+## ✨ What's New in v3.0
+
+🔥 **MAJOR CONSOLIDATION**: All duplicate entry points eliminated! Single unified `app.js` with all capabilities.
+- **Unified CLI**: One application with all features (basic, enhanced, advanced modes)
+- **Multi-Tier Architecture**: Choose your automation level on-demand
+- **Enhanced Anti-Detection**: Military-grade stealth with neural behavior simulation
+- **AI-Powered Intelligence**: Advanced LLM integration with comprehensive analysis
+- **Clean Architecture**: Eliminated 7+ duplicate entry points, organized codebase
 
 ## 🚀 Quick Start
 
-### CLI Interface (Recommended)
+### Unified CLI Interface (Single Entry Point)
 ```bash
-# Create a single email account
-node cli.js create-email
+# Create AI-optimized email account
+node app.js create-email --enhanced
 
-# Run registration campaign on test sites
-node cli.js register --preset test --emails 1
+# Run comprehensive registration campaign
+node app.js register --preset test --mode enhanced --stealth high
 
-# Query failed registrations for an email
-node cli.js query --type email_failures --parameter "your@email.com"
+# Interactive mode with all capabilities
+node app.js interactive --enhanced
 
-# Interactive mode
-node cli.js interactive
+# Test anti-detection capabilities
+node app.js test-stealth
+
+# Show comprehensive system statistics
+node app.js stats --detailed
 
 # Show help
-node cli.js --help
+node app.js --help
 ```
 
-### Programmatic Usage
-```javascript
-const { quickStart } = require('./index');
+### Basic vs Enhanced vs Advanced Modes
+```bash
+# Basic mode (legacy functionality)
+node app.js create-email --mode basic
 
-// Quick demo with default settings
-quickStart().then(result => {
-    console.log('Email created:', result.email);
-    console.log('Results:', result.results);
-});
+# Enhanced mode (AI + anti-detection) - DEFAULT
+node app.js register --mode enhanced --stealth high
+
+# Advanced mode (full capabilities)
+node app.js run --mode advanced --stealth maximum
 ```
 
 ## 📋 Features

@@ -89,4 +89,9 @@ weights/
 
 # Sensitive configuration
 config/production.json
-config/secrets.json
+config/secrets.json.env
+*.log
+*.db-wal
+*.db-shm
+*.png
+backup-*

@@ -59,6 +59,11 @@ class NeuralMouseSimulator {
         this.initialized = true;
     }
 
+    // Add initialize method as alias for compatibility
+    async initialize() {
+        return await this.init();
+    }
+
     /**
      * Generate human-like mouse movement from current position to target
      */

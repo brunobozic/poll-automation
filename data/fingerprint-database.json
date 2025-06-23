@@ -2,113 +2,113 @@
   "deviceProfiles": {
     "high_end_desktop": [
       {
-        "gpu": "NVIDIA GeForce RTX 4070",
+        "gpu": "AMD Radeon RX 7800 XT",
+        "cpu_cores": 8,
+        "memory": 64,
+        "screen_resolution": "2560x1600",
+        "id": "f0fcea0d30d3a30c"
+      },
+      {
+        "gpu": "AMD Radeon RX 7800 XT",
         "cpu_cores": 16,
         "memory": 16,
         "screen_resolution": "2560x1600",
-        "id": "2f1dda78264e079e"
+        "id": "dafc9a6af03ce1eb"
       },
       {
-        "gpu": "NVIDIA GeForce RTX 4080",
-        "cpu_cores": 16,
-        "memory": 16,
-        "screen_resolution": "3840x2160",
-        "id": "6544fddc48b6f8c0"
+        "gpu": "NVIDIA GeForce RTX 4070",
+        "cpu_cores": 8,
+        "memory": 32,
+        "screen_resolution": "2560x1600",
+        "id": "fdc1c89b9f2166c7"
+      },
+      {
+        "gpu": "NVIDIA GeForce RTX 4070",
+        "cpu_cores": 8,
+        "memory": 32,
+        "screen_resolution": "2560x1440",
+        "id": "6ed53cfd645a4ae0"
       },
       {
         "gpu": "NVIDIA GeForce RTX 4070",
         "cpu_cores": 16,
-        "memory": 32,
-        "screen_resolution": "2560x1440",
-        "id": "875c4cb9d87c31fe"
-      },
-      {
-        "gpu": "NVIDIA GeForce RTX 4080",
-        "cpu_cores": 8,
-        "memory": 16,
-        "screen_resolution": "2560x1440",
-        "id": "2ac485593605317e"
-      },
-      {
-        "gpu": "NVIDIA GeForce RTX 4080",
-        "cpu_cores": 8,
-        "memory": 32,
-        "screen_resolution": "3840x2160",
-        "id": "6566cf08c5c57470"
+        "memory": 64,
+        "screen_resolution": "2560x1600",
+        "id": "9f799c2dba3392cd"
       }
     ],
     "gaming_laptop": [
       {
         "gpu": "NVIDIA GeForece RTX 4070 Laptop",
-        "cpu_cores": 12,
+        "cpu_cores": 8,
         "memory": 32,
+        "screen_resolution": "2560x1440",
+        "id": "1bd9e9ec0af3e30b"
+      },
+      {
+        "gpu": "AMD Radeon RX 7600M",
+        "cpu_cores": 8,
+        "memory": 16,
         "screen_resolution": "1920x1200",
-        "id": "95ffbb6a50b910db"
+        "id": "b81e87527196369e"
       },
       {
         "gpu": "NVIDIA GeForce RTX 4060 Laptop",
-        "cpu_cores": 8,
+        "cpu_cores": 6,
         "memory": 16,
         "screen_resolution": "2560x1440",
-        "id": "4f650e8d277c26b9"
+        "id": "dd0bcfdfe4c8f59f"
+      },
+      {
+        "gpu": "NVIDIA GeForce RTX 4060 Laptop",
+        "cpu_cores": 6,
+        "memory": 16,
+        "screen_resolution": "1920x1080",
+        "id": "84494a6b7217464d"
       },
       {
         "gpu": "AMD Radeon RX 7600M",
         "cpu_cores": 12,
         "memory": 16,
-        "screen_resolution": "1920x1200",
-        "id": "5ca1e6aff5e77b24"
-      },
-      {
-        "gpu": "NVIDIA GeForece RTX 4070 Laptop",
-        "cpu_cores": 8,
-        "memory": 32,
-        "screen_resolution": "1920x1200",
-        "id": "a92b74a422899142"
-      },
-      {
-        "gpu": "NVIDIA GeForce RTX 4060 Laptop",
-        "cpu_cores": 6,
-        "memory": 16,
-        "screen_resolution": "2560x1440",
-        "id": "b05f0a6aa2149a8e"
+        "screen_resolution": "1920x1080",
+        "id": "ed8cde5f48b63609"
       }
     ],
     "office_desktop": [
       {
         "gpu": "Intel UHD Graphics 630",
-        "cpu_cores": 8,
-        "memory": 16,
+        "cpu_cores": 4,
+        "memory": 8,
         "screen_resolution": "1680x1050",
-        "id": "f4547c1cdfc942a8"
+        "id": "1f5aa828ff68d722"
+      },
+      {
+        "gpu": "Intel Iris Xe Graphics",
+        "cpu_cores": 8,
+        "memory": 8,
+        "screen_resolution": "1680x1050",
+        "id": "8ceb8a431793c4bf"
       },
       {
         "gpu": "AMD Radeon RX 6400",
         "cpu_cores": 8,
-        "memory": 8,
-        "screen_resolution": "2560x1440",
-        "id": "3d88dd921ce2439b"
-      },
-      {
-        "gpu": "Intel Iris Xe Graphics",
-        "cpu_cores": 6,
         "memory": 16,
-        "screen_resolution": "2560x1440",
-        "id": "96a400ac917f6da2"
+        "screen_resolution": "1920x1080",
+        "id": "63ce4387119c2108"
       },
       {
         "gpu": "Intel UHD Graphics 630",
         "cpu_cores": 8,
         "memory": 16,
-        "screen_resolution": "1920x1080",
-        "id": "00fa835ef83ab2c7"
+        "screen_resolution": "1680x1050",
+        "id": "82cf7a38eb9dbfa2"
       },
       {
         "gpu": "Intel Iris Xe Graphics",
         "cpu_cores": 4,
-        "memory": 16,
-        "screen_resolution": "1680x1050",
-        "id": "808091387bab9eaa"
+        "memory": 8,
+        "screen_resolution": "1920x1080",
+        "id": "b2b63bf6ad2d4709"
       }
     ],
     "budget_laptop": [
@@ -116,73 +116,73 @@
         "gpu": "AMD Radeon Graphics",
         "cpu_cores": 6,
         "memory": 8,
-        "screen_resolution": "1366x768",
-        "id": "f096423307187de9"
+        "screen_resolution": "1600x900",
+        "id": "c6c8d4e23366e3c1"
+      },
+      {
+        "gpu": "AMD Radeon Graphics",
+        "cpu_cores": 4,
+        "memory": 16,
+        "screen_resolution": "1600x900",
+        "id": "ff5d9062a6a6efa2"
       },
       {
         "gpu": "Intel UHD Graphics",
-        "cpu_cores": 6,
-        "memory": 8,
-        "screen_resolution": "1600x900",
-        "id": "d990e0a25e8a1556"
-      },
-      {
-        "gpu": "Intel Iris Xe Graphics",
         "cpu_cores": 4,
         "memory": 8,
-        "screen_resolution": "1920x1080",
-        "id": "41d2d4f9098774a7"
-      },
-      {
-        "gpu": "Intel Iris Xe Graphics",
-        "cpu_cores": 4,
-        "memory": 16,
-        "screen_resolution": "1920x1080",
-        "id": "103e5208b0fd0cc7"
+        "screen_resolution": "1366x768",
+        "id": "2bdd023476067bbc"
       },
       {
         "gpu": "AMD Radeon Graphics",
         "cpu_cores": 6,
         "memory": 8,
         "screen_resolution": "1366x768",
-        "id": "581222511148bc07"
+        "id": "018777acee744712"
+      },
+      {
+        "gpu": "Intel Iris Xe Graphics",
+        "cpu_cores": 4,
+        "memory": 8,
+        "screen_resolution": "1600x900",
+        "id": "530518834d05f125"
       }
     ],
     "mobile_device": [
       {
         "gpu": "Apple A16 GPU",
         "cpu_cores": 8,
-        "memory": 6,
-        "screen_resolution": "1170x2532",
-        "id": "c443250760804085"
-      },
-      {
-        "gpu": "Mali-G78 MP14",
-        "cpu_cores": 8,
         "memory": 12,
-        "screen_resolution": "1080x2400",
-        "id": "93d33b6524687d07"
-      },
-      {
-        "gpu": "Adreno 730",
-        "cpu_cores": 8,
-        "memory": 6,
-        "screen_resolution": "1284x2778",
-        "id": "0ecf44ee9dd36e49"
-      },
-      {
-        "gpu": "Mali-G78 MP14",
-        "cpu_cores": 8,
-        "memory": 8,
         "screen_resolution": "1170x2532",
-        "id": "fa0f3973b88475f1"
+        "id": "c139852be6a27caa"
       },
       {
         "gpu": "Apple A16 GPU",
         "cpu_cores": 8,
-        "memory": 6,
+        "memory": 12,
         "screen_resolution": "1284x2778",
-        "id": "7bd64267fc5a21b9"
+        "id": "5991db21c061ddf7"
+      },
+      {
+        "gpu": "Apple A16 GPU",
+        "cpu_cores": 8,
+        "memory": 8,
+        "screen_resolution": "1284x2778",
+        "id": "b16b993def4899da"
+      },
+      {
+        "gpu": "Apple A16 GPU",
+        "cpu_cores": 8,
+        "memory": 12,
+        "screen_resolution": "1170x2532",
+        "id": "a1da1e3c57a23721"
+      },
+      {
+        "gpu": "Adreno 730",
+        "cpu_cores": 8,
+        "memory": 8,
+        "screen_resolution": "1284x2778",
+        "id": "8552f68f4c9d043f"
       }
     ]
   },
@@ -547,7 +547,3617 @@
       },
       "createdAt": 1750274685766,
       "version": "2024.1"
+    },
+    "50e291c2ee867c9c25d2f2e6e964c8ea": {
+      "sessionId": "50e291c2ee867c9c25d2f2e6e964c8ea",
+      "deviceProfile": {
+        "type": "high_end_desktop",
+        "gpu": "NVIDIA GeForce RTX 4080",
+        "cpu_cores": 8,
+        "memory": 32,
+        "screen_resolution": "3840x2160",
+        "id": "9ef94f9d85e02cf7"
+      },
+      "browserTemplate": {
+        "type": "chrome_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "vendor": "Google Inc.",
+        "platform": "Win32",
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client"
+        ],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "WebKit",
+        "webgl_renderer": "WebKit WebGL"
+      },
+      "canvas": {
+        "noisePattern": [
+          -1,
+          1,
+          -2,
+          -1,
+          0,
+          2,
+          -2,
+          2,
+          0,
+          2,
+          -2,
+          0,
+          -2,
+          0,
+          0,
+          0,
+          2,
+          0,
+          -2,
+          -1,
+          -1,
+          0,
+          -1,
+          -2,
+          -2,
+          -1,
+          -1,
+          -1,
+          1,
+          0,
+          0,
+          2,
+          2,
+          -2,
+          0,
+          -2,
+          1,
+          1,
+          -1,
+          0,
+          2,
+          -2,
+          -2,
+          1,
+          -2,
+          1,
+          -1,
+          -1,
+          1,
+          -1,
+          -1,
+          2,
+          -2,
+          0,
+          -1,
+          2,
+          -1,
+          0,
+          0,
+          -1,
+          2,
+          2,
+          1,
+          2,
+          2,
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          2,
+          1,
+          -2,
+          -1,
+          -1,
+          2,
+          -1,
+          1,
+          -2,
+          -2,
+          -2,
+          -1,
+          0,
+          -2,
+          1,
+          1,
+          2,
+          2,
+          -2,
+          -2,
+          -1,
+          -2,
+          -2,
+          -1,
+          -2,
+          -1,
+          -1,
+          1,
+          -2
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 1.0575402949245543,
+          "kerningVariation": -0.8482253086419753,
+          "antialiasing": "grayscale",
+          "hinting": "full"
+        },
+        "signature": "canvas_high_end_desktop_4cd53692",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "NVIDIA Corporation",
+        "renderer": "NVIDIA GeForce RTX 4080",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0 NVIDIA 537.58",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60 NVIDIA",
+        "maxTextureSize": 16801,
+        "maxVertexAttribs": 16,
+        "maxFragmentTextureImageUnits": 32,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float",
+          "WEBGL_debug_renderer_info"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 48000,
+        "baseFrequency": 442.3828875171468,
+        "frequencyResponse": [
+          0.5373161008230453,
+          0.5975205364537721,
+          0.7426279811680427,
+          0.7963052901954601,
+          0.8454917457241098,
+          0.8960938600308344,
+          0.9953289565638601,
+          1,
+          1,
+          1,
+          0.9180236276789588,
+          0.8754579069852408,
+          0.8803306129093201,
+          0.7923923182838459,
+          0.6904488933221224,
+          0.5944566089682052,
+          0.454267575062616,
+          0.4050312322513304,
+          0.28925803966944624,
+          0.14555167867130156,
+          0.1640160191498768,
+          0.1083427722294199,
+          0.004585194193787893,
+          0,
+          0,
+          0.0323759970991578,
+          0.08589312824417583,
+          0.13261209778579244,
+          0.17186968174971062,
+          0.2542404054920243,
+          0.40387121180588686,
+          0.5075027951618964
+        ],
+        "dynamicsCompressor": {
+          "threshold": -23.52409122085048,
+          "knee": 28.182098765432098,
+          "ratio": 13.525531550068587,
+          "attack": 0.004907115912208505,
+          "release": 0.26269354423868313
+        },
+        "oscillatorFingerprint": {
+          "frequency": 444.08753429355284,
+          "detune": 11.914437585733884,
+          "waveform": "triangle"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Arial Black",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Palatino",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": true,
+          "hinting": "none",
+          "antialiasing": true
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 3840,
+        "height": 2160,
+        "availWidth": 3840,
+        "availHeight": 2092,
+        "colorDepth": 32,
+        "pixelDepth": 32,
+        "devicePixelRatio": 1.09,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750618593526,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750618593528,
+          "domainLookupStart": 1750618593531,
+          "domainLookupEnd": 1750618593541,
+          "connectStart": 1750618593541,
+          "connectEnd": 1750618593571,
+          "requestStart": 1750618593576,
+          "responseStart": 1750618593974,
+          "responseEnd": 1750618593965,
+          "domLoading": 1750618594130,
+          "domContentLoadedEventStart": 1750618594579,
+          "domContentLoadedEventEnd": 1750618594559,
+          "domComplete": 1750618595131,
+          "loadEventStart": 1750618594885,
+          "loadEventEnd": 1750618594936
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 271,
+          "resourceCount": 23,
+          "cacheHitRatio": 0.6590303497942387
+        },
+        "performanceNow": {
+          "resolution": 0.0044308641975308646,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 43426589,
+          "totalJSHeapSize": 73061402,
+          "jsHeapSizeLimit": 2896810729
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "wifi",
+          "downlink": 30.368762860082306,
+          "rtt": 13,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.147.93",
+          "ipv6": "2001:db8::1253",
+          "proxy": false
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "208.67.222.222",
+          "resolveTime": 28
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client",
+          "Java Deployment Toolkit"
+        ],
+        "mimeTypes": [
+          "application/pdf"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en",
+          "ja-JP"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en,ja-JP"
+      },
+      "timezone": {
+        "timezone": "America/New_York",
+        "timezoneOffset": -300,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 8,
+        "deviceMemory": 32,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 1085.267489711934,
+          "acceleration": 1514.900548696845,
+          "jitter": 0.9714763374485597,
+          "curvature": 0.05589634773662552
+        },
+        "keystrokePattern": {
+          "dwellTime": 121.31687242798354,
+          "flightTime": 127.23508230452674,
+          "variation": 0.09714763374485597
+        },
+        "scrollPattern": {
+          "speed": 242.63374485596708,
+          "smoothness": 0.8180877057613168,
+          "frequency": 0.06476508916323731
+        },
+        "focusPattern": {
+          "duration": 5565.843621399177,
+          "switches": 1,
+          "tabSwitchProbability": 0.032382544581618655
+        }
+      },
+      "createdAt": 1750618607104,
+      "version": "2024.1"
+    },
+    "e967b008749016269c5bbb39d06270d7": {
+      "sessionId": "e967b008749016269c5bbb39d06270d7",
+      "deviceProfile": {
+        "type": "mobile_device",
+        "gpu": "Apple A16 GPU",
+        "cpu_cores": 8,
+        "memory": 8,
+        "screen_resolution": "1080x2400",
+        "id": "af740dca90f4d88b"
+      },
+      "browserTemplate": {
+        "type": "firefox_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0",
+        "vendor": "",
+        "platform": "Win32",
+        "plugins": [],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "Mozilla",
+        "webgl_renderer": "Mozilla"
+      },
+      "canvas": {
+        "noisePattern": [
+          0,
+          1,
+          -2,
+          2,
+          -2,
+          1,
+          1,
+          -1,
+          0,
+          1,
+          -2,
+          2,
+          2,
+          2,
+          -1,
+          -2,
+          2,
+          -1,
+          0,
+          0,
+          2,
+          0,
+          0,
+          -2,
+          1,
+          2,
+          1,
+          -1,
+          -1,
+          0,
+          2,
+          2,
+          2,
+          1,
+          0,
+          -1,
+          0,
+          -1,
+          2,
+          -1,
+          1,
+          -1,
+          0,
+          -1,
+          2,
+          2,
+          -2,
+          -2,
+          1,
+          -2,
+          0,
+          -1,
+          -2,
+          -2,
+          -1,
+          -2,
+          1,
+          1,
+          2,
+          0,
+          -1,
+          0,
+          -2,
+          0,
+          -2,
+          1,
+          0,
+          2,
+          2,
+          2,
+          1,
+          2,
+          2,
+          0,
+          0,
+          -1,
+          -2,
+          1,
+          -2,
+          1,
+          -2,
+          2,
+          2,
+          -2,
+          -2,
+          2,
+          -1,
+          -1,
+          -2,
+          1,
+          1,
+          -2,
+          -2,
+          1,
+          -1,
+          1,
+          1,
+          2,
+          -2,
+          -1
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 1.0387474279835391,
+          "kerningVariation": -0.018046982167352565,
+          "antialiasing": "subpixel",
+          "hinting": "full"
+        },
+        "signature": "canvas_mobile_device_147617f7",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "Unknown",
+        "renderer": "Apple A16 GPU",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60",
+        "maxTextureSize": 8452,
+        "maxVertexAttribs": 16,
+        "maxFragmentTextureImageUnits": 16,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 48000,
+        "baseFrequency": 442.32287379972564,
+        "frequencyResponse": [
+          0.5463781721536352,
+          0.5838459822699587,
+          0.6555995175192086,
+          0.7445648923902475,
+          0.9080517594415309,
+          0.9667814457647165,
+          0.9605638674006227,
+          0.9706183835127487,
+          1,
+          0.9718706604322389,
+          0.9663861105321824,
+          0.8949109248178884,
+          0.8128494743633669,
+          0.7503227023716375,
+          0.7009512938708192,
+          0.5772841123975605,
+          0.4328769714960865,
+          0.3510274599605211,
+          0.3001719628518879,
+          0.1559511985615622,
+          0.08995051846400573,
+          0.025120892942725792,
+          0.05788594865194976,
+          0.046939649074900114,
+          0,
+          0.039689097236332,
+          0.10503750410151466,
+          0.09445194689416006,
+          0.1443062386770083,
+          0.28665638628763473,
+          0.404908591778452,
+          0.4561739199904287
+        ],
+        "dynamicsCompressor": {
+          "threshold": -23.918810013717422,
+          "knee": 29.983367626886146,
+          "ratio": 10.966203703703703,
+          "attack": 0.004752966392318245,
+          "release": 0.2690764317558299
+        },
+        "oscillatorFingerprint": {
+          "frequency": 448.3279320987654,
+          "detune": 11.614368998628255,
+          "waveform": "triangle"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Arial Black",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Palatino",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": true,
+          "hinting": "medium",
+          "antialiasing": false
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 1080,
+        "height": 2400,
+        "availWidth": 1080,
+        "availHeight": 2355,
+        "colorDepth": 32,
+        "pixelDepth": 32,
+        "devicePixelRatio": 1.25,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750618634839,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750618634841,
+          "domainLookupStart": 1750618634844,
+          "domainLookupEnd": 1750618634854,
+          "connectStart": 1750618634854,
+          "connectEnd": 1750618634884,
+          "requestStart": 1750618634889,
+          "responseStart": 1750618635059,
+          "responseEnd": 1750618635425,
+          "domLoading": 1750618635420,
+          "domContentLoadedEventStart": 1750618635781,
+          "domContentLoadedEventEnd": 1750618635707,
+          "domComplete": 1750618636321,
+          "loadEventStart": 1750618636144,
+          "loadEventEnd": 1750618636143
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 127,
+          "resourceCount": 15,
+          "cacheHitRatio": 0.8799395576131687
+        },
+        "performanceNow": {
+          "resolution": 0.0015594478737997255,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 3538404,
+          "totalJSHeapSize": 150274767,
+          "jsHeapSizeLimit": 2728891279
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "wifi",
+          "downlink": 95.09323559670781,
+          "rtt": 17,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.90.14",
+          "ipv6": "2001:db8::ef3f",
+          "proxy": false
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "1.1.1.1",
+          "resolveTime": 12
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Adobe Acrobat",
+          "Java Deployment Toolkit"
+        ],
+        "mimeTypes": [
+          "application/pdf",
+          "application/vnd.adobe.pdx"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en"
+      },
+      "timezone": {
+        "timezone": "America/New_York",
+        "timezoneOffset": -300,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 8,
+        "deviceMemory": 8,
+        "maxTouchPoints": 7,
+        "platform": "Linux armv8l",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 976.7078189300412,
+          "acceleration": 1287.9046639231824,
+          "jitter": 0.6387602880658436,
+          "curvature": 0.2905671296296296
+        },
+        "keystrokePattern": {
+          "dwellTime": 94.1769547325103,
+          "flightTime": 93.18569958847736,
+          "variation": 0.06387602880658436
+        },
+        "scrollPattern": {
+          "speed": 188.3539094650206,
+          "smoothness": 0.7329642489711934,
+          "frequency": 0.042584019204389575
+        },
+        "focusPattern": {
+          "duration": 4208.847736625514,
+          "switches": 0,
+          "tabSwitchProbability": 0.021292009602194788
+        }
+      },
+      "createdAt": 1750618641238,
+      "version": "2024.1"
+    },
+    "876da9febff25967efd70aaa095f0a10": {
+      "sessionId": "876da9febff25967efd70aaa095f0a10",
+      "deviceProfile": {
+        "type": "budget_laptop",
+        "gpu": "Intel UHD Graphics",
+        "cpu_cores": 6,
+        "memory": 8,
+        "screen_resolution": "1366x768",
+        "id": "5f239200d2662b15"
+      },
+      "browserTemplate": {
+        "type": "chrome_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "vendor": "Google Inc.",
+        "platform": "Win32",
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client"
+        ],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "WebKit",
+        "webgl_renderer": "WebKit WebGL"
+      },
+      "canvas": {
+        "noisePattern": [
+          0,
+          0,
+          1,
+          0,
+          -1,
+          1,
+          2,
+          0,
+          1,
+          -2,
+          1,
+          1,
+          0,
+          -1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          -1,
+          -2,
+          -2,
+          0,
+          -2,
+          0,
+          1,
+          -2,
+          -1,
+          -1,
+          -2,
+          2,
+          2,
+          2,
+          0,
+          1,
+          2,
+          0,
+          -2,
+          -1,
+          1,
+          1,
+          0,
+          -1,
+          1,
+          -2,
+          0,
+          2,
+          0,
+          -2,
+          -1,
+          -2,
+          -1,
+          -1,
+          -1,
+          0,
+          1,
+          -1,
+          -2,
+          1,
+          2,
+          1,
+          1,
+          -1,
+          1,
+          -1,
+          2,
+          -1,
+          0,
+          -2,
+          2,
+          -2,
+          0,
+          -1,
+          -1,
+          -1,
+          0,
+          1,
+          -2,
+          -1,
+          1,
+          -1,
+          1,
+          0,
+          -2,
+          -1,
+          1,
+          -2,
+          1,
+          1,
+          1,
+          -2,
+          2,
+          -1,
+          2,
+          1,
+          -1,
+          0,
+          0,
+          -2,
+          0
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 1.141681670096022,
+          "kerningVariation": -0.4525034293552812,
+          "antialiasing": "subpixel",
+          "hinting": "full"
+        },
+        "signature": "canvas_budget_laptop_13bf3d8d",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "Unknown",
+        "renderer": "Intel UHD Graphics",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60",
+        "maxTextureSize": 8200,
+        "maxVertexAttribs": 19,
+        "maxFragmentTextureImageUnits": 16,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 48000,
+        "baseFrequency": 432.89000342935526,
+        "frequencyResponse": [
+          0.47074159807956106,
+          0.5880705193069957,
+          0.6480184990006902,
+          0.7335116516495068,
+          0.9018596298119013,
+          0.8737837605795312,
+          0.9890939599932154,
+          1,
+          1,
+          1,
+          0.9643606475692195,
+          0.8560799062993698,
+          0.845546233622626,
+          0.7628805727420078,
+          0.7017036086856341,
+          0.574564204990153,
+          0.4350181751997902,
+          0.36636310810866923,
+          0.23703538877781385,
+          0.2226757355985992,
+          0.0948694999454872,
+          0.07656765220198505,
+          0.06419381902232013,
+          0.01644196388971493,
+          0.009768347159583147,
+          0.06058030094003572,
+          0.014123152249662797,
+          0.10006537282008598,
+          0.15478077571404533,
+          0.31032536776911623,
+          0.3501053510377113,
+          0.4312317903607991
+        ],
+        "dynamicsCompressor": {
+          "threshold": -23.388717421124827,
+          "knee": 25.961376886145406,
+          "ratio": 11.551851851851852,
+          "attack": 0.0043096793552812075,
+          "release": 0.29375814471879286
+        },
+        "oscillatorFingerprint": {
+          "frequency": 446.2561728395062,
+          "detune": -35.5499828532236,
+          "waveform": "sine"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Arial Black",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Futura",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Myriad Pro",
+          "Palatino",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": true,
+          "hinting": "slight",
+          "antialiasing": true
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 1366,
+        "height": 768,
+        "availWidth": 1366,
+        "availHeight": 724,
+        "colorDepth": 32,
+        "pixelDepth": 32,
+        "devicePixelRatio": 1.5,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750618876031,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750618876033,
+          "domainLookupStart": 1750618876036,
+          "domainLookupEnd": 1750618876046,
+          "connectStart": 1750618876046,
+          "connectEnd": 1750618876076,
+          "requestStart": 1750618876081,
+          "responseStart": 1750618876575,
+          "responseEnd": 1750618876539,
+          "domLoading": 1750618876675,
+          "domContentLoadedEventStart": 1750618876968,
+          "domContentLoadedEventEnd": 1750618877143,
+          "domComplete": 1750618877793,
+          "loadEventStart": 1750618877624,
+          "loadEventEnd": 1750618877555
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 249,
+          "resourceCount": 24,
+          "cacheHitRatio": 0.6860570987654321
+        },
+        "performanceNow": {
+          "resolution": 0.0034908093278463647,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 50631054,
+          "totalJSHeapSize": 82507936,
+          "jsHeapSizeLimit": 2723524411
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "wifi",
+          "downlink": 72.98193158436214,
+          "rtt": 37,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.105.226",
+          "ipv6": "2001:db8::a3c6",
+          "proxy": false
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "1.1.1.1",
+          "resolveTime": 54
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client",
+          "Adobe Acrobat"
+        ],
+        "mimeTypes": [
+          "application/pdf",
+          "application/pdf",
+          "application/vnd.adobe.pdx"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en",
+          "de-DE"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en,de-DE"
+      },
+      "timezone": {
+        "timezone": "Europe/Berlin",
+        "timezoneOffset": 60,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 6,
+        "deviceMemory": 8,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 899.7856652949246,
+          "acceleration": 1582.002743484225,
+          "jitter": 1.4121527777777778,
+          "curvature": 0.17782493141289438
+        },
+        "keystrokePattern": {
+          "dwellTime": 74.94641632373114,
+          "flightTime": 137.30041152263374,
+          "variation": 0.1412152777777778
+        },
+        "scrollPattern": {
+          "speed": 149.89283264746228,
+          "smoothness": 0.8432510288065843,
+          "frequency": 0.09414351851851853
+        },
+        "focusPattern": {
+          "duration": 3247.320816186557,
+          "switches": 2,
+          "tabSwitchProbability": 0.047071759259259265
+        }
+      },
+      "createdAt": 1750618887259,
+      "version": "2024.1"
+    },
+    "bb4efd2eaad34c509cce926ffe955d8e": {
+      "sessionId": "bb4efd2eaad34c509cce926ffe955d8e",
+      "deviceProfile": {
+        "type": "gaming_laptop",
+        "gpu": "NVIDIA GeForece RTX 4070 Laptop",
+        "cpu_cores": 8,
+        "memory": 16,
+        "screen_resolution": "2560x1440",
+        "id": "6dbbb37d584b7c9a"
+      },
+      "browserTemplate": {
+        "type": "safari_mac",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
+        "vendor": "Apple Computer, Inc.",
+        "platform": "MacIntel",
+        "plugins": [
+          "WebKit built-in PDF"
+        ],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "WebKit",
+        "webgl_renderer": "Apple GPU"
+      },
+      "canvas": {
+        "noisePattern": [
+          1,
+          2,
+          -1,
+          -1,
+          -2,
+          -1,
+          -1,
+          0,
+          1,
+          2,
+          1,
+          0,
+          0,
+          -2,
+          -1,
+          0,
+          -2,
+          0,
+          0,
+          -1,
+          1,
+          2,
+          1,
+          -2,
+          2,
+          -2,
+          -2,
+          2,
+          1,
+          -2,
+          1,
+          -2,
+          1,
+          -1,
+          0,
+          -2,
+          -1,
+          0,
+          -2,
+          -2,
+          0,
+          0,
+          -1,
+          1,
+          -1,
+          2,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          2,
+          1,
+          -2,
+          1,
+          -1,
+          0,
+          -2,
+          -2,
+          1,
+          -2,
+          0,
+          2,
+          1,
+          -2,
+          1,
+          1,
+          -2,
+          0,
+          -2,
+          -2,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          2,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          2,
+          -2,
+          0,
+          -1,
+          1,
+          0,
+          1,
+          2,
+          1,
+          -2,
+          2,
+          1,
+          0
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 0.8156142832647463,
+          "kerningVariation": 0.5364368998628257,
+          "antialiasing": "subpixel",
+          "hinting": "slight"
+        },
+        "signature": "canvas_gaming_laptop_c92d9df7",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "NVIDIA Corporation",
+        "renderer": "NVIDIA GeForece RTX 4070 Laptop",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0 NVIDIA 537.58",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60 NVIDIA",
+        "maxTextureSize": 16610,
+        "maxVertexAttribs": 16,
+        "maxFragmentTextureImageUnits": 32,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float",
+          "WEBGL_debug_renderer_info"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 48000,
+        "baseFrequency": 431.7445987654321,
+        "frequencyResponse": [
+          0.5036977023319615,
+          0.6127961708844991,
+          0.7213038213600866,
+          0.7602949163957344,
+          0.8130050344758244,
+          0.9371925397290511,
+          0.9541488296777146,
+          1,
+          0.9697636533726044,
+          0.9627550054253802,
+          0.9816788917393154,
+          0.9330689323624699,
+          0.820477646517002,
+          0.799951903331857,
+          0.702149424872191,
+          0.5211005561561338,
+          0.46962036998717016,
+          0.40137682552979403,
+          0.29962112265984403,
+          0.23258657236128782,
+          0.07556222971229104,
+          0.09964721324450906,
+          0.027191075538095168,
+          0,
+          0.03778617980704542,
+          0.05444175498667494,
+          0.019507240041158003,
+          0.07746592151693098,
+          0.15728420506932655,
+          0.29472180123962377,
+          0.3213330602283834,
+          0.4201549728025001
+        ],
+        "dynamicsCompressor": {
+          "threshold": -24.407921810699587,
+          "knee": 26.91130829903978,
+          "ratio": 13.676680384087792,
+          "attack": 0.0038247685185185186,
+          "release": 0.2898658264746228
+        },
+        "oscillatorFingerprint": {
+          "frequency": 449.4729080932785,
+          "detune": -41.277006172839506,
+          "waveform": "sawtooth"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Avenir Next",
+          "Courier",
+          "Courier New",
+          "Futura",
+          "Georgia",
+          "Gotham",
+          "Helvetica Neue",
+          "Helvetica Neue",
+          "Lucida Grande",
+          "Menlo",
+          "Monaco",
+          "Myriad Pro",
+          "New York",
+          "Palatino",
+          "SF Mono",
+          "SF Pro Display",
+          "SF Pro Text",
+          "Times",
+          "Times New Roman",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": false,
+          "hinting": "medium",
+          "antialiasing": true
+        },
+        "platform": "mac"
+      },
+      "screen": {
+        "width": 2560,
+        "height": 1440,
+        "availWidth": 2560,
+        "availHeight": 1380,
+        "colorDepth": 32,
+        "pixelDepth": 32,
+        "devicePixelRatio": 1.05,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750619020531,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750619020533,
+          "domainLookupStart": 1750619020536,
+          "domainLookupEnd": 1750619020546,
+          "connectStart": 1750619020546,
+          "connectEnd": 1750619020576,
+          "requestStart": 1750619020581,
+          "responseStart": 1750619021005,
+          "responseEnd": 1750619021059,
+          "domLoading": 1750619021113,
+          "domContentLoadedEventStart": 1750619021689,
+          "domContentLoadedEventEnd": 1750619021382,
+          "domComplete": 1750619021928,
+          "loadEventStart": 1750619021923,
+          "loadEventEnd": 1750619021965
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 136,
+          "resourceCount": 24,
+          "cacheHitRatio": 0.7932716049382715
+        },
+        "performanceNow": {
+          "resolution": 0.0017228052126200275,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 47927357,
+          "totalJSHeapSize": 119982122,
+          "jsHeapSizeLimit": 2738713660
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "ethernet",
+          "downlink": 355.3279320987654,
+          "rtt": 14,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.184.254",
+          "ipv6": "2001:db8::bb9c",
+          "proxy": false
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "208.67.222.222",
+          "resolveTime": 59
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "WebKit built-in PDF",
+          "Java Deployment Toolkit",
+          "VLC Web Plugin"
+        ],
+        "mimeTypes": [
+          "video/mp4",
+          "video/avi",
+          "audio/mp3"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en",
+          "ja-JP"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en,ja-JP"
+      },
+      "timezone": {
+        "timezone": "Asia/Tokyo",
+        "timezoneOffset": 540,
+        "dstObserved": false
+      },
+      "hardware": {
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 848.0486968449932,
+          "acceleration": 1570.9156378600824,
+          "jitter": 1.7077674897119342,
+          "curvature": 0.42989754801097396
+        },
+        "keystrokePattern": {
+          "dwellTime": 62.012174211248286,
+          "flightTime": 135.63734567901236,
+          "variation": 0.1707767489711934
+        },
+        "scrollPattern": {
+          "speed": 124.02434842249657,
+          "smoothness": 0.8390933641975309,
+          "frequency": 0.11385116598079562
+        },
+        "focusPattern": {
+          "duration": 2600.608710562414,
+          "switches": 2,
+          "tabSwitchProbability": 0.05692558299039781
+        }
+      },
+      "createdAt": 1750619027339,
+      "version": "2024.1"
+    },
+    "f923429b58b9c3e18c140de30adf7737": {
+      "sessionId": "f923429b58b9c3e18c140de30adf7737",
+      "deviceProfile": {
+        "type": "budget_laptop",
+        "gpu": "Intel Iris Xe Graphics",
+        "cpu_cores": 4,
+        "memory": 8,
+        "screen_resolution": "1920x1080",
+        "id": "1dac11c9d9f1ee77"
+      },
+      "browserTemplate": {
+        "type": "firefox_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0",
+        "vendor": "",
+        "platform": "Win32",
+        "plugins": [],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "Mozilla",
+        "webgl_renderer": "Mozilla"
+      },
+      "canvas": {
+        "noisePattern": [
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -2,
+          -2,
+          -1,
+          2,
+          0,
+          0,
+          2,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -2,
+          1,
+          -1,
+          2,
+          -1,
+          0,
+          1,
+          1,
+          -2,
+          1,
+          -2,
+          -2,
+          -1,
+          2,
+          -2,
+          -2,
+          1,
+          0,
+          -1,
+          2,
+          0,
+          1,
+          2,
+          2,
+          -1,
+          2,
+          -2,
+          0,
+          0,
+          -2,
+          -2,
+          -1,
+          1,
+          -1,
+          -1,
+          -2,
+          0,
+          -1,
+          2,
+          -2,
+          -1,
+          -1,
+          1,
+          -2,
+          2,
+          0,
+          -2,
+          -2,
+          2,
+          0,
+          -1,
+          0,
+          1,
+          1,
+          1,
+          -1,
+          -2,
+          1,
+          1,
+          0,
+          -2,
+          -1,
+          1,
+          -1,
+          0,
+          2,
+          1,
+          0,
+          1,
+          1,
+          -2,
+          -1,
+          1,
+          0,
+          -2,
+          -2,
+          -2,
+          1,
+          -1,
+          -1,
+          0,
+          2
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 1.1109610768175582,
+          "kerningVariation": 0.6185442386831275,
+          "antialiasing": "subpixel",
+          "hinting": "full"
+        },
+        "signature": "canvas_budget_laptop_0729a5a8",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "Unknown",
+        "renderer": "Intel Iris Xe Graphics",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60",
+        "maxTextureSize": 8594,
+        "maxVertexAttribs": 16,
+        "maxFragmentTextureImageUnits": 16,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 44100,
+        "baseFrequency": 443.8573388203018,
+        "frequencyResponse": [
+          0.5066739540466392,
+          0.5949133691012344,
+          0.6933644352146819,
+          0.7960643779869553,
+          0.9047672944209547,
+          0.9179722893861156,
+          0.9866003900343676,
+          1,
+          0.9564847610543602,
+          0.9557775534363541,
+          0.9843979418079026,
+          0.9229536202911394,
+          0.8379600710711858,
+          0.8039826817955058,
+          0.6924199152699962,
+          0.5269317461424164,
+          0.5055184324014363,
+          0.3892553406189573,
+          0.25768996696711427,
+          0.2309074742817268,
+          0.15827099171503453,
+          0.07384260076165584,
+          0.018490372520262515,
+          0.028686048251854848,
+          0,
+          0.06927500258612625,
+          0.08354316253772864,
+          0.0755810621204975,
+          0.22620695884161734,
+          0.24525463731644132,
+          0.32724141070849316,
+          0.4737227883031859
+        ],
+        "dynamicsCompressor": {
+          "threshold": -23.037842935528122,
+          "knee": 34.67035322359396,
+          "ratio": 12.42741769547325,
+          "attack": 0.00412863511659808,
+          "release": 0.2964465449245542
+        },
+        "oscillatorFingerprint": {
+          "frequency": 430.0784465020576,
+          "detune": 19.286694101508917,
+          "waveform": "sawtooth"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Adobe Garamond Pro",
+          "Arial",
+          "Arial Black",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Minion Pro",
+          "Palatino",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": true,
+          "hinting": "none",
+          "antialiasing": true
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 1920,
+        "height": 1080,
+        "availWidth": 1920,
+        "availHeight": 1016,
+        "colorDepth": 24,
+        "pixelDepth": 24,
+        "devicePixelRatio": 1.37,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750619196645,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750619196647,
+          "domainLookupStart": 1750619196650,
+          "domainLookupEnd": 1750619196660,
+          "connectStart": 1750619196660,
+          "connectEnd": 1750619196690,
+          "requestStart": 1750619196695,
+          "responseStart": 1750619197181,
+          "responseEnd": 1750619197154,
+          "domLoading": 1750619197573,
+          "domContentLoadedEventStart": 1750619198136,
+          "domContentLoadedEventEnd": 1750619197869,
+          "domComplete": 1750619198330,
+          "loadEventStart": 1750619198389,
+          "loadEventEnd": 1750619198416
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 302,
+          "resourceCount": 22,
+          "cacheHitRatio": 0.61153420781893
+        },
+        "performanceNow": {
+          "resolution": 0.003840792181069959,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 40021010,
+          "totalJSHeapSize": 56460297,
+          "jsHeapSizeLimit": 3887398318
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "4g",
+          "downlink": 13.594993141289438,
+          "rtt": 116,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.66.45",
+          "ipv6": "2001:db8::1018",
+          "proxy": false
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "1.1.1.1",
+          "resolveTime": 18
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Adobe Acrobat",
+          "Java Deployment Toolkit",
+          "Microsoft Silverlight"
+        ],
+        "mimeTypes": [
+          "application/pdf",
+          "application/vnd.adobe.pdx"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en",
+          "zh-CN"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en,zh-CN"
+      },
+      "timezone": {
+        "timezone": "America/New_York",
+        "timezoneOffset": -300,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 4,
+        "deviceMemory": 8,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 982.5240054869685,
+          "acceleration": 1480.6069958847736,
+          "jitter": 1.855221193415638,
+          "curvature": 0.007713906035665295
+        },
+        "keystrokePattern": {
+          "dwellTime": 95.63100137174212,
+          "flightTime": 122.09104938271605,
+          "variation": 0.1855221193415638
+        },
+        "scrollPattern": {
+          "speed": 191.26200274348423,
+          "smoothness": 0.8052276234567901,
+          "frequency": 0.12368141289437587
+        },
+        "focusPattern": {
+          "duration": 4281.550068587106,
+          "switches": 1,
+          "tabSwitchProbability": 0.061840706447187935
+        }
+      },
+      "createdAt": 1750619208747,
+      "version": "2024.1"
+    },
+    "a6f2082fb42adf950ed9bf0a6f9b547c": {
+      "sessionId": "a6f2082fb42adf950ed9bf0a6f9b547c",
+      "deviceProfile": {
+        "type": "budget_laptop",
+        "gpu": "Intel UHD Graphics",
+        "cpu_cores": 6,
+        "memory": 8,
+        "screen_resolution": "1920x1080",
+        "id": "803d937f42e52e80"
+      },
+      "browserTemplate": {
+        "type": "chrome_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "vendor": "Google Inc.",
+        "platform": "Win32",
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client"
+        ],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "WebKit",
+        "webgl_renderer": "WebKit WebGL"
+      },
+      "canvas": {
+        "noisePattern": [
+          -1,
+          0,
+          0,
+          -2,
+          0,
+          0,
+          -1,
+          0,
+          -1,
+          0,
+          -1,
+          -2,
+          2,
+          -2,
+          0,
+          2,
+          0,
+          2,
+          -2,
+          1,
+          1,
+          2,
+          -1,
+          -1,
+          0,
+          0,
+          -2,
+          0,
+          -2,
+          1,
+          -1,
+          -2,
+          -2,
+          -1,
+          -2,
+          -2,
+          2,
+          1,
+          2,
+          0,
+          2,
+          -2,
+          0,
+          0,
+          -2,
+          0,
+          1,
+          -2,
+          1,
+          -2,
+          0,
+          0,
+          2,
+          -2,
+          0,
+          1,
+          -2,
+          -2,
+          1,
+          2,
+          0,
+          0,
+          1,
+          -1,
+          0,
+          -1,
+          2,
+          2,
+          2,
+          1,
+          0,
+          -2,
+          -2,
+          0,
+          -2,
+          1,
+          -1,
+          0,
+          0,
+          -1,
+          0,
+          -2,
+          2,
+          0,
+          -2,
+          1,
+          -1,
+          2,
+          -2,
+          2,
+          1,
+          -1,
+          -2,
+          -2,
+          1,
+          2,
+          -1,
+          -2,
+          -2,
+          2
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 0.9733389060356653,
+          "kerningVariation": 0.5233024691358024,
+          "antialiasing": "subpixel",
+          "hinting": "full"
+        },
+        "signature": "canvas_budget_laptop_68a8018b",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "Unknown",
+        "renderer": "Intel UHD Graphics",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60",
+        "maxTextureSize": 8475,
+        "maxVertexAttribs": 17,
+        "maxFragmentTextureImageUnits": 16,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 44100,
+        "baseFrequency": 445.8818587105624,
+        "frequencyResponse": [
+          0.45697145061728395,
+          0.6119289726677639,
+          0.6554932075054912,
+          0.7557754548045136,
+          0.8774927745306941,
+          0.9376627900719867,
+          0.9279472693210618,
+          1,
+          1,
+          0.9509824574144062,
+          0.9852098416707283,
+          0.8744342444338006,
+          0.8592452219628182,
+          0.7771711248682082,
+          0.6181289344743858,
+          0.5465193661698513,
+          0.48997230757290405,
+          0.3947483104406308,
+          0.2478022783525738,
+          0.1655156704408489,
+          0.14910346770954755,
+          0.10670182572736228,
+          0.04214177855592781,
+          0.01041358597476294,
+          0.03982536019113321,
+          0.020858507387223633,
+          0.06172131754458735,
+          0.11060078091336445,
+          0.14461145129703573,
+          0.2254389651628062,
+          0.3216747097482737,
+          0.4978371573018142
+        ],
+        "dynamicsCompressor": {
+          "threshold": -23.528000685871056,
+          "knee": 27.277263374485596,
+          "ratio": 11.175943072702331,
+          "attack": 0.004145901920438958,
+          "release": 0.26141010802469133
+        },
+        "oscillatorFingerprint": {
+          "frequency": 430.1173696844993,
+          "detune": 29.409293552812066,
+          "waveform": "sine"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Arial Black",
+          "Avenir",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Minion Pro",
+          "Palatino",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": false,
+          "hinting": "medium",
+          "antialiasing": false
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 1920,
+        "height": 1080,
+        "availWidth": 1920,
+        "availHeight": 1031,
+        "colorDepth": 32,
+        "pixelDepth": 32,
+        "devicePixelRatio": 1.26,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750619328775,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750619328777,
+          "domainLookupStart": 1750619328780,
+          "domainLookupEnd": 1750619328790,
+          "connectStart": 1750619328790,
+          "connectEnd": 1750619328820,
+          "requestStart": 1750619328825,
+          "responseStart": 1750619329191,
+          "responseEnd": 1750619329227,
+          "domLoading": 1750619329597,
+          "domContentLoadedEventStart": 1750619329913,
+          "domContentLoadedEventEnd": 1750619329833,
+          "domComplete": 1750619330443,
+          "loadEventStart": 1750619330252,
+          "loadEventEnd": 1750619330365
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 271,
+          "resourceCount": 20,
+          "cacheHitRatio": 0.6108243312757201
+        },
+        "performanceNow": {
+          "resolution": 0.00388070987654321,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 30511547,
+          "totalJSHeapSize": 56212177,
+          "jsHeapSizeLimit": 3869060752
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "ethernet",
+          "downlink": 499.89969135802465,
+          "rtt": 8,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.208.48",
+          "ipv6": "2001:db8::7a80",
+          "proxy": true
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "9.9.9.9",
+          "resolveTime": 19
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client",
+          "Adobe Acrobat",
+          "QuickTime Plug-in"
+        ],
+        "mimeTypes": [
+          "application/pdf",
+          "application/pdf",
+          "application/vnd.adobe.pdx"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en",
+          "ru-RU"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en,ru-RU"
+      },
+      "timezone": {
+        "timezone": "America/Los_Angeles",
+        "timezoneOffset": -480,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 6,
+        "deviceMemory": 8,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 810.3309327846365,
+          "acceleration": 1545.0685871056241,
+          "jitter": 0.19494598765432097,
+          "curvature": 0.30443244170096023
+        },
+        "keystrokePattern": {
+          "dwellTime": 52.582733196159126,
+          "flightTime": 131.7602880658436,
+          "variation": 0.019494598765432098
+        },
+        "scrollPattern": {
+          "speed": 105.16546639231825,
+          "smoothness": 0.829400720164609,
+          "frequency": 0.012996399176954733
+        },
+        "focusPattern": {
+          "duration": 2129.136659807956,
+          "switches": 2,
+          "tabSwitchProbability": 0.006498199588477366
+        }
+      },
+      "createdAt": 1750619340976,
+      "version": "2024.1"
+    },
+    "47922446965cac5de87072ccc2f0df9c": {
+      "sessionId": "47922446965cac5de87072ccc2f0df9c",
+      "deviceProfile": {
+        "type": "high_end_desktop",
+        "gpu": "NVIDIA GeForce RTX 4070",
+        "cpu_cores": 16,
+        "memory": 16,
+        "screen_resolution": "2560x1600",
+        "id": "d27391eafbdd0526"
+      },
+      "browserTemplate": {
+        "type": "chrome_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "vendor": "Google Inc.",
+        "platform": "Win32",
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client"
+        ],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "WebKit",
+        "webgl_renderer": "WebKit WebGL"
+      },
+      "canvas": {
+        "noisePattern": [
+          1,
+          -2,
+          1,
+          2,
+          1,
+          0,
+          2,
+          0,
+          -1,
+          -2,
+          1,
+          -2,
+          0,
+          -2,
+          1,
+          -2,
+          1,
+          -2,
+          2,
+          -1,
+          -1,
+          -1,
+          2,
+          2,
+          -2,
+          -1,
+          -2,
+          -1,
+          1,
+          1,
+          1,
+          0,
+          2,
+          -1,
+          -1,
+          -2,
+          2,
+          -1,
+          1,
+          1,
+          -2,
+          -2,
+          -2,
+          -2,
+          2,
+          1,
+          0,
+          -1,
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          2,
+          -1,
+          2,
+          2,
+          -1,
+          -1,
+          -2,
+          1,
+          0,
+          2,
+          -1,
+          2,
+          1,
+          -1,
+          2,
+          2,
+          -2,
+          1,
+          2,
+          -1,
+          -1,
+          -2,
+          -1,
+          0,
+          -2,
+          -1,
+          -2,
+          -2,
+          2,
+          -1,
+          0,
+          0,
+          1,
+          2,
+          0,
+          0,
+          1,
+          -2,
+          -1,
+          -2,
+          -2,
+          0,
+          2,
+          1,
+          0,
+          -2
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 0.968872170781893,
+          "kerningVariation": 0.34288408779149515,
+          "antialiasing": "subpixel",
+          "hinting": "full"
+        },
+        "signature": "canvas_high_end_desktop_0bbfbabe",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "NVIDIA Corporation",
+        "renderer": "NVIDIA GeForce RTX 4070",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0 NVIDIA 537.58",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60 NVIDIA",
+        "maxTextureSize": 16677,
+        "maxVertexAttribs": 17,
+        "maxFragmentTextureImageUnits": 32,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float",
+          "WEBGL_debug_renderer_info"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 44100,
+        "baseFrequency": 440.8846879286694,
+        "frequencyResponse": [
+          0.46354423868312755,
+          0.6454307730792865,
+          0.6557388350775077,
+          0.7403575021296165,
+          0.8751149453125872,
+          0.921473232458818,
+          0.9488719092387572,
+          1,
+          0.965001136225828,
+          0.9665830232580276,
+          0.9860727531933621,
+          0.9003743164502614,
+          0.8278550470656988,
+          0.7171544067612122,
+          0.7026338213056615,
+          0.5264717838653246,
+          0.42740929316961185,
+          0.3961513454200547,
+          0.29743062197397296,
+          0.15873969307459374,
+          0.1257379841704529,
+          0.08433942860802071,
+          0.049486171560043035,
+          0.020612917250483098,
+          0.0038055556643842416,
+          0.0006566040950425657,
+          0.06381879696845567,
+          0.11925690231254141,
+          0.1551965850418917,
+          0.277767926068156,
+          0.3333400904067099,
+          0.4975426614170405
+        ],
+        "dynamicsCompressor": {
+          "threshold": -25.09224965706447,
+          "knee": 34.57806069958848,
+          "ratio": 13.062311385459534,
+          "attack": 0.004701740397805213,
+          "release": 0.2577520576131687
+        },
+        "oscillatorFingerprint": {
+          "frequency": 435.66032235939645,
+          "detune": 4.423439643347049,
+          "waveform": "sine"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Arial Black",
+          "Avenir",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Palatino",
+          "Proxima Nova",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": true,
+          "hinting": "none",
+          "antialiasing": true
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 2560,
+        "height": 1600,
+        "availWidth": 2560,
+        "availHeight": 1522,
+        "colorDepth": 32,
+        "pixelDepth": 32,
+        "devicePixelRatio": 1.16,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750621863231,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750621863233,
+          "domainLookupStart": 1750621863236,
+          "domainLookupEnd": 1750621863246,
+          "connectStart": 1750621863246,
+          "connectEnd": 1750621863276,
+          "requestStart": 1750621863281,
+          "responseStart": 1750621863376,
+          "responseEnd": 1750621863550,
+          "domLoading": 1750621863762,
+          "domContentLoadedEventStart": 1750621864085,
+          "domContentLoadedEventEnd": 1750621863864,
+          "domComplete": 1750621864168,
+          "loadEventStart": 1750621864158,
+          "loadEventEnd": 1750621864189
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 148,
+          "resourceCount": 15,
+          "cacheHitRatio": 0.6706893004115226
+        },
+        "performanceNow": {
+          "resolution": 0.0031665637860082306,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 721660,
+          "totalJSHeapSize": 77136501,
+          "jsHeapSizeLimit": 3898251727
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "4g",
+          "downlink": 24.8812585733882,
+          "rtt": 98,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.60.189",
+          "ipv6": "2001:db8::bd98",
+          "proxy": false
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "8.8.8.8",
+          "resolveTime": 47
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client",
+          "Adobe Acrobat"
+        ],
+        "mimeTypes": [
+          "application/pdf",
+          "application/pdf",
+          "application/vnd.adobe.pdx"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en"
+      },
+      "timezone": {
+        "timezone": "Europe/London",
+        "timezoneOffset": 0,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 16,
+        "deviceMemory": 16,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 1196.292866941015,
+          "acceleration": 1208.9677640603566,
+          "jitter": 1.418364197530864,
+          "curvature": 0.3065607853223594
+        },
+        "keystrokePattern": {
+          "dwellTime": 149.07321673525377,
+          "flightTime": 81.3451646090535,
+          "variation": 0.14183641975308642
+        },
+        "scrollPattern": {
+          "speed": 298.14643347050753,
+          "smoothness": 0.7033629115226337,
+          "frequency": 0.09455761316872428
+        },
+        "focusPattern": {
+          "duration": 6953.660836762689,
+          "switches": 0,
+          "tabSwitchProbability": 0.04727880658436214
+        }
+      },
+      "createdAt": 1750621873648,
+      "version": "2024.1"
+    },
+    "a6511b9ec3620e7f6b724306a37c7088": {
+      "sessionId": "a6511b9ec3620e7f6b724306a37c7088",
+      "deviceProfile": {
+        "type": "office_desktop",
+        "gpu": "AMD Radeon RX 6400",
+        "cpu_cores": 4,
+        "memory": 8,
+        "screen_resolution": "1920x1080",
+        "id": "aa5d3e2e83125fa4"
+      },
+      "browserTemplate": {
+        "type": "firefox_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0",
+        "vendor": "",
+        "platform": "Win32",
+        "plugins": [],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "Mozilla",
+        "webgl_renderer": "Mozilla"
+      },
+      "canvas": {
+        "noisePattern": [
+          0,
+          2,
+          -1,
+          -2,
+          0,
+          1,
+          0,
+          -2,
+          0,
+          1,
+          -2,
+          2,
+          0,
+          0,
+          1,
+          1,
+          -2,
+          2,
+          0,
+          -2,
+          2,
+          -1,
+          -2,
+          0,
+          2,
+          0,
+          2,
+          -1,
+          0,
+          0,
+          -2,
+          2,
+          1,
+          0,
+          1,
+          2,
+          -1,
+          0,
+          1,
+          1,
+          1,
+          -1,
+          -2,
+          1,
+          -2,
+          2,
+          -2,
+          1,
+          0,
+          -2,
+          0,
+          0,
+          -2,
+          2,
+          -2,
+          1,
+          -2,
+          2,
+          -2,
+          2,
+          -2,
+          2,
+          -1,
+          -1,
+          0,
+          -2,
+          2,
+          -2,
+          -1,
+          -1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          2,
+          0,
+          -1,
+          -2,
+          -2,
+          0,
+          1,
+          1,
+          -1,
+          -1,
+          -1,
+          -2,
+          2,
+          1,
+          0,
+          0,
+          1,
+          -2,
+          2,
+          1,
+          2,
+          -2,
+          -2,
+          0,
+          -2
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 0.7625300068587105,
+          "kerningVariation": -0.41098251028806587,
+          "antialiasing": "subpixel",
+          "hinting": "slight"
+        },
+        "signature": "canvas_office_desktop_d65567da",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "Unknown",
+        "renderer": "AMD Radeon RX 6400",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60",
+        "maxTextureSize": 8443,
+        "maxVertexAttribs": 16,
+        "maxFragmentTextureImageUnits": 16,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 44100,
+        "baseFrequency": 431.5104595336077,
+        "frequencyResponse": [
+          0.5150527263374486,
+          0.6258744459187927,
+          0.6623399153244213,
+          0.7370048786728264,
+          0.8923641737076489,
+          0.9565465349279537,
+          0.9656581746708559,
+          0.9527703039517061,
+          1,
+          0.9785081775790153,
+          1,
+          0.9173920633638417,
+          0.8099190902755753,
+          0.7948203018229406,
+          0.673123790441464,
+          0.5536747159640899,
+          0.44188074378689585,
+          0.39511353677807937,
+          0.24477244296162728,
+          0.18501669924743325,
+          0.12817239775069983,
+          0.026820138484563924,
+          0.0625687332884381,
+          0.0015195530529522382,
+          0.016425154429816336,
+          0,
+          0.09819765499314703,
+          0.07701538996686239,
+          0.16689025788139789,
+          0.24061900631506958,
+          0.31123746694991977,
+          0.4210418898121023
+        ],
+        "dynamicsCompressor": {
+          "threshold": -22.439317558299038,
+          "knee": 31.881687242798353,
+          "ratio": 13.474502743484225,
+          "attack": 0.003597650891632373,
+          "release": 0.2793396347736625
+        },
+        "oscillatorFingerprint": {
+          "frequency": 439.3879458161866,
+          "detune": -42.44770233196159,
+          "waveform": "sawtooth"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Arial Black",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Futura",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Helvetica Neue",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Minion Pro",
+          "Palatino",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": true,
+          "hinting": "full",
+          "antialiasing": true
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 1920,
+        "height": 1080,
+        "availWidth": 1920,
+        "availHeight": 1023,
+        "colorDepth": 32,
+        "pixelDepth": 32,
+        "devicePixelRatio": 1.15,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750661403873,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750661403875,
+          "domainLookupStart": 1750661403878,
+          "domainLookupEnd": 1750661403888,
+          "connectStart": 1750661403888,
+          "connectEnd": 1750661403918,
+          "requestStart": 1750661403923,
+          "responseStart": 1750661404423,
+          "responseEnd": 1750661404607,
+          "domLoading": 1750661404557,
+          "domContentLoadedEventStart": 1750661405260,
+          "domContentLoadedEventEnd": 1750661404980,
+          "domComplete": 1750661405818,
+          "loadEventStart": 1750661405497,
+          "loadEventEnd": 1750661405595
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 198,
+          "resourceCount": 23,
+          "cacheHitRatio": 0.8810648148148148
+        },
+        "performanceNow": {
+          "resolution": 0.002177331961591221,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 42072269,
+          "totalJSHeapSize": 150668073,
+          "jsHeapSizeLimit": 2485633154
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "ethernet",
+          "downlink": 481.0860339506173,
+          "rtt": 12,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.241.7",
+          "ipv6": "2001:db8::68e2",
+          "proxy": true
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "9.9.9.9",
+          "resolveTime": 11
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Adobe Acrobat",
+          "VLC Web Plugin"
+        ],
+        "mimeTypes": [
+          "application/pdf",
+          "application/vnd.adobe.pdx",
+          "video/mp4",
+          "video/avi",
+          "audio/mp3"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en",
+          "ru-RU"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en,ru-RU"
+      },
+      "timezone": {
+        "timezone": "America/Los_Angeles",
+        "timezoneOffset": -480,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 4,
+        "deviceMemory": 8,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 880.8110425240055,
+          "acceleration": 1416.0699588477366,
+          "jitter": 0.8840406378600822,
+          "curvature": 0.015989368998628257
+        },
+        "keystrokePattern": {
+          "dwellTime": 70.20276063100137,
+          "flightTime": 112.4104938271605,
+          "variation": 0.08840406378600822
+        },
+        "scrollPattern": {
+          "speed": 140.40552126200274,
+          "smoothness": 0.7810262345679012,
+          "frequency": 0.058936042524005486
+        },
+        "focusPattern": {
+          "duration": 3010.1380315500683,
+          "switches": 1,
+          "tabSwitchProbability": 0.029468021262002743
+        }
+      },
+      "createdAt": 1750661411818,
+      "version": "2024.1"
+    },
+    "3f6ce418a0defdb2034840c04e133d96": {
+      "sessionId": "3f6ce418a0defdb2034840c04e133d96",
+      "deviceProfile": {
+        "type": "gaming_laptop",
+        "gpu": "AMD Radeon RX 7600M",
+        "cpu_cores": 12,
+        "memory": 32,
+        "screen_resolution": "1920x1080",
+        "id": "d3a40be2b3d522b0"
+      },
+      "browserTemplate": {
+        "type": "chrome_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "vendor": "Google Inc.",
+        "platform": "Win32",
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client"
+        ],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "WebKit",
+        "webgl_renderer": "WebKit WebGL"
+      },
+      "canvas": {
+        "noisePattern": [
+          -2,
+          2,
+          1,
+          -1,
+          1,
+          0,
+          0,
+          1,
+          -1,
+          -1,
+          0,
+          1,
+          -2,
+          0,
+          2,
+          -2,
+          2,
+          0,
+          -2,
+          -2,
+          2,
+          -1,
+          2,
+          0,
+          -2,
+          -1,
+          0,
+          2,
+          -2,
+          1,
+          -1,
+          -1,
+          -2,
+          0,
+          1,
+          0,
+          -2,
+          0,
+          -2,
+          -1,
+          -2,
+          -1,
+          1,
+          2,
+          1,
+          1,
+          0,
+          0,
+          0,
+          -2,
+          -1,
+          2,
+          0,
+          -1,
+          2,
+          0,
+          -2,
+          -1,
+          -2,
+          -2,
+          -2,
+          -1,
+          1,
+          -2,
+          2,
+          -1,
+          1,
+          2,
+          -1,
+          -2,
+          -2,
+          -2,
+          1,
+          1,
+          -2,
+          -2,
+          -2,
+          2,
+          0,
+          1,
+          1,
+          1,
+          -2,
+          2,
+          1,
+          1,
+          -2,
+          -2,
+          1,
+          1,
+          -1,
+          1,
+          -2,
+          2,
+          2,
+          0,
+          2,
+          -2,
+          0,
+          -2
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 0.9260759602194788,
+          "kerningVariation": 0.15266632373113853,
+          "antialiasing": "subpixel",
+          "hinting": "slight"
+        },
+        "signature": "canvas_gaming_laptop_2ecfb0e7",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "Unknown",
+        "renderer": "AMD Radeon RX 7600M",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60",
+        "maxTextureSize": 8405,
+        "maxVertexAttribs": 17,
+        "maxFragmentTextureImageUnits": 16,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 44100,
+        "baseFrequency": 436.67001028806584,
+        "frequencyResponse": [
+          0.4599605624142661,
+          0.6136577963989024,
+          0.7352827308251072,
+          0.7781318505521131,
+          0.8143296229531907,
+          0.9571899677125902,
+          0.950226504574834,
+          1,
+          1,
+          0.9537400877299069,
+          0.9339294061426077,
+          0.915103397383046,
+          0.8230368028956028,
+          0.8026653806981121,
+          0.6402024084112856,
+          0.5519004532754754,
+          0.43946347698305493,
+          0.4121149942540739,
+          0.275328427186593,
+          0.1862259756534689,
+          0.07565225028842273,
+          0.03692859184533211,
+          0,
+          0,
+          0,
+          0.02567375087144861,
+          0.048300964320993386,
+          0.08789544826590218,
+          0.1623124972503965,
+          0.262867377371311,
+          0.3433366610514287,
+          0.475646227946533
+        ],
+        "dynamicsCompressor": {
+          "threshold": -23.441358024691358,
+          "knee": 31.93574245541838,
+          "ratio": 10.581515775034294,
+          "attack": 0.0037617541152263376,
+          "release": 0.2874417009602195
+        },
+        "oscillatorFingerprint": {
+          "frequency": 432.88597393689986,
+          "detune": -16.64994855967078,
+          "waveform": "sine"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Arial Black",
+          "Avenir",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Helvetica Neue",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Palatino",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": false,
+          "hinting": "full",
+          "antialiasing": false
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 1920,
+        "height": 1080,
+        "availWidth": 1920,
+        "availHeight": 1019,
+        "colorDepth": 32,
+        "pixelDepth": 32,
+        "devicePixelRatio": 1.1,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750661441133,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750661441135,
+          "domainLookupStart": 1750661441138,
+          "domainLookupEnd": 1750661441148,
+          "connectStart": 1750661441148,
+          "connectEnd": 1750661441178,
+          "requestStart": 1750661441183,
+          "responseStart": 1750661441433,
+          "responseEnd": 1750661441515,
+          "domLoading": 1750661441709,
+          "domContentLoadedEventStart": 1750661442093,
+          "domContentLoadedEventEnd": 1750661441909,
+          "domComplete": 1750661442370,
+          "loadEventStart": 1750661442212,
+          "loadEventEnd": 1750661442382
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 233,
+          "resourceCount": 20,
+          "cacheHitRatio": 0.6879398148148148
+        },
+        "performanceNow": {
+          "resolution": 0.004602331961591221,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 27982029,
+          "totalJSHeapSize": 83165993,
+          "jsHeapSizeLimit": 3519109659
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "wifi",
+          "downlink": 81.28022119341564,
+          "rtt": 13,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.118.197",
+          "ipv6": "2001:db8::c019",
+          "proxy": false
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "1.1.1.1",
+          "resolveTime": 48
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client",
+          "Adobe Acrobat",
+          "VLC Web Plugin"
+        ],
+        "mimeTypes": [
+          "application/pdf",
+          "application/pdf",
+          "application/vnd.adobe.pdx",
+          "video/mp4",
+          "video/avi",
+          "audio/mp3"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en"
+      },
+      "timezone": {
+        "timezone": "Europe/Berlin",
+        "timezoneOffset": 60,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 12,
+        "deviceMemory": 32,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 956.6409465020577,
+          "acceleration": 1603.943758573388,
+          "jitter": 1.6873328189300412,
+          "curvature": 0.2527520576131687
+        },
+        "keystrokePattern": {
+          "dwellTime": 89.16023662551441,
+          "flightTime": 140.59156378600824,
+          "variation": 0.16873328189300413
+        },
+        "scrollPattern": {
+          "speed": 178.32047325102883,
+          "smoothness": 0.8514789094650206,
+          "frequency": 0.11248885459533609
+        },
+        "focusPattern": {
+          "duration": 3958.0118312757204,
+          "switches": 2,
+          "tabSwitchProbability": 0.05624442729766804
+        }
+      },
+      "createdAt": 1750661455139,
+      "version": "2024.1"
+    },
+    "df887201f89446e7fb37e5b3cb221c8d": {
+      "sessionId": "df887201f89446e7fb37e5b3cb221c8d",
+      "deviceProfile": {
+        "type": "high_end_desktop",
+        "gpu": "AMD Radeon RX 7800 XT",
+        "cpu_cores": 16,
+        "memory": 16,
+        "screen_resolution": "2560x1600",
+        "id": "dafc9a6af03ce1eb"
+      },
+      "browserTemplate": {
+        "type": "chrome_desktop",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "vendor": "Google Inc.",
+        "platform": "Win32",
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client"
+        ],
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "webgl_vendor": "WebKit",
+        "webgl_renderer": "WebKit WebGL"
+      },
+      "canvas": {
+        "noisePattern": [
+          2,
+          2,
+          2,
+          2,
+          -1,
+          1,
+          -1,
+          2,
+          -1,
+          0,
+          -1,
+          -2,
+          -2,
+          0,
+          -1,
+          0,
+          0,
+          1,
+          2,
+          -1,
+          -1,
+          1,
+          -1,
+          1,
+          1,
+          -2,
+          0,
+          2,
+          -1,
+          1,
+          2,
+          2,
+          -2,
+          2,
+          -1,
+          2,
+          1,
+          0,
+          1,
+          0,
+          -1,
+          1,
+          2,
+          -1,
+          0,
+          2,
+          -2,
+          -1,
+          -1,
+          2,
+          1,
+          0,
+          -1,
+          -2,
+          1,
+          0,
+          2,
+          -1,
+          -2,
+          0,
+          -2,
+          0,
+          -1,
+          -2,
+          2,
+          1,
+          2,
+          2,
+          -1,
+          2,
+          -2,
+          -1,
+          0,
+          0,
+          -2,
+          -2,
+          2,
+          -1,
+          -2,
+          -1,
+          -2,
+          -2,
+          1,
+          -1,
+          -1,
+          2,
+          1,
+          -2,
+          1,
+          -1,
+          -2,
+          0,
+          -1,
+          1,
+          0,
+          2,
+          -2,
+          -1,
+          2,
+          2
+        ],
+        "textMetrics": {
+          "fontSizeVariation": 0.8811321159122085,
+          "kerningVariation": 0.06188271604938267,
+          "antialiasing": "subpixel",
+          "hinting": "full"
+        },
+        "signature": "canvas_high_end_desktop_afeb1a6e",
+        "consistency": "high"
+      },
+      "webgl": {
+        "vendor": "Unknown",
+        "renderer": "AMD Radeon RX 7800 XT",
+        "version": "OpenGL ES 3.0 OpenGL 4.6.0",
+        "shadingLanguageVersion": "OpenGL ES GLSL ES 3.00 4.60",
+        "maxTextureSize": 8433,
+        "maxVertexAttribs": 16,
+        "maxFragmentTextureImageUnits": 16,
+        "extensions": [
+          "WEBGL_lose_context",
+          "OES_texture_float"
+        ],
+        "parameters": {}
+      },
+      "audio": {
+        "sampleRate": 44100,
+        "baseFrequency": 431.81018518518516,
+        "frequencyResponse": [
+          0.4537941529492455,
+          0.5598833622425238,
+          0.6792706423477409,
+          0.809696922568574,
+          0.9010644480560713,
+          0.8777982496055944,
+          0.9278563914061098,
+          0.9583841585470423,
+          1,
+          0.9857681227093308,
+          0.9266827497640069,
+          0.9139524200167909,
+          0.8177963193565081,
+          0.7609279835787706,
+          0.6406718014154009,
+          0.6177247845511956,
+          0.47156867245630596,
+          0.3225380909618928,
+          0.3205509066104613,
+          0.20050709705264586,
+          0.1043623840332787,
+          0.0698825527506819,
+          0,
+          0.01536386032318543,
+          0,
+          0.029306724122477413,
+          0.03858517213992343,
+          0.12131237213421493,
+          0.17312139642735125,
+          0.29643862222727807,
+          0.38948506640122293,
+          0.501964386382747
+        ],
+        "dynamicsCompressor": {
+          "threshold": -24.03369341563786,
+          "knee": 28.657064471879288,
+          "ratio": 12.587945816186558,
+          "attack": 0.004664660493827161,
+          "release": 0.2857473851165981
+        },
+        "oscillatorFingerprint": {
+          "frequency": 435.695901920439,
+          "detune": -40.949074074074076,
+          "waveform": "sine"
+        }
+      },
+      "fonts": {
+        "availableFonts": [
+          "Arial",
+          "Arial Black",
+          "Bookman",
+          "Calibri",
+          "Cambria",
+          "Comic Sans MS",
+          "Consolas",
+          "Courier",
+          "Courier New",
+          "Futura",
+          "Garamond",
+          "Georgia",
+          "Helvetica",
+          "Impact",
+          "Lucida Console",
+          "Microsoft Sans Serif",
+          "Minion Pro",
+          "Palatino",
+          "Segoe UI",
+          "Tahoma",
+          "Times",
+          "Times New Roman",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "fontRenderingMetrics": {
+          "subpixelRendering": false,
+          "hinting": "none",
+          "antialiasing": true
+        },
+        "platform": "windows"
+      },
+      "screen": {
+        "width": 2560,
+        "height": 1600,
+        "availWidth": 2560,
+        "availHeight": 1549,
+        "colorDepth": 24,
+        "pixelDepth": 24,
+        "devicePixelRatio": 1.44,
+        "orientation": {
+          "angle": 0,
+          "type": "landscape-primary"
+        }
+      },
+      "performance": {
+        "navigationTiming": {
+          "navigationStart": 1750661650650,
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 1750661650652,
+          "domainLookupStart": 1750661650655,
+          "domainLookupEnd": 1750661650665,
+          "connectStart": 1750661650665,
+          "connectEnd": 1750661650695,
+          "requestStart": 1750661650700,
+          "responseStart": 1750661650972,
+          "responseEnd": 1750661651003,
+          "domLoading": 1750661651148,
+          "domContentLoadedEventStart": 1750661651332,
+          "domContentLoadedEventEnd": 1750661651357,
+          "domComplete": 1750661651730,
+          "loadEventStart": 1750661651640,
+          "loadEventEnd": 1750661651601
+        },
+        "resourceTiming": {
+          "averageResourceLoadTime": 162,
+          "resourceCount": 23,
+          "cacheHitRatio": 0.7413541666666666
+        },
+        "performanceNow": {
+          "resolution": 0.0035552640603566527,
+          "monotonic": true
+        },
+        "memoryInfo": {
+          "usedJSHeapSize": 43991826,
+          "totalJSHeapSize": 101835662,
+          "jsHeapSizeLimit": 3568405677
+        }
+      },
+      "network": {
+        "connection": {
+          "effectiveType": "wifi",
+          "downlink": 84.30362654320987,
+          "rtt": 19,
+          "saveData": false
+        },
+        "ipFingerprint": {
+          "ipv4": "192.168.93.122",
+          "ipv6": "2001:db8::ca6b",
+          "proxy": false
+        },
+        "dnsFingerprint": {
+          "primaryDNS": "1.1.1.1",
+          "resolveTime": 33
+        }
+      },
+      "plugins": {
+        "plugins": [
+          "Chrome PDF Plugin",
+          "Chrome PDF Viewer",
+          "Native Client",
+          "Adobe Acrobat",
+          "VLC Web Plugin"
+        ],
+        "mimeTypes": [
+          "application/pdf",
+          "application/pdf",
+          "application/vnd.adobe.pdx",
+          "video/mp4",
+          "video/avi",
+          "audio/mp3"
+        ]
+      },
+      "languages": {
+        "languages": [
+          "en-US",
+          "en"
+        ],
+        "language": "en-US",
+        "acceptLanguage": "en-US,en"
+      },
+      "timezone": {
+        "timezone": "America/New_York",
+        "timezoneOffset": -300,
+        "dstObserved": true
+      },
+      "hardware": {
+        "hardwareConcurrency": 16,
+        "deviceMemory": 16,
+        "maxTouchPoints": 0,
+        "platform": "Win32",
+        "architecture": "64",
+        "bitness": "64"
+      },
+      "behavioral": {
+        "mouseMovementPattern": {
+          "velocity": 1002.4879972565158,
+          "acceleration": 1650.7818930041153,
+          "jitter": 0.3429140946502057,
+          "curvature": 0.17965963648834019
+        },
+        "keystrokePattern": {
+          "dwellTime": 100.62199931412894,
+          "flightTime": 147.61728395061726,
+          "variation": 0.03429140946502057
+        },
+        "scrollPattern": {
+          "speed": 201.24399862825788,
+          "smoothness": 0.8690432098765432,
+          "frequency": 0.022860939643347053
+        },
+        "focusPattern": {
+          "duration": 4531.099965706448,
+          "switches": 2,
+          "tabSwitchProbability": 0.011430469821673526
+        }
+      },
+      "createdAt": 1750661662039,
+      "version": "2024.1"
     }
   },
-  "lastUpdated": 1750274685767
+  "lastUpdated": 1750661662039
 }

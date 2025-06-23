@@ -116,6 +116,101 @@ class AdvancedAttentionHandler {
     }
 
     /**
+     * Calibrate attention baseline for the session
+     */
+    async calibrateAttentionBaseline() {
+        if (this.config.debugMode) {
+            console.log('Calibrating attention baseline...');
+        }
+
+        // Simulate baseline calibration
+        const calibrationData = {
+            averageResponseTime: 800 + Math.random() * 400, // 800-1200ms
+            focusStability: 0.7 + Math.random() * 0.3, // 70-100%
+            distractionSusceptibility: Math.random() * 0.4, // 0-40%
+            engagementLevel: 0.6 + Math.random() * 0.4, // 60-100%
+            timestamp: Date.now()
+        };
+
+        // Store baseline for future comparisons
+        this.state.attentionBaseline = calibrationData;
+        
+        if (this.config.debugMode) {
+            console.log('Attention baseline calibrated:', calibrationData);
+        }
+
+        return calibrationData;
+    }
+
+    /**
+     * Start engagement tracking
+     */
+    startEngagementTracking() {
+        if (this.config.debugMode) {
+            console.log('Starting engagement tracking...');
+        }
+
+        this.state.engagementTracking = {
+            active: true,
+            startTime: Date.now(),
+            events: []
+        };
+
+        // Start periodic engagement monitoring
+        this.engagementInterval = setInterval(() => {
+            this.recordEngagementEvent();
+        }, 5000); // Record every 5 seconds
+
+        return { success: true, tracking: true };
+    }
+
+    /**
+     * Record periodic engagement events
+     */
+    recordEngagementEvent() {
+        if (!this.state.engagementTracking?.active) return;
+
+        const event = {
+            timestamp: Date.now(),
+            engagement: this.engagementTracker.getCurrentEngagement(),
+            focus: 0.5 + Math.random() * 0.5,
+            activity: this.generateActivityLevel()
+        };
+
+        this.state.engagementTracking.events.push(event);
+
+        // Keep only recent events
+        if (this.state.engagementTracking.events.length > 100) {
+            this.state.engagementTracking.events = this.state.engagementTracking.events.slice(-50);
+        }
+    }
+
+    /**
+     * Generate current activity level
+     */
+    generateActivityLevel() {
+        const factors = {
+            mouseMovement: Math.random(),
+            keyboardActivity: Math.random(),
+            screenFocus: Math.random() > 0.1 ? 1 : 0,
+            timeOfDay: this.getTimeOfDayFactor()
+        };
+
+        return Object.values(factors).reduce((sum, val) => sum + val, 0) / Object.keys(factors).length;
+    }
+
+    /**
+     * Get time of day engagement factor
+     */
+    getTimeOfDayFactor() {
+        const hour = new Date().getHours();
+        if (hour >= 9 && hour <= 11) return 0.9; // Peak morning
+        if (hour >= 14 && hour <= 16) return 0.8; // Afternoon
+        if (hour >= 19 && hour <= 21) return 0.7; // Evening
+        return 0.5; // Other times
+    }
+
+    /**
      * Generate and present a sophisticated attention verification challenge
      */
     async presentChallenge(challengeType = 'adaptive') {
@@ -884,6 +979,17 @@ class AdvancedAttentionHandler {
      */
     async dispose() {
         try {
+            // Stop engagement tracking
+            if (this.engagementInterval) {
+                clearInterval(this.engagementInterval);
+                this.engagementInterval = null;
+            }
+
+            // Stop engagement tracking state
+            if (this.state.engagementTracking) {
+                this.state.engagementTracking.active = false;
+            }
+
             // Stop all monitoring systems
             if (this.gazeSimulator) await this.gazeSimulator.stop();
             if (this.engagementTracker) await this.engagementTracker.stop();
@@ -898,7 +1004,9 @@ class AdvancedAttentionHandler {
                 gazePatterns: [],
                 mediaPermissions: {},
                 adaptiveLevel: 1,
-                sessionStartTime: Date.now()
+                sessionStartTime: Date.now(),
+                attentionBaseline: null,
+                engagementTracking: null
             };
 
             if (this.config.debugMode) {

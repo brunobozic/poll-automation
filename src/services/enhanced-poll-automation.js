@@ -811,6 +811,170 @@ class EnhancedPollAutomationService {
     }
 
     /**
+     * Analyze website structure and form detection (for analyze command)
+     */
+    async analyzeWebsite(url, options = {}) {
+        try {
+            console.log(`🔍 Analyzing website: ${url}`);
+            
+            if (!this.isInitialized) {
+                await this.initialize();
+            }
+            
+            // Navigate to the URL
+            await this.page.goto(url, { 
+                waitUntil: 'networkidle',
+                timeout: 30000 
+            });
+            
+            console.log('✅ Page loaded successfully');
+            
+            // Take screenshot for analysis
+            const screenshot = await this.page.screenshot({ 
+                type: 'png'
+            });
+            
+            // Get page content and structure
+            const pageAnalysis = await this.page.evaluate(() => {
+                const forms = Array.from(document.querySelectorAll('form'));
+                const inputs = Array.from(document.querySelectorAll('input, select, textarea'));
+                const buttons = Array.from(document.querySelectorAll('button, input[type="submit"]'));
+                
+                return {
+                    title: document.title,
+                    url: window.location.href,
+                    forms: forms.map(form => ({
+                        id: form.id,
+                        action: form.action,
+                        method: form.method,
+                        inputCount: form.querySelectorAll('input, select, textarea').length
+                    })),
+                    inputs: inputs.map(input => ({
+                        type: input.type,
+                        name: input.name,
+                        id: input.id,
+                        required: input.required,
+                        placeholder: input.placeholder,
+                        className: input.className
+                    })),
+                    buttons: buttons.map(button => ({
+                        type: button.type,
+                        text: button.textContent?.trim(),
+                        className: button.className
+                    })),
+                    hasRegistrationForm: !!document.querySelector('form[action*="register"], form[action*="signup"], form:has(input[name*="email"]):has(input[name*="password"])'),
+                    hasLoginForm: !!document.querySelector('form[action*="login"], form[action*="signin"], form:has(input[name*="username"]):has(input[name*="password"])'),
+                    detectedHoneypots: document.querySelectorAll('input[style*="display:none"], input[style*="visibility:hidden"], input[tabindex="-1"]').length
+                };
+            });
+            
+            // Use AI to analyze the page structure if available
+            let aiAnalysis = null;
+            try {
+                if (process.env.OPENAI_API_KEY) {
+                    const html = await this.page.content();
+                    aiAnalysis = await this.aiService.analyzePageStructure({
+                        html: html.substring(0, 10000), // Limit for API
+                        url: url,
+                        forms: pageAnalysis.forms,
+                        inputs: pageAnalysis.inputs
+                    });
+                }
+            } catch (aiError) {
+                console.log('⚠️ AI analysis failed, using fallback analysis');
+            }
+            
+            const analysis = {
+                ...pageAnalysis,
+                aiAnalysis: aiAnalysis,
+                timestamp: new Date().toISOString(),
+                screenshotTaken: true,
+                formAutomationViability: this.assessFormAutomationViability(pageAnalysis)
+            };
+            
+            console.log('📊 Website Analysis Results:');
+            console.log(`   📄 Title: ${analysis.title}`);
+            console.log(`   📝 Forms found: ${analysis.forms.length}`);
+            console.log(`   🔣 Input fields: ${analysis.inputs.length}`);
+            console.log(`   🔘 Buttons: ${analysis.buttons.length}`);
+            console.log(`   📧 Has registration form: ${analysis.hasRegistrationForm ? 'Yes' : 'No'}`);
+            console.log(`   🔐 Has login form: ${analysis.hasLoginForm ? 'Yes' : 'No'}`);
+            console.log(`   🍯 Honeypots detected: ${analysis.detectedHoneypots}`);
+            console.log(`   🤖 Automation viability: ${analysis.formAutomationViability}`);
+            
+            return {
+                success: true,
+                analysis: analysis,
+                recommendations: this.generateAnalysisRecommendations(analysis)
+            };
+            
+        } catch (error) {
+            console.error('❌ Website analysis failed:', error);
+            return {
+                success: false,
+                error: error.message,
+                analysis: null
+            };
+        }
+    }
+    
+    /**
+     * Assess how viable a website is for form automation
+     */
+    assessFormAutomationViability(pageAnalysis) {
+        let score = 0;
+        
+        // Has forms
+        if (pageAnalysis.forms.length > 0) score += 3;
+        
+        // Has registration form
+        if (pageAnalysis.hasRegistrationForm) score += 3;
+        
+        // Reasonable number of inputs (not too few, not too many)
+        if (pageAnalysis.inputs.length >= 2 && pageAnalysis.inputs.length <= 15) score += 2;
+        
+        // Has submit buttons
+        if (pageAnalysis.buttons.length > 0) score += 1;
+        
+        // Penalty for honeypots (indicates anti-bot measures)
+        score -= pageAnalysis.detectedHoneypots * 0.5;
+        
+        if (score >= 7) return 'Excellent';
+        if (score >= 5) return 'Good';
+        if (score >= 3) return 'Fair';
+        return 'Poor';
+    }
+    
+    /**
+     * Generate recommendations based on analysis
+     */
+    generateAnalysisRecommendations(analysis) {
+        const recommendations = [];
+        
+        if (analysis.hasRegistrationForm) {
+            recommendations.push('✅ Registration form detected - good candidate for automation');
+        }
+        
+        if (analysis.inputs.length > 10) {
+            recommendations.push('⚠️ Many input fields detected - may require longer processing time');
+        }
+        
+        if (analysis.detectedHoneypots > 0) {
+            recommendations.push('🍯 Honeypot fields detected - anti-bot measures present');
+        }
+        
+        if (analysis.forms.length === 0) {
+            recommendations.push('❌ No forms found - website may not be suitable for registration automation');
+        }
+        
+        if (analysis.aiAnalysis) {
+            recommendations.push('🧠 AI analysis completed - enhanced insights available');
+        }
+        
+        return recommendations;
+    }
+
+    /**
      * Enhanced cleanup
      */
     async cleanup() {

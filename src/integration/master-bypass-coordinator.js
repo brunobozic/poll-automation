@@ -14,8 +14,8 @@
 
 const NeuralMouseSimulator = require('../behavioral/neural-mouse-simulator');
 const AdvancedKeystrokeSimulator = require('../behavioral/advanced-keystroke-simulator');
-const AdvancedAttentionHandler = require('../verification/advanced-attention-handler');
-const ComprehensiveChallengeSolver = require('../verification/comprehensive-challenge-solver');
+const { AdvancedAttentionHandler } = require('../verification/advanced-attention-handler');
+const ComprehensiveChallengerSolver = require('../verification/comprehensive-challenge-solver');
 const AdvancedProxyManager = require('../network/advanced-proxy-manager');
 const IPRotationService = require('../network/ip-rotation-service');
 const AdvancedMediaHandler = require('../media/advanced-media-handler');
@@ -23,7 +23,7 @@ const AdvancedFingerprintSpoofer = require('../ai/advanced-fingerprint-spoofer')
 const crypto = require('crypto');
 
 class MasterBypassCoordinator {
-    constructor(page, options = {}) {
+    constructor(page = null, options = {}) {
         this.page = page;
         this.sessionId = crypto.randomBytes(16).toString('hex');
         
@@ -109,25 +109,39 @@ class MasterBypassCoordinator {
             }
 
             if (this.options.enableAttentionVerification) {
-                this.attentionHandler = new AdvancedAttentionHandler({
-                    minAttentionScore: 0.7,
-                    adaptiveDifficulty: true,
-                    naturalTimingVariation: 0.15,
-                    debugMode: this.options.debugMode
-                });
-                await this.attentionHandler.initialize();
-                console.log('  ✅ Attention verification handler initialized');
+                try {
+                    this.attentionHandler = new AdvancedAttentionHandler({
+                        minAttentionScore: 0.7,
+                        adaptiveDifficulty: true,
+                        naturalTimingVariation: 0.15,
+                        debugMode: this.options.debugMode
+                    });
+                    if (this.attentionHandler.initialize) {
+                        await this.attentionHandler.initialize();
+                    }
+                    console.log('  ✅ Attention verification handler initialized');
+                } catch (error) {
+                    console.log('  ⚠️ Attention verification handler disabled:', error.message);
+                    this.attentionHandler = null;
+                }
             }
 
             if (this.options.enableChallengeSolving) {
-                this.challengeSolver = new ComprehensiveChallengeSolver({
-                    enableLearning: true,
-                    enableCaching: true,
-                    timeoutMs: 30000,
-                    debugMode: this.options.debugMode
-                });
-                await this.challengeSolver.initialize();
-                console.log('  ✅ Challenge solver initialized');
+                try {
+                    this.challengeSolver = new ComprehensiveChallengerSolver({
+                        enableLearning: true,
+                        enableCaching: true,
+                        timeoutMs: 30000,
+                        debugMode: this.options.debugMode
+                    });
+                    if (this.challengeSolver.initialize) {
+                        await this.challengeSolver.initialize();
+                    }
+                    console.log('  ✅ Challenge solver initialized');
+                } catch (error) {
+                    console.log('  ⚠️ Challenge solver disabled:', error.message);
+                    this.challengeSolver = null;
+                }
             }
 
             // Initialize network systems
@@ -140,10 +154,18 @@ class MasterBypassCoordinator {
                 console.log('  ✅ Proxy and IP rotation systems initialized');
             }
 
-            if (this.options.enableMediaHandling) {
-                this.mediaHandler = new AdvancedMediaHandler(this.page);
-                await this.mediaHandler.initialize();
-                console.log('  ✅ Media handler initialized');
+            if (this.options.enableMediaHandling && this.page) {
+                try {
+                    this.mediaHandler = new AdvancedMediaHandler(this.page);
+                    await this.mediaHandler.initialize();
+                    console.log('  ✅ Media handler initialized');
+                } catch (error) {
+                    console.log('  ⚠️ Media handler disabled:', error.message);
+                    this.mediaHandler = null;
+                }
+            } else if (this.options.enableMediaHandling) {
+                console.log('  ⚠️ Media handler disabled: No page context available');
+                this.mediaHandler = null;
             }
 
             if (this.options.enableFingerprintSpoofing) {
@@ -342,6 +364,12 @@ class MasterBypassCoordinator {
      * Real-time adaptation engine
      */
     async setupRealTimeMonitoring() {
+        // Only set up monitoring if page is available
+        if (!this.page) {
+            console.log('  ⚠️ Page not available yet, monitoring will be setup when page is created');
+            return;
+        }
+
         // Monitor for detection signals
         this.page.on('response', async (response) => {
             await this.analyzeResponse(response);

@@ -1331,6 +1331,48 @@ class AdvancedKeystrokeSimulator {
         this.emotionalModel.currentState = 'calm';
         this.emotionalModel.stateIntensity = 0.5;
     }
+
+    /**
+     * Initialize the keystroke simulator (compatibility method)
+     */
+    async initialize() {
+        // All initialization is done in constructor, this is just for compatibility
+        return Promise.resolve();
+    }
+
+    /**
+     * Set user profile for typing simulation
+     */
+    setUserProfile(profileName) {
+        if (this.profiles[profileName]) {
+            this.options.userProfile = profileName;
+            this.currentProfile = this.profiles[profileName];
+            
+            // Reset session data with new profile
+            this.sessionData.fatigueLevel = 0;
+            this.sessionData.emotionalState = 'neutral';
+            
+            console.log(`Keystroke simulator profile set to: ${profileName}`);
+            return true;
+        } else {
+            console.warn(`Unknown keystroke profile: ${profileName}, keeping current profile: ${this.options.userProfile}`);
+            return false;
+        }
+    }
+
+    /**
+     * Get current user profile
+     */
+    getUserProfile() {
+        return this.options.userProfile;
+    }
+
+    /**
+     * Get available profiles
+     */
+    getAvailableProfiles() {
+        return Object.keys(this.profiles);
+    }
 }
 
 // Export for use in research and testing environments

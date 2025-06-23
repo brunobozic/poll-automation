@@ -7,6 +7,8 @@
 
 const UniversalFormAnalyzer = require('../ai/universal-form-analyzer');
 const SmartFormFiller = require('./smart-form-filler');
+const ContextualDataGenerator = require('./contextual-data-generator');
+const PersonaConsistencyTracker = require('../database/persona-consistency-tracker');
 
 class UniversalFormAutomator {
     constructor(contentAI, options = {}) {
@@ -24,8 +26,17 @@ class UniversalFormAutomator {
             debugMode: this.options.debugMode,
             enableHoneypotDetection: this.options.avoidHoneypots
         });
+
+        // Initialize contextual data generation and consistency tracking
+        this.dataGenerator = new ContextualDataGenerator({
+            enableConsistencyTracking: true,
+            personaComplexity: 'medium',
+            debugMode: this.options.debugMode
+        });
+
+        this.consistencyTracker = null; // Initialized when registrationLogger is set
         
-        this.log('🚀 Universal Form Automator initialized');
+        this.log('🚀 Universal Form Automator initialized with intelligent persona generation');
     }
 
     /**
@@ -50,21 +61,61 @@ class UniversalFormAutomator {
             
             this.log(`📊 Analysis complete: ${analysis.fields.length} fields, ${analysis.checkboxes?.length || 0} checkboxes, ${analysis.honeypots?.length || 0} honeypots identified`);
             
-            // Step 2: Create smart form filler
-            this.log('🤖 Step 2: Initializing smart form filler...');
+            // Step 2: Generate contextual user data if not provided or enhance existing data
+            this.log('🧠 Step 2: Generating contextual persona data...');
+            let enhancedUserData = userData;
+            let persona = null;
+            
+            if (!userData || Object.keys(userData).length < 3) {
+                // Generate completely new contextual data
+                const siteContext = {
+                    url: await page.url(),
+                    pageContent: await page.textContent('body').catch(() => ''),
+                    siteName: siteName
+                };
+                
+                const dataResult = await this.dataGenerator.generateContextualUserData(
+                    analysis, 
+                    siteContext, 
+                    userData?.email, 
+                    this.registrationLogger
+                );
+                
+                enhancedUserData = dataResult.userData;
+                persona = dataResult.persona;
+                
+                this.log(`✅ Generated persona: ${persona.identity.fullName} (${persona.identity.jobTitle} at ${persona.identity.company})`);
+            } else {
+                // Enhance existing user data with contextual intelligence
+                enhancedUserData = await this.enhanceUserDataWithContext(userData, analysis, page);
+                this.log(`✅ Enhanced existing user data for contextual consistency`);
+            }
+
+            // Step 3: Store registration data for consistency tracking
+            if (this.consistencyTracker && persona) {
+                await this.consistencyTracker.storeRegistrationData(
+                    persona.id,
+                    siteName,
+                    { persona, registrationData: enhancedUserData, formAnalysis: analysis }
+                );
+                this.log(`✅ Registration data stored for consistency tracking`);
+            }
+            
+            // Step 4: Create smart form filler
+            this.log('🤖 Step 4: Initializing smart form filler...');
             const filler = new SmartFormFiller(page, analysis, {
                 humanLikeDelays: this.options.humanLikeDelays,
                 debugMode: this.options.debugMode,
                 skipHoneypots: this.options.avoidHoneypots
             });
             
-            // Step 3: Fill the form intelligently
-            this.log('📝 Step 3: Filling form with human-like behavior...');
-            const fillResult = await filler.fillForm(userData);
+            // Step 5: Fill the form intelligently
+            this.log('📝 Step 5: Filling form with human-like behavior...');
+            const fillResult = await filler.fillForm(enhancedUserData);
             
-            // Step 4: Submit if requested
+            // Step 6: Submit if requested
             if (options.autoSubmit !== false) {
-                this.log('📤 Step 4: Submitting form...');
+                this.log('📤 Step 6: Submitting form...');
                 await filler.submitForm();
             }
             
@@ -252,6 +303,91 @@ class UniversalFormAutomator {
     previewValue(purpose, userData) {
         const filler = new SmartFormFiller(null, null, this.options);
         return filler.generateFieldValue(purpose, userData, { type: 'text' });
+    }
+
+    /**
+     * Enhance existing user data with contextual intelligence
+     */
+    async enhanceUserDataWithContext(userData, analysis, page) {
+        try {
+            const siteContext = {
+                url: await page.url(),
+                pageContent: await page.textContent('body').catch(() => ''),
+                siteName: this.extractSiteName(await page.url())
+            };
+
+            // Use data generator to enhance existing data
+            const enhancedResult = await this.dataGenerator.generateContextualUserData(
+                analysis,
+                siteContext,
+                userData.email,
+                this.registrationLogger
+            );
+
+            // Merge enhanced data with original user data (user data takes precedence)
+            return {
+                ...enhancedResult.userData,
+                ...userData // Original data overrides generated data
+            };
+
+        } catch (error) {
+            this.log(`⚠️ Failed to enhance user data: ${error.message}`);
+            return userData; // Return original data if enhancement fails
+        }
+    }
+
+    /**
+     * Extract site name from URL
+     */
+    extractSiteName(url) {
+        try {
+            return new URL(url).hostname.replace('www.', '');
+        } catch {
+            return 'unknown';
+        }
+    }
+
+    /**
+     * Set the registration logger for database logging
+     */
+    setRegistrationLogger(logger) {
+        this.registrationLogger = logger;
+        this.analyzer.setRegistrationLogger(logger);
+        
+        // Initialize consistency tracker with the logger
+        this.consistencyTracker = new PersonaConsistencyTracker(logger);
+        
+        this.log('✅ Registration logger and persona consistency tracker configured');
+    }
+    
+    /**
+     * Main method for filling and submitting forms (for backward compatibility)
+     */
+    async fillAndSubmitForm(url, userData, options = {}) {
+        const { chromium } = require('playwright');
+        const browser = await chromium.launch({ headless: false });
+        const page = await browser.newPage();
+        
+        try {
+            await page.goto(url);
+            const result = await this.autoFillForm(page, userData, url, options);
+            
+            return {
+                success: result.success,
+                fieldsFound: result.analysis?.fields?.length || 0,
+                fieldsFilled: result.fillResults?.fieldsProcessed || 0,
+                error: result.error
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message,
+                fieldsFound: 0,
+                fieldsFilled: 0
+            };
+        } finally {
+            await browser.close();
+        }
     }
 
     /**

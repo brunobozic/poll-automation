@@ -1,0 +1,367 @@
+{
+  "timestamp": "2025-06-22T20:18:40.314Z",
+  "summary": {
+    "totalTests": 3,
+    "successfulTests": 3,
+    "averageAccuracy": 100,
+    "averageTime": 17643.333333333332,
+    "fieldAccuracy": 100,
+    "honeypotAccuracy": 100,
+    "checkboxAccuracy": 100
+  },
+  "results": [
+    {
+      "testCase": "SurveyPlanet Style",
+      "analysis": {
+        "analysis": "This is a simple signup form with a hidden honeypot field.",
+        "confidence": 1,
+        "pageType": "registration",
+        "fields": [
+          {
+            "purpose": "firstName",
+            "selector": "input[name='first_name']",
+            "type": "text",
+            "required": true,
+            "label": "First Name",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "lastName",
+            "selector": "input[name='last_name']",
+            "type": "text",
+            "required": true,
+            "label": "Last Name",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "email",
+            "selector": "input[name='email']",
+            "type": "email",
+            "required": true,
+            "label": "Email",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "password",
+            "selector": "input[name='password']",
+            "type": "password",
+            "required": true,
+            "label": "Password",
+            "selectorValid": true,
+            "actuallyVisible": true
+          }
+        ],
+        "checkboxes": [
+          {
+            "purpose": "terms",
+            "selector": "input[name='terms']",
+            "required": true,
+            "label": "I agree to terms",
+            "selectorValid": true,
+            "actuallyVisible": true
+          }
+        ],
+        "honeypots": [
+          {
+            "selector": "input[name='company']",
+            "reason": "hidden",
+            "confidence": 0.95
+          },
+          {
+            "selector": "[name=\"company\"]",
+            "trapType": "display_none,suspicious_name_company",
+            "reasoning": "Pattern detection: display_none, suspicious_name_company",
+            "action": "ignore"
+          }
+        ],
+        "submitButton": {
+          "selector": "button[type='submit']",
+          "text": "Sign Up",
+          "selectorValid": true
+        },
+        "confidenceReasoning": {
+          "score": 1,
+          "reasoning": [
+            "Base confidence: 0.5",
+            "+0.2 for 4 form field(s) detected",
+            "+0.1 for multiple fields (comprehensive form detection)",
+            "+0.1 for 2 honeypot(s) detected (good anti-bot analysis)",
+            "+0.1 for successful page navigation",
+            "+0.05 for successful analysis of simple site",
+            "Final confidence: 100.0%"
+          ],
+          "summary": "High confidence: Successfully detected 4 field(s) and 2 honeypot(s) on low complexity site"
+        }
+      },
+      "analysisTime": 14679,
+      "expected": {
+        "fields": 4,
+        "honeypots": 1,
+        "checkboxes": 1
+      },
+      "actual": {
+        "fields": 4,
+        "honeypots": 2,
+        "checkboxes": 1
+      },
+      "accuracy": {
+        "fields": 100,
+        "honeypots": 100,
+        "checkboxes": 100
+      },
+      "overallAccuracy": 100
+    },
+    {
+      "testCase": "Typeform Style",
+      "analysis": {
+        "analysis": "Registration form with email, name, password and hidden honeypot fields",
+        "confidence": 1,
+        "pageType": "registration",
+        "fields": [
+          {
+            "purpose": "email",
+            "selector": "input[name='email']",
+            "type": "email",
+            "required": true,
+            "label": "What's your email?",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "firstName",
+            "selector": "input[name='full_name']",
+            "type": "text",
+            "required": true,
+            "label": "Your full name",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "password",
+            "selector": "input[name='password']",
+            "type": "password",
+            "required": true,
+            "label": "Choose a password",
+            "selectorValid": true,
+            "actuallyVisible": true
+          }
+        ],
+        "checkboxes": [
+          {
+            "purpose": "newsletter",
+            "selector": "input[name='newsletter']",
+            "required": false,
+            "label": "Newsletter",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "terms",
+            "selector": "input[name='terms']",
+            "required": true,
+            "label": "Terms and Conditions",
+            "selectorValid": true,
+            "actuallyVisible": true
+          }
+        ],
+        "honeypots": [
+          {
+            "selector": "input[name='website']",
+            "reason": "suspicious_name|positioned_offscreen",
+            "confidence": 0.95
+          },
+          {
+            "selector": "input[name='bot_trap']",
+            "reason": "suspicious_name|zero_opacity",
+            "confidence": 0.95
+          },
+          {
+            "selector": "[name=\"full_name\"]",
+            "trapType": "suspicious_name_full_name",
+            "reasoning": "Pattern detection: suspicious_name_full_name",
+            "action": "ignore"
+          },
+          {
+            "selector": "[name=\"website\"]",
+            "trapType": "positioned_offscreen,suspicious_name_website",
+            "reasoning": "Pattern detection: positioned_offscreen, suspicious_name_website",
+            "action": "ignore"
+          },
+          {
+            "selector": "[name=\"bot_trap\"]",
+            "trapType": "opacity_zero,suspicious_name_bot,suspicious_name_trap,negative_tabindex",
+            "reasoning": "Pattern detection: opacity_zero, suspicious_name_bot, suspicious_name_trap, negative_tabindex",
+            "action": "ignore"
+          }
+        ],
+        "submitButton": {
+          "selector": "button.create-account",
+          "text": "Create my account",
+          "selectorValid": true
+        },
+        "confidenceReasoning": {
+          "score": 1,
+          "reasoning": [
+            "Base confidence: 0.5",
+            "+0.2 for 3 form field(s) detected",
+            "+0.1 for multiple fields (comprehensive form detection)",
+            "+0.1 for 5 honeypot(s) detected (good anti-bot analysis)",
+            "+0.05 for multiple honeypots (excellent trap detection)",
+            "+0.1 for successful page navigation",
+            "+0.05 for successful analysis of simple site",
+            "Final confidence: 100.0%"
+          ],
+          "summary": "High confidence: Successfully detected 3 field(s) and 5 honeypot(s) on low complexity site"
+        }
+      },
+      "analysisTime": 18441,
+      "expected": {
+        "fields": 3,
+        "honeypots": 2,
+        "checkboxes": 2
+      },
+      "actual": {
+        "fields": 3,
+        "honeypots": 5,
+        "checkboxes": 2
+      },
+      "accuracy": {
+        "fields": 100,
+        "honeypots": 100,
+        "checkboxes": 100
+      },
+      "overallAccuracy": 100
+    },
+    {
+      "testCase": "SurveyMonkey Style",
+      "analysis": {
+        "analysis": "Standard registration form with honeypot field",
+        "confidence": 1,
+        "pageType": "registration",
+        "fields": [
+          {
+            "purpose": "email",
+            "selector": "input[name='username']",
+            "type": "email",
+            "required": true,
+            "label": "Email Address",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "password",
+            "selector": "input[name='password']",
+            "type": "password",
+            "required": true,
+            "label": "Password",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "firstName",
+            "selector": "input[name='firstName']",
+            "type": "text",
+            "required": true,
+            "label": "First Name",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "lastName",
+            "selector": "input[name='lastName']",
+            "type": "text",
+            "required": true,
+            "label": "Last Name",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "other",
+            "selector": "input[name='organization']",
+            "type": "text",
+            "required": false,
+            "label": "Organization",
+            "selectorValid": true,
+            "actuallyVisible": true
+          }
+        ],
+        "checkboxes": [
+          {
+            "purpose": "terms",
+            "selector": "input[name='terms']",
+            "required": true,
+            "label": "I agree to SurveyMonkey's Terms of Use",
+            "selectorValid": true,
+            "actuallyVisible": true
+          },
+          {
+            "purpose": "privacy",
+            "selector": "input[name='privacy']",
+            "required": true,
+            "label": "I agree to Privacy Policy",
+            "selectorValid": true,
+            "actuallyVisible": true
+          }
+        ],
+        "honeypots": [
+          {
+            "selector": "input[name='winnie_the_pooh']",
+            "reason": "suspicious_name|zero_opacity",
+            "confidence": 0.95
+          },
+          {
+            "selector": "[name=\"organization\"]",
+            "trapType": "suspicious_name_organization",
+            "reasoning": "Pattern detection: suspicious_name_organization",
+            "action": "ignore"
+          },
+          {
+            "selector": "[name=\"winnie_the_pooh\"]",
+            "trapType": "zero_dimensions,suspicious_name_winnie,suspicious_name_pooh,suspicious_name_winnie_the_pooh",
+            "reasoning": "Pattern detection: zero_dimensions, suspicious_name_winnie, suspicious_name_pooh, suspicious_name_winnie_the_pooh",
+            "action": "ignore"
+          }
+        ],
+        "submitButton": {
+          "selector": "button[type='submit']",
+          "text": "Create Account",
+          "selectorValid": true
+        },
+        "confidenceReasoning": {
+          "score": 1,
+          "reasoning": [
+            "Base confidence: 0.5",
+            "+0.2 for 5 form field(s) detected",
+            "+0.1 for multiple fields (comprehensive form detection)",
+            "+0.1 for 3 honeypot(s) detected (good anti-bot analysis)",
+            "+0.05 for multiple honeypots (excellent trap detection)",
+            "+0.1 for successful page navigation",
+            "+0.05 for successful analysis of simple site",
+            "Final confidence: 100.0%"
+          ],
+          "summary": "High confidence: Successfully detected 5 field(s) and 3 honeypot(s) on low complexity site"
+        }
+      },
+      "analysisTime": 19810,
+      "expected": {
+        "fields": 5,
+        "honeypots": 1,
+        "checkboxes": 2
+      },
+      "actual": {
+        "fields": 5,
+        "honeypots": 3,
+        "checkboxes": 2
+      },
+      "accuracy": {
+        "fields": 100,
+        "honeypots": 100,
+        "checkboxes": 100
+      },
+      "overallAccuracy": 100
+    }
+  ]
+}

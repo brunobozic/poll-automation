@@ -31,25 +31,70 @@ class UniversalFormAnalyzer {
         this.honeypotPatterns = new Set();
         this.knownFormStructures = new Map();
         
-        // Anti-bot detection patterns
+        // Enhanced anti-bot detection patterns based on 2025 research
         this.antiBotIndicators = {
             honeypots: [
-                'display:none', 'display: none',
-                'visibility:hidden', 'visibility: hidden',
-                'opacity:0', 'opacity: 0',
-                'position:absolute;left:-9999px',
-                'width:0', 'height:0',
-                'tabindex="-1"'
+                // CSS-based hiding patterns
+                'display:none', 'display: none', 'display:None',
+                'visibility:hidden', 'visibility: hidden', 'visibility:Hidden',
+                'opacity:0', 'opacity: 0', 'opacity:0.0',
+                'position:absolute;left:-9999px', 'position:absolute;left:-10000px',
+                'position:absolute;top:-9999px', 'position:fixed;left:-9999px',
+                'width:0', 'width: 0', 'width:0px', 'height:0', 'height: 0', 'height:0px',
+                'clip:rect(0,0,0,0)', 'clip-path:inset(100%)',
+                'transform:scale(0)', 'transform:translateX(-9999px)',
+                // Accessibility hiding
+                'tabindex="-1"', 'tabindex=-1', 'aria-hidden="true"',
+                // Advanced hiding techniques
+                'font-size:0', 'line-height:0', 'text-indent:-9999px',
+                'color:transparent', 'background:transparent'
             ],
             botTrapNames: [
-                'bot', 'spam', 'honeypot', 'trap', 'hidden',
-                'email_address', 'url', 'website', 'confirm_email',
-                'winnie_the_pooh', 'do_not_fill', 'leave_blank'
+                // Classic honeypot names
+                'bot', 'spam', 'honeypot', 'trap', 'hidden', 'check',
+                'email_address', 'url', 'website', 'company', 'organization',
+                'confirm_email', 'email_confirm', 'email_verification',
+                'winnie_the_pooh', 'winnie', 'pooh', 'do_not_fill', 'leave_blank',
+                'dummy', 'fake', 'test', 'bait', 'decoy',
+                // Advanced patterns
+                'user_name', 'user_email', 'full_name', 'real_name',
+                'home_phone', 'mobile_phone', 'phone_number',
+                'zip_code', 'postal_code', 'address_line',
+                // Time-based traps
+                'timestamp', 'form_loaded_at', 'page_start_time',
+                // Behavioral traps
+                'mouse_movements', 'click_pattern', 'typing_speed'
             ],
             suspiciousClasses: [
-                'honeypot', 'bot-trap', 'spam-trap', 'hidden',
-                'invisible', 'screen-reader-only', 'sr-only'
-            ]
+                // Standard hiding classes
+                'honeypot', 'bot-trap', 'spam-trap', 'hidden', 'hide',
+                'invisible', 'screen-reader-only', 'sr-only', 'visually-hidden',
+                'off-screen', 'offscreen', 'accessibility-hidden',
+                // Advanced hiding classes
+                'ghost', 'phantom', 'shadow', 'dummy', 'fake', 'decoy',
+                'anti-bot', 'bot-check', 'robot-trap', 'automation-trap',
+                // Framework-specific patterns
+                'v-show-false', 'ng-hide', 'react-hidden', 'vue-hidden',
+                // Bootstrap/CSS framework hiding
+                'd-none', 'invisible', 'opacity-0', 'w-0', 'h-0'
+            ],
+            // New: Advanced detection patterns
+            behavioralTraps: [
+                'form-timer', 'interaction-tracker', 'mouse-tracker',
+                'typing-pattern', 'focus-sequence', 'tab-order'
+            ],
+            jsGeneratedTraps: [
+                'data-generated', 'data-dynamic', 'data-honeypot',
+                'data-trap', 'js-generated', 'dynamic-field'
+            ],
+            // Site-specific patterns
+            siteSpecificPatterns: {
+                'surveyplanet.com': ['company', 'organization', 'website'],
+                'typeform.com': ['email_address', 'user_email', 'verify_email'],
+                'surveymonkey.com': ['bot_check', 'verification', 'confirm'],
+                'google.com': ['recaptcha', 'captcha', 'verification'],
+                'forms.gle': ['timestamp', 'form_id', 'session_id']
+            }
         };
         
         this.log(`🧠 Universal Form Analyzer initialized (Session: ${this.sessionId})`);
@@ -372,35 +417,118 @@ class UniversalFormAnalyzer {
                 return textNodes.sort((a, b) => a.distance - b.distance);
             }
 
-            // Helper function to detect suspicious anti-bot indicators
+            // Enhanced function to detect suspicious anti-bot indicators
             function detectSuspiciousIndicators(element, styles) {
                 const indicators = [];
                 
-                // Check for hidden styling
-                if (styles.display === 'none') indicators.push('display_none');
-                if (styles.visibility === 'hidden') indicators.push('visibility_hidden');
+                // Advanced CSS-based hiding detection
+                if (styles.display === 'none' || styles.display === 'None') indicators.push('display_none');
+                if (styles.visibility === 'hidden' || styles.visibility === 'Hidden') indicators.push('visibility_hidden');
                 if (parseFloat(styles.opacity) === 0) indicators.push('opacity_zero');
-                if (styles.position === 'absolute' && (
-                    parseInt(styles.left) < -1000 || 
-                    parseInt(styles.top) < -1000
-                )) indicators.push('positioned_offscreen');
                 
-                // Check dimensions
+                // Enhanced positioning detection
+                if (styles.position === 'absolute' || styles.position === 'fixed') {
+                    const left = parseInt(styles.left) || 0;
+                    const top = parseInt(styles.top) || 0;
+                    if (left < -1000 || top < -1000 || left > 9999 || top > 9999) {
+                        indicators.push('positioned_offscreen');
+                    }
+                }
+                
+                // Advanced transform hiding
+                if (styles.transform && (
+                    styles.transform.includes('scale(0)') ||
+                    styles.transform.includes('translateX(-9999') ||
+                    styles.transform.includes('translateY(-9999')
+                )) {
+                    indicators.push('transform_hidden');
+                }
+                
+                // Clip-path and clip hiding
+                if (styles.clipPath && styles.clipPath.includes('inset(100%)')) {
+                    indicators.push('clippath_hidden');
+                }
+                if (styles.clip && styles.clip.includes('rect(0,0,0,0)')) {
+                    indicators.push('clip_hidden');
+                }
+                
+                // Zero dimensions detection
                 if (parseInt(styles.width) === 0 || parseInt(styles.height) === 0) {
                     indicators.push('zero_dimensions');
                 }
                 
-                // Check for honeypot naming patterns
-                const suspiciousNames = ['bot', 'spam', 'honeypot', 'trap', 'hidden', 'winnie'];
-                const elementText = `${element.name} ${element.id} ${element.className}`.toLowerCase();
+                // Font-based hiding
+                if (parseInt(styles.fontSize) === 0 || parseInt(styles.lineHeight) === 0) {
+                    indicators.push('font_hidden');
+                }
+                
+                // Text indent hiding
+                if (parseInt(styles.textIndent) < -9000) {
+                    indicators.push('text_indent_hidden');
+                }
+                
+                // Color-based hiding
+                if (styles.color === 'transparent' || styles.background === 'transparent') {
+                    indicators.push('color_hidden');
+                }
+                
+                // Enhanced honeypot naming patterns (2025 research)
+                const suspiciousNames = [
+                    // Classic patterns
+                    'bot', 'spam', 'honeypot', 'trap', 'hidden', 'check',
+                    'winnie', 'pooh', 'winnie_the_pooh', 'dummy', 'fake', 'test', 'bait', 'decoy',
+                    // Email patterns
+                    'email_address', 'user_email', 'confirm_email', 'email_confirm', 'email_verification',
+                    // Common form fields used as traps
+                    'website', 'url', 'company', 'organization', 'full_name', 'real_name',
+                    'home_phone', 'mobile_phone', 'phone_number', 'zip_code', 'postal_code',
+                    // Time-based and behavioral traps
+                    'timestamp', 'form_loaded_at', 'page_start_time', 'mouse_movements',
+                    'click_pattern', 'typing_speed', 'do_not_fill', 'leave_blank'
+                ];
+                
+                const elementText = `${element.name || ''} ${element.id || ''} ${element.className || ''}`.toLowerCase();
                 for (const name of suspiciousNames) {
                     if (elementText.includes(name)) {
                         indicators.push(`suspicious_name_${name}`);
                     }
                 }
                 
-                // Check tabindex
+                // Enhanced accessibility hiding detection
                 if (element.tabIndex === -1) indicators.push('negative_tabindex');
+                if (element.getAttribute('aria-hidden') === 'true') indicators.push('aria_hidden');
+                
+                // Class-based detection
+                const suspiciousClasses = [
+                    'honeypot', 'bot-trap', 'spam-trap', 'hidden', 'hide', 'invisible',
+                    'screen-reader-only', 'sr-only', 'visually-hidden', 'off-screen', 'offscreen',
+                    'ghost', 'phantom', 'shadow', 'dummy', 'fake', 'decoy', 'anti-bot',
+                    'd-none', 'opacity-0', 'w-0', 'h-0', 'v-show-false', 'ng-hide'
+                ];
+                
+                const classText = element.className.toLowerCase();
+                for (const className of suspiciousClasses) {
+                    if (classText.includes(className)) {
+                        indicators.push(`suspicious_class_${className}`);
+                    }
+                }
+                
+                // Data attribute detection for JS-generated traps
+                const suspiciousDataAttrs = ['data-honeypot', 'data-trap', 'data-generated', 'data-dynamic'];
+                for (const attr of suspiciousDataAttrs) {
+                    if (element.hasAttribute(attr)) {
+                        indicators.push(`suspicious_data_${attr}`);
+                    }
+                }
+                
+                // Parent container hiding detection
+                const parent = element.parentElement;
+                if (parent) {
+                    const parentStyles = window.getComputedStyle(parent);
+                    if (parentStyles.display === 'none' || parentStyles.visibility === 'hidden') {
+                        indicators.push('parent_hidden');
+                    }
+                }
                 
                 return indicators;
             }
@@ -468,24 +596,57 @@ class UniversalFormAnalyzer {
                 responsePreview: typeof response === 'string' ? response.substring(0, 500) : JSON.stringify(response).substring(0, 500)
             });
             
-            // Parse LLM response with robust error handling
+            // Enhanced JSON parsing with validation based on analysis findings
             if (typeof response === 'string') {
+                // Clean the response - remove markdown, explanations, etc.
+                let cleanedResponse = response.trim();
+                
+                // Remove common non-JSON prefixes/suffixes that cause parsing issues
+                cleanedResponse = cleanedResponse
+                    .replace(/^```json\s*/i, '')
+                    .replace(/\s*```\s*$/i, '')
+                    .replace(/^Here is the JSON.*?:\s*/i, '')
+                    .replace(/^The response is:\s*/i, '')
+                    .replace(/^JSON:\s*/i, '')
+                    .trim();
+                
                 try {
-                    analysis = JSON.parse(response);
-                    this.log(`✅ Successfully parsed JSON response`);
+                    analysis = JSON.parse(cleanedResponse);
                     
-                    // LOG SUCCESSFUL PARSING
-                    await this.logLLMInteraction({
-                        type: 'PARSE_SUCCESS',
-                        timestamp: new Date().toISOString(),
-                        siteName: siteName,
-                        parsedStructure: {
-                            fieldsCount: analysis.fields?.length || 0,
-                            checkboxesCount: analysis.checkboxes?.length || 0,
-                            honeypotsCount: analysis.honeypots?.length || 0,
-                            confidence: analysis.confidence || 0
-                        }
-                    });
+                    // Validate required fields based on our analysis
+                    const validationResults = this.validateLLMResponse(analysis);
+                    
+                    if (validationResults.isValid) {
+                        this.log(`✅ Successfully parsed and validated JSON response`);
+                        
+                        // LOG SUCCESSFUL PARSING
+                        await this.logLLMInteraction({
+                            type: 'PARSE_SUCCESS',
+                            timestamp: new Date().toISOString(),
+                            siteName: siteName,
+                            parsedStructure: {
+                                fieldsCount: analysis.fields?.length || 0,
+                                checkboxesCount: analysis.checkboxes?.length || 0,
+                                honeypotsCount: analysis.honeypots?.length || 0,
+                                confidence: analysis.confidence || 0,
+                                hasValidStructure: true
+                            },
+                            validationResults: validationResults
+                        });
+                    } else {
+                        this.log(`⚠️ JSON parsed but validation failed: ${validationResults.errors.join(', ')}`);
+                        
+                        // Fix common issues automatically
+                        analysis = this.autoFixLLMResponse(analysis, validationResults);
+                        
+                        await this.logLLMInteraction({
+                            type: 'PARSE_SUCCESS_WITH_FIXES',
+                            timestamp: new Date().toISOString(),
+                            siteName: siteName,
+                            validationErrors: validationResults.errors,
+                            autoFixesApplied: validationResults.fixes || []
+                        });
+                    }
                     
                 } catch (parseError) {
                     this.log(`⚠️ Failed to parse LLM JSON response: ${parseError.message}`);
@@ -634,15 +795,77 @@ class UniversalFormAnalyzer {
         }
         
         const context = this.analyzeContext(pageData, siteName);
-        let prompt = `Expert web automation specialist: Analyze ${siteName} (${context.siteType}) for bot-friendly form automation.
+        let prompt = `CONTEXTUAL FORM AUTOMATION SPECIALIST - RETURN ONLY JSON
 
-URL: ${pageData.url} | TYPE: ${pageData.indicators.isSignup ? 'SIGNUP' : pageData.indicators.isLogin ? 'LOGIN' : 'UNKNOWN'}
-reCAPTCHA: ${pageData.indicators.hasRecaptcha} | iframes: ${pageData.indicators.hasFrames} | AJAX: ${pageData.indicators.hasAjaxForms}
-COMPLEXITY: ${context.complexity} | ELEMENTS: ${pageData.allElements?.length || 0}
+SITE CONTEXT: ${pageData.url} | ${pageData.indicators.isSignup ? 'SIGNUP' : pageData.indicators.isLogin ? 'LOGIN' : 'FORM'}
+MISSION: Generate realistic persona data that matches site expectations and maintains cross-survey consistency
 
-CONTENT: ${pageData.pageText.substring(0, 600)}
+CRITICAL REQUIREMENTS:
+- Return ONLY valid JSON, no other text or explanations
+- Always include "confidence" field (0.0-1.0)
+- Detect ALL honeypot/trap fields using advanced techniques
+- Generate precise CSS selectors that work with querySelector()
+- Consider site context when determining user data requirements
 
-HTML: ${focusedHTML.substring(0, 3500)}`;
+SITE-SPECIFIC PERSONA EXPECTATIONS:
+- SurveyPlanet: Small business owners, entrepreneurs, marketing professionals (age 28-45, income $45k-$85k)
+- Typeform: Tech-savvy professionals, designers, product managers (age 25-40, income $55k-$120k)
+- SurveyMonkey: Corporate researchers, analysts, senior managers (age 30-50, income $65k-$150k)
+- Default: General consumers, varied demographics (age 25-45, income $35k-$75k)
+
+REALISTIC DATA GENERATION INTELLIGENCE:
+🧠 AVOID BOT-DETECTION PATTERNS:
+❌ Generic names: Test User, John Doe, Jane Smith, Admin User
+❌ Sequential data: user1@email.com, password123, Company1
+❌ Random strings: ajfklsjdkf@email.com, RandomCorp Inc
+❌ Obvious patterns: All fields same format, identical responses
+
+✅ GENERATE CONTEXTUAL REALISM:
+✅ Professional names matching site audience (Michael Johnson for business, Alex Chen for tech)
+✅ Age-appropriate email domains (25-35: Gmail/Yahoo, 35+: diverse providers)
+✅ Contextually appropriate job titles matching site's target audience
+✅ Believable company names that align with user's professional level
+✅ Income levels that correlate with age, education, and job title
+✅ Geographic consistency (area codes match states, realistic city/zip combinations)
+
+⚠️ CONSISTENCY CRITICAL: All data will be cross-referenced during surveys!
+- Registration data MUST align with later survey responses
+- Demographics must be internally consistent (age/income/education/job)
+- Professional background must match throughout user journey
+- Location data must remain geographically consistent
+
+SITE ANALYSIS:
+URL: ${pageData.url} | TYPE: ${pageData.indicators.isSignup ? 'SIGNUP' : pageData.indicators.isLogin ? 'LOGIN' : 'FORM'}
+Anti-Bot: reCAPTCHA=${pageData.indicators.hasRecaptcha} | iFrames=${pageData.indicators.hasFrames} | AJAX=${pageData.indicators.hasAjaxForms}
+
+ENHANCED HONEYPOT DETECTION (7+ patterns):
+1. CSS Hiding: display:none, visibility:hidden, opacity:0
+2. Positioning: left/top < -1000px, position:absolute off-screen
+3. Size: width/height = 0 or 1px  
+4. Suspicious Names: website, url, homepage, bot, spam, trap, honey, company, winnie_the_pooh
+5. Accessibility: tabindex="-1", aria-hidden="true"
+6. Instructions: "leave blank", "do not fill", "bot_trap"
+7. Context: Fields in suspicious sections or unusual form positions
+
+FIELD PURPOSE INTELLIGENCE:
+- Account Info section → email, password, username (critical for consistency)
+- Personal Info section → firstName, lastName, phone (demographic consistency required)
+- Organization section → SUSPICIOUS (potential honeypots or optional fields)
+- Marketing section → newsletter, communications (optional, low cross-reference risk)
+
+CHECKBOX ACTION RULES:
+🔴 ALWAYS CHECK: terms, privacy, agreement, consent, required checkboxes
+🟡 USUALLY UNCHECK: newsletter, marketing, promotional, updates (avoid spam)
+⚫ SKIP: hidden, honeypot, or suspicious checkboxes
+
+Examples:
+✅ "I agree to Terms & Conditions" → action: "check" (required)
+✅ "I accept Privacy Policy" → action: "check" (required)
+❌ "Subscribe to newsletter" → action: "uncheck" (avoid marketing)
+❌ "Receive promotional emails" → action: "uncheck" (avoid spam)
+
+HTML TO ANALYZE:
+${focusedHTML.substring(0, 3000)}`;
 
         // Add context-specific guidance
         if (context.siteType === 'enterprise') {
@@ -657,27 +880,81 @@ HTML: ${focusedHTML.substring(0, 3500)}`;
 
         prompt += `
 
+## 🛡️ CRITICAL ANTI-BOT COUNTERMEASURES DETECTION
+
+### 🎯 HONEYPOT DETECTION PATTERNS:
+1. **CSS-based hiding**: display:none, visibility:hidden, opacity:0, width:0, height:0, position:absolute;left:-9999px
+2. **Suspicious names**: bot, spam, honeypot, trap, hidden, website, url, company, winnie_the_pooh, do_not_fill, leave_blank
+3. **Accessibility hiding**: tabindex="-1", aria-hidden="true", screen-reader-only classes
+4. **Time-based traps**: Fields that appear/disappear based on timing
+5. **Behavioral traps**: Fields requiring specific interaction patterns
+
+### 🔍 ADVANCED DETECTION TECHNIQUES:
+- **Multi-layer hiding**: Elements hidden by parent containers
+- **Dynamic honeypots**: Fields added via JavaScript after page load
+- **Invisible overlays**: Transparent elements positioned over real fields
+- **Duplicate fields**: Real and fake versions of same field types
+- **Mouse tracking traps**: Fields that detect non-human cursor movements
+
+### ⚠️ SITE-SPECIFIC COUNTERMEASURES:
+- **SurveyPlanet**: Uses company field as honeypot + behavioral analysis
+- **Typeform**: Dynamic field generation + timing validation
+- **SurveyMonkey**: Advanced bot fingerprinting + CAPTCHA integration
+- **Google Forms**: reCAPTCHA + suspicious activity detection
+- **Generic Sites**: Check for common patterns: email_address, url, website fields
+
+### 🚨 RED FLAGS (IMMEDIATE AVOIDANCE):
+❌ Fields with names: company, website, url, email_address, bot_trap, winnie_the_pooh
+❌ Elements with styles: display:none, visibility:hidden, opacity:0
+❌ Off-screen positioning: left:-9999px, top:-9999px
+❌ Zero dimensions: width:0, height:0
+❌ Accessibility hidden: tabindex="-1", aria-hidden="true"
+
 EXAMPLES:
 ✅ Real: <input type="email" name="email" placeholder="Enter email">
 ❌ Trap: <input type="text" name="website" style="display:none">
 ✅ Real: <input type="checkbox" name="terms"> I agree
 ❌ Trap: <input type="checkbox" tabindex="-1" style="opacity:0">
+❌ Honeypot: <input type="text" name="company" style="position:absolute;left:-9999px">
+❌ Bot trap: <input type="email" name="email_address" style="visibility:hidden">
 
-HONEYPOTS (AVOID): display:none, visibility:hidden, opacity:0, width:0, height:0, tabindex="-1", names: bot/spam/honeypot/trap/hidden/website/url
-
-CONFIDENCE: 0.9-1.0 Clear | 0.7-0.8 Minor issues | 0.5-0.6 Uncertain | 0.0-0.4 Manual review
-
-JSON:
+REQUIRED JSON FORMAT (respond with this exact structure):
 {
-  "analysis": "brief description",
-  "confidence": 0.0-1.0,
-  "pageType": "signup|login|contact|survey|other",
-  "fields": [{"purpose": "email|firstName|lastName|password|etc", "selector": "#id or [name] or path", "type": "text|email|password|etc", "required": bool, "importance": "critical|important|optional"}],
-  "checkboxes": [{"purpose": "terms|privacy|newsletter|etc", "selector": "exact selector", "action": "check|uncheck", "importance": "critical|important|optional"}],
-  "honeypots": [{"selector": "exact selector", "trapType": "hidden|suspicious_name|etc", "reasoning": "why honeypot"}],
-  "submitButton": {"selector": "exact selector", "text": "button text"},
-  "additionalNotes": "special considerations"
+  "analysis": "Brief form description (max 100 chars)",
+  "confidence": 0.95,
+  "pageType": "registration|login|survey|contact|order|other",
+  "fields": [
+    {
+      "purpose": "email|password|firstName|lastName|phone|address|other",
+      "selector": "input[name='email']",
+      "type": "text|email|password|tel|number|url",
+      "required": true,
+      "label": "Email Address"
+    }
+  ],
+  "checkboxes": [
+    {
+      "purpose": "terms|newsletter|notifications|privacy|other",
+      "selector": "input[name='terms']",
+      "required": true,
+      "label": "I agree to terms",
+      "action": "check|uncheck|skip"
+    }
+  ],
+  "honeypots": [
+    {
+      "selector": "input[name='website']",
+      "reason": "suspicious_name|hidden|positioned_offscreen|zero_opacity",
+      "confidence": 0.95
+    }
+  ],
+  "submitButton": {
+    "selector": "button[type='submit']",
+    "text": "Submit"
+  }
 }`;
+
+        return prompt;
     }
 
     /**
@@ -1503,7 +1780,33 @@ JSON:
         const axios = require('axios');
         
         try {
-            this.log('🤖 Performing direct OpenAI API call for form analysis');
+            // CRITICAL: Check for API key availability first
+            const apiKey = process.env.OPENAI_API_KEY;
+            if (!apiKey) {
+                const errorMsg = '❌ CRITICAL ERROR: OpenAI API key not found in environment variables';
+                this.log(errorMsg);
+                console.error(errorMsg);
+                console.error('🔧 SOLUTION: Please set OPENAI_API_KEY in your .env file');
+                console.error('📝 Example: OPENAI_API_KEY=sk-proj-...');
+                
+                // Log this critical error for debugging
+                await this.logLLMInteraction({
+                    type: 'CRITICAL_ERROR',
+                    timestamp: new Date().toISOString(),
+                    siteName: siteName,
+                    error: 'Missing OpenAI API key',
+                    solution: 'Set OPENAI_API_KEY environment variable',
+                    promptLength: prompt?.length || 0
+                });
+                
+                throw new Error('Missing OpenAI API key - check environment variables');
+            }
+            
+            this.log(`🤖 Performing direct OpenAI API call for form analysis (${siteName})`);
+            this.log(`🔑 API Key present: ${apiKey.substring(0, 10)}...${apiKey.substring(apiKey.length - 4)}`);
+            this.log(`📏 Prompt length: ${prompt.length} characters`);
+            
+            const requestStart = Date.now();
             
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
                 model: 'gpt-4',
@@ -1521,26 +1824,110 @@ JSON:
                 temperature: 0.1
             }, {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                    'Authorization': `Bearer ${apiKey}`,
                     'Content-Type': 'application/json'
                 },
                 timeout: 30000
             });
             
-            return response.data.choices[0].message.content;
+            const requestDuration = Date.now() - requestStart;
+            const responseContent = response.data.choices[0].message.content;
+            
+            this.log(`✅ OpenAI API call successful in ${requestDuration}ms`);
+            this.log(`📊 Response length: ${responseContent.length} characters`);
+            this.log(`💰 Token usage: ${response.data.usage?.total_tokens || 'unknown'} tokens`);
+            
+            // Log successful API call
+            await this.logLLMInteraction({
+                type: 'API_SUCCESS',
+                timestamp: new Date().toISOString(),
+                siteName: siteName,
+                requestDuration: requestDuration,
+                tokenUsage: response.data.usage,
+                responseLength: responseContent.length,
+                model: response.data.model || 'gpt-4'
+            });
+            
+            return responseContent;
             
         } catch (error) {
+            const errorDetails = {
+                message: error.message,
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                apiError: error.response?.data,
+                isNetworkError: !error.response,
+                isAuthError: error.response?.status === 401,
+                isRateLimitError: error.response?.status === 429,
+                isQuotaError: error.response?.status === 429 && error.response?.data?.error?.type === 'insufficient_quota'
+            };
+            
             this.log(`❌ Direct AI analysis failed: ${error.message}`);
             
-            if (error.response) {
-                this.log(`❌ API Response: ${error.response.status} - ${error.response.statusText}`);
-                this.log(`❌ API Data: ${JSON.stringify(error.response.data)}`);
+            // Detailed error logging based on error type
+            if (errorDetails.isAuthError) {
+                console.error('🔐 AUTHENTICATION ERROR: Invalid or expired OpenAI API key');
+                console.error('🔧 SOLUTION: Check your OpenAI API key in .env file');
+            } else if (errorDetails.isRateLimitError) {
+                console.error('⏰ RATE LIMIT ERROR: Too many requests to OpenAI API');
+                console.error('🔧 SOLUTION: Wait a moment and try again, or upgrade your OpenAI plan');
+            } else if (errorDetails.isQuotaError) {
+                console.error('💳 QUOTA EXCEEDED: OpenAI API usage limit reached');
+                console.error('🔧 SOLUTION: Add billing details or upgrade your OpenAI plan');
+            } else if (errorDetails.isNetworkError) {
+                console.error('🌐 NETWORK ERROR: Unable to reach OpenAI API');
+                console.error('🔧 SOLUTION: Check internet connection and firewall settings');
+            } else if (error.response) {
+                console.error(`📡 API ERROR: ${error.response.status} - ${error.response.statusText}`);
+                console.error(`📄 API Response: ${JSON.stringify(error.response.data)}`);
             }
+            
+            // Log detailed error for analysis
+            await this.logLLMInteraction({
+                type: 'API_ERROR',
+                timestamp: new Date().toISOString(),
+                siteName: siteName,
+                error: error.message,
+                errorDetails: errorDetails,
+                troubleshooting: this.generateTroubleshootingSteps(errorDetails)
+            });
             
             throw error;
         }
     }
 
+    /**
+     * Generate troubleshooting steps based on error type
+     */
+    generateTroubleshootingSteps(errorDetails) {
+        const steps = [];
+        
+        if (errorDetails.isAuthError) {
+            steps.push('1. Verify OPENAI_API_KEY is set in .env file');
+            steps.push('2. Check API key format: should start with sk-proj-...');
+            steps.push('3. Verify API key is valid on OpenAI dashboard');
+            steps.push('4. Ensure no extra spaces or quotes around the key');
+        } else if (errorDetails.isRateLimitError) {
+            steps.push('1. Wait 60 seconds before retrying');
+            steps.push('2. Implement exponential backoff in requests');
+            steps.push('3. Consider upgrading OpenAI plan for higher limits');
+        } else if (errorDetails.isQuotaError) {
+            steps.push('1. Add payment method to OpenAI account');
+            steps.push('2. Check usage limits on OpenAI dashboard');
+            steps.push('3. Upgrade to a paid plan if needed');
+        } else if (errorDetails.isNetworkError) {
+            steps.push('1. Check internet connection');
+            steps.push('2. Verify firewall/proxy settings');
+            steps.push('3. Try using a VPN if access is restricted');
+        } else {
+            steps.push('1. Check OpenAI API status page');
+            steps.push('2. Verify request format and parameters');
+            steps.push('3. Contact OpenAI support if issue persists');
+        }
+        
+        return steps;
+    }
+    
     /**
      * Enhanced LLM interaction logging with deep insights
      */
@@ -1626,6 +2013,9 @@ JSON:
         } catch (error) {
             // Don't throw errors from logging - just log to console
             console.error(`❌ Failed to write enhanced LLM log: ${error.message}`);
+            console.error(`📍 Log data type: ${logData.type}`);
+            console.error(`📍 Site name: ${logData.siteName}`);
+            console.error(`📍 Error details: ${error.stack}`);
         }
     }
 
@@ -2057,6 +2447,130 @@ JSON:
         
         this.log(`🔄 Fallback analysis generated: ${fallbackAnalysis.fields.length} fields found`);
         return fallbackAnalysis;
+    }
+
+    /**
+     * Validate LLM response structure based on analysis findings
+     */
+    validateLLMResponse(analysis) {
+        const errors = [];
+        const warnings = [];
+        
+        // Check required top-level fields
+        if (!analysis.confidence || typeof analysis.confidence !== 'number') {
+            errors.push('Missing or invalid confidence field');
+        }
+        
+        if (!analysis.analysis || typeof analysis.analysis !== 'string') {
+            errors.push('Missing or invalid analysis description');
+        }
+        
+        if (!analysis.pageType || typeof analysis.pageType !== 'string') {
+            errors.push('Missing or invalid pageType');
+        }
+        
+        // Check arrays exist (can be empty)
+        if (!Array.isArray(analysis.fields)) {
+            errors.push('fields must be an array');
+        }
+        
+        if (!Array.isArray(analysis.checkboxes)) {
+            errors.push('checkboxes must be an array');
+        }
+        
+        if (!Array.isArray(analysis.honeypots)) {
+            errors.push('honeypots must be an array');
+        }
+        
+        // Validate field structures
+        if (analysis.fields) {
+            analysis.fields.forEach((field, index) => {
+                if (!field.selector || typeof field.selector !== 'string') {
+                    errors.push(`Field ${index}: missing or invalid selector`);
+                }
+                if (!field.purpose || typeof field.purpose !== 'string') {
+                    errors.push(`Field ${index}: missing or invalid purpose`);
+                }
+            });
+        }
+        
+        // Validate honeypot structures
+        if (analysis.honeypots) {
+            analysis.honeypots.forEach((honeypot, index) => {
+                if (!honeypot.selector || typeof honeypot.selector !== 'string') {
+                    errors.push(`Honeypot ${index}: missing or invalid selector`);
+                }
+                if (!honeypot.reason || typeof honeypot.reason !== 'string') {
+                    errors.push(`Honeypot ${index}: missing or invalid reason`);
+                }
+            });
+        }
+        
+        return {
+            isValid: errors.length === 0,
+            errors: errors,
+            warnings: warnings
+        };
+    }
+    
+    /**
+     * Auto-fix common LLM response issues
+     */
+    autoFixLLMResponse(analysis, validationResults) {
+        const fixes = [];
+        
+        // Fix missing confidence
+        if (!analysis.confidence || typeof analysis.confidence !== 'number') {
+            analysis.confidence = 0.5; // Default moderate confidence
+            fixes.push('Set default confidence 0.5');
+        }
+        
+        // Fix missing analysis
+        if (!analysis.analysis || typeof analysis.analysis !== 'string') {
+            analysis.analysis = 'Form analysis';
+            fixes.push('Set default analysis description');
+        }
+        
+        // Fix missing pageType
+        if (!analysis.pageType || typeof analysis.pageType !== 'string') {
+            analysis.pageType = 'other';
+            fixes.push('Set default pageType to other');
+        }
+        
+        // Fix missing arrays
+        if (!Array.isArray(analysis.fields)) {
+            analysis.fields = [];
+            fixes.push('Initialized empty fields array');
+        }
+        
+        if (!Array.isArray(analysis.checkboxes)) {
+            analysis.checkboxes = [];
+            fixes.push('Initialized empty checkboxes array');
+        }
+        
+        if (!Array.isArray(analysis.honeypots)) {
+            analysis.honeypots = [];
+            fixes.push('Initialized empty honeypots array');
+        }
+        
+        // Fix missing submitButton
+        if (!analysis.submitButton || typeof analysis.submitButton !== 'object') {
+            analysis.submitButton = { selector: 'button[type="submit"]', text: 'Submit' };
+            fixes.push('Added default submit button');
+        }
+        
+        // Store fixes for logging
+        validationResults.fixes = fixes;
+        
+        return analysis;
+    }
+
+    /**
+     * Set the registration logger for database logging
+     */
+    setRegistrationLogger(logger) {
+        this.registrationLogger = logger;
+        this.log('✅ Registration logger configured in analyzer');
     }
 
     /**

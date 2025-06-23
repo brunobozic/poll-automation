@@ -174,47 +174,194 @@ class SmartFormFiller {
      * Handle all checkboxes intelligently
      */
     async handleAllCheckboxes() {
-        this.log(`☑️ Handling ${this.formAnalysis.checkboxes.length} checkboxes...`);
+        const checkboxCount = this.formAnalysis.checkboxes?.length || 0;
+        this.log(`☑️ CHECKBOX HANDLING: Starting ${checkboxCount} checkboxes...`);
+        
+        if (checkboxCount === 0) {
+            this.log(`⚠️ CHECKBOX WARNING: No checkboxes found in form analysis!`);
+            return { successful: 0, failed: 0, errors: [] };
+        }
         
         const results = {
             successful: 0,
             failed: 0,
-            errors: []
+            errors: [],
+            checkedBoxes: [],
+            uncheckedBoxes: [],
+            skippedBoxes: []
         };
         
-        for (const checkbox of this.formAnalysis.checkboxes) {
+        for (let i = 0; i < this.formAnalysis.checkboxes.length; i++) {
+            const checkbox = this.formAnalysis.checkboxes[i];
+            
+            this.log(`\n📋 CHECKBOX ${i + 1}/${checkboxCount}:`);
+            this.log(`   🎯 Purpose: ${checkbox.purpose || 'Unknown'}`);
+            this.log(`   🔍 Selector: ${checkbox.selector || 'None'}`);
+            this.log(`   📝 Label: ${checkbox.label || 'No label'}`);
+            this.log(`   ✅ Required: ${checkbox.required || false}`);
+            this.log(`   👁️ Visible: ${checkbox.actuallyVisible}`);
+            this.log(`   🎬 Proposed Action: ${checkbox.action || 'Not specified'}`);
+            
             try {
                 if (!checkbox.selectorValid || !checkbox.actuallyVisible) {
+                    this.log(`❌ SKIPPING: Invalid selector or not visible`);
+                    results.skippedBoxes.push({
+                        purpose: checkbox.purpose,
+                        reason: !checkbox.selectorValid ? 'Invalid selector' : 'Not visible'
+                    });
                     continue;
                 }
                 
-                this.log(`☑️ Processing checkbox: ${checkbox.purpose} (${checkbox.action})`);
+                // Determine action if not specified
+                let action = checkbox.action;
+                if (!action || action === 'undefined') {
+                    action = this.determineCheckboxAction(checkbox);
+                    this.log(`🧠 AUTO-DETERMINED ACTION: ${action} (was: ${checkbox.action || 'undefined'})`);
+                    this.log(`   📊 Based on: purpose="${checkbox.purpose}", label="${checkbox.label}", required=${checkbox.required}`);
+                }
                 
-                if (checkbox.action === 'check') {
+                if (action === 'check') {
+                    this.log(`✅ CHECKING checkbox: ${checkbox.purpose}`);
                     await this.checkCheckboxHumanLike(checkbox.selector);
                     results.successful++;
-                    this.log(`✅ Checked: ${checkbox.purpose}`);
-                } else if (checkbox.action === 'uncheck') {
+                    results.checkedBoxes.push({
+                        purpose: checkbox.purpose,
+                        selector: checkbox.selector,
+                        label: checkbox.label
+                    });
+                    this.log(`✅ SUCCESS: Checked ${checkbox.purpose}`);
+                    
+                } else if (action === 'uncheck') {
+                    this.log(`☑️ UNCHECKING checkbox: ${checkbox.purpose}`);
                     await this.uncheckCheckboxHumanLike(checkbox.selector);
                     results.successful++;
-                    this.log(`✅ Unchecked: ${checkbox.purpose}`);
+                    results.uncheckedBoxes.push({
+                        purpose: checkbox.purpose,
+                        selector: checkbox.selector,
+                        label: checkbox.label
+                    });
+                    this.log(`✅ SUCCESS: Unchecked ${checkbox.purpose}`);
+                    
+                } else {
+                    this.log(`⏭️ SKIPPING checkbox: ${checkbox.purpose} (action: ${action})`);
+                    results.skippedBoxes.push({
+                        purpose: checkbox.purpose,
+                        reason: `Action was: ${action}`,
+                        selector: checkbox.selector
+                    });
                 }
                 
                 // Delay between checkbox interactions
                 await this.humanDelay(300, 700);
                 
             } catch (error) {
-                this.log(`❌ Error with checkbox ${checkbox.selector}: ${error.message}`);
+                this.log(`❌ CHECKBOX ERROR: ${checkbox.purpose} failed!`);
+                this.log(`   💥 Error: ${error.message}`);
+                this.log(`   🔍 Selector: ${checkbox.selector}`);
                 results.failed++;
                 results.errors.push({
                     checkbox: checkbox.selector,
                     purpose: checkbox.purpose,
-                    error: error.message
+                    error: error.message,
+                    label: checkbox.label
                 });
             }
         }
         
+        // Summary logging
+        this.log(`\n📊 CHECKBOX SUMMARY:`);
+        this.log(`   ✅ Successfully handled: ${results.successful}`);
+        this.log(`   ❌ Failed: ${results.failed}`);
+        this.log(`   ⏭️ Skipped: ${results.skippedBoxes.length}`);
+        
+        if (results.checkedBoxes.length > 0) {
+            this.log(`   ☑️ CHECKED BOXES:`);
+            results.checkedBoxes.forEach(box => {
+                this.log(`      ✓ ${box.purpose}: "${box.label}"`);
+            });
+        }
+        
+        if (results.uncheckedBoxes.length > 0) {
+            this.log(`   ☐ UNCHECKED BOXES:`);
+            results.uncheckedBoxes.forEach(box => {
+                this.log(`      ✗ ${box.purpose}: "${box.label}"`);
+            });
+        }
+        
+        if (results.skippedBoxes.length > 0) {
+            this.log(`   ⚠️ SKIPPED BOXES:`);
+            results.skippedBoxes.forEach(box => {
+                this.log(`      ⏭️ ${box.purpose}: ${box.reason}`);
+            });
+        }
+        
+        if (results.errors.length > 0) {
+            this.log(`   💥 ERRORS:`);
+            results.errors.forEach(err => {
+                this.log(`      ❌ ${err.purpose}: ${err.error}`);
+            });
+        }
+        
+        // Critical warning if no checkboxes were successfully handled but some were found
+        if (checkboxCount > 0 && results.successful === 0) {
+            this.log(`🚨 CRITICAL: Found ${checkboxCount} checkboxes but NONE were successfully checked!`);
+            this.log(`🚨 This likely means Terms & Conditions were NOT accepted!`);
+        }
+        
         return results;
+    }
+
+    /**
+     * Intelligently determine what to do with a checkbox based on its purpose and context
+     */
+    determineCheckboxAction(checkbox) {
+        const purpose = checkbox.purpose?.toLowerCase() || '';
+        const label = checkbox.label?.toLowerCase() || '';
+        const selector = checkbox.selector?.toLowerCase() || '';
+        
+        // Required checkboxes that should be checked
+        const shouldCheck = [
+            'terms', 'terms_of_service', 'terms_conditions', 'agreement', 'policy',
+            'privacy', 'privacy_policy', 'accept', 'agree', 'consent', 'required',
+            'mandatory', 'must_accept', 'legal', 'conditions'
+        ];
+        
+        // Optional checkboxes that can be unchecked 
+        const canUncheck = [
+            'newsletter', 'marketing', 'promotional', 'updates', 'notifications',
+            'emails', 'communications', 'offers', 'spam', 'advertisement'
+        ];
+        
+        // Check if this is a required checkbox that should be checked
+        for (const term of shouldCheck) {
+            if (purpose.includes(term) || label.includes(term) || selector.includes(term)) {
+                return 'check';
+            }
+        }
+        
+        // Check if this is an optional marketing checkbox (can be left unchecked)
+        for (const term of canUncheck) {
+            if (purpose.includes(term) || label.includes(term) || selector.includes(term)) {
+                return 'uncheck'; // Don't opt into marketing by default
+            }
+        }
+        
+        // If required=true, check it
+        if (checkbox.required === true) {
+            return 'check';
+        }
+        
+        // Default for unknown checkboxes - check if it seems important, skip if marketing
+        if (label.includes('agree') || label.includes('accept') || purpose.includes('terms')) {
+            return 'check';
+        }
+        
+        if (label.includes('subscribe') || label.includes('email') || label.includes('newsletter')) {
+            return 'uncheck';
+        }
+        
+        // Default: check if required, skip if optional
+        return checkbox.required ? 'check' : 'skip';
     }
 
     /**

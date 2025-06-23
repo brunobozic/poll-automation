@@ -27,6 +27,15 @@ class ComprehensiveChallengerSolver {
     }
 
     /**
+     * Initialize the challenge solver (compatibility method for orchestrator)
+     */
+    async initialize() {
+        // All initialization is done in constructor, this is just for compatibility
+        console.log('✅ Comprehensive Challenge Solver initialized');
+        return Promise.resolve();
+    }
+
+    /**
      * Main challenge solving entry point
      * @param {Object} challengeData - Challenge data from the page
      * @param {Object} context - Additional context (page, browser, etc.)
