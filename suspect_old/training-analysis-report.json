@@ -1,0 +1,357 @@
+{
+  "timestamp": "2025-06-24T18:29:30.342Z",
+  "summary": {
+    "totalSites": 6,
+    "successfulSites": 3,
+    "overallSuccessRate": 50,
+    "totalEvents": 68,
+    "totalIssues": 4
+  },
+  "sitePerformance": {
+    "SurveyGizmo": {
+      "successes": 0,
+      "failures": 1,
+      "total": 1
+    },
+    "Formstack": {
+      "successes": 0,
+      "failures": 1,
+      "total": 1
+    },
+    "Qualtrics": {
+      "successes": 1,
+      "failures": 0,
+      "total": 1
+    },
+    "SurveyPlanet": {
+      "successes": 0,
+      "failures": 3,
+      "total": 3
+    },
+    "Survey Monkey": {
+      "successes": 2,
+      "failures": 0,
+      "total": 2
+    },
+    "Google Forms": {
+      "successes": 2,
+      "failures": 0,
+      "total": 2
+    }
+  },
+  "issues": [
+    "SurveyGizmo: 0% success rate - needs investigation",
+    "Formstack: 0% success rate - needs investigation",
+    "SurveyPlanet: 0% success rate - needs investigation",
+    "ML logging data is not being captured properly"
+  ],
+  "recommendations": [
+    "Add rotation performance logging for detailed analysis",
+    "Fix ML data logging to ensure all features are captured",
+    "Add real survey URLs for survey completion testing",
+    "Implement CAPTCHA detection and handling",
+    "Add proxy rotation for enhanced anonymity"
+  ],
+  "rawEvents": [
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for SurveyGizmo",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:25:30"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration failed on SurveyGizmo",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:25:30"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for SurveyGizmo",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:25:29"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for Formstack",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:25:23"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration failed on Formstack",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:25:23"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for Formstack",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:25:20"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for JotForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:25:12"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for JotForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:24:09"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for Qualtrics",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:24:02"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Survey completed on Qualtrics",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:24:02"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Survey completed on Qualtrics",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:24:01"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration succeeded on Qualtrics",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:24:00"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for Qualtrics",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:23:58"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:23:50"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration failed on SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:23:50"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:23:31"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for Survey Monkey",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:19:14"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration succeeded on Survey Monkey",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:19:14"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for Survey Monkey",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:19:09"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for Google Forms",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:18:59"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration succeeded on Google Forms",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:18:58"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for Google Forms",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:18:57"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for TypeForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:18:51"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for TypeForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:17:48"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:17:39"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration failed on SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:17:39"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:17:33"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for Survey Monkey",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:08:39"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration succeeded on Survey Monkey",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:08:39"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for Survey Monkey",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:08:36"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for Google Forms",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:08:25"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration succeeded on Google Forms",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:08:25"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for Google Forms",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:08:23"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for TypeForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:08:17"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for TypeForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:07:13"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:07:07"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Registration failed on SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:07:07"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 18:06:46"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analyzed SurveyPlanet Demo Survey",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:51:54"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analyzed SurveyPlanet Registration",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:51:50"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Training failed for Survey Monkey: browserContext.newPage: Target page, context or browser has been closed",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:50:57"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Training failed for Google Forms: browserContext.newPage: Target page, context or browser has been closed",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:50:57"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for TypeForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:50:52"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for TypeForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:50:52"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:50:14"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for SurveyPlanet",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:49:54"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Training failed for Survey Monkey: browserContext.newPage: Target page, context or browser has been closed",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:48:56"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Training failed for Google Forms: browserContext.newPage: Target page, context or browser has been closed",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:48:56"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Learning consolidated for TypeForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:48:50"
+    },
+    {
+      "event_type": "system",
+      "event_message": "Analysis completed for TypeForm",
+      "event_data": "{}",
+      "timestamp": "2025-06-24 17:48:21"
+    }
+  ]
+}

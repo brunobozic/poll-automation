@@ -1,0 +1,186 @@
+{
+  "timestamp": "2025-06-23T14:14:58.659Z",
+  "patterns": {
+    "navigation": {
+      "successes": [
+        {
+          "attempt": 1,
+          "platform": "JotForm",
+          "httpStatus": 404,
+          "loadTime": 1288,
+          "hasContent": false
+        },
+        {
+          "attempt": 2,
+          "platform": "SurveyPlanet",
+          "httpStatus": 200,
+          "loadTime": 1554,
+          "hasContent": true
+        }
+      ],
+      "failures": [
+        {
+          "attempt": 3,
+          "platform": "Typeform",
+          "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.typeform.com/templates/c/surveys/\", waiting until \"networkidle\"\u001b[22m\n",
+          "url": "https://www.typeform.com/templates/c/surveys/"
+        }
+      ]
+    },
+    "discovery": {
+      "successes": [],
+      "failures": []
+    },
+    "formFilling": {
+      "successes": [
+        {
+          "attempt": 2,
+          "platform": "SurveyPlanet",
+          "successRate": 100,
+          "questionsAttempted": 1,
+          "fillTime": 573
+        }
+      ],
+      "failures": [
+        {
+          "attempt": 1,
+          "platform": "JotForm",
+          "error": "No questions available for filling"
+        }
+      ]
+    },
+    "submission": {
+      "successes": [
+        {
+          "attempt": 2,
+          "platform": "SurveyPlanet",
+          "indicator": "URL changed without errors",
+          "urlChanged": true,
+          "submissionTime": 11748
+        }
+      ],
+      "failures": [
+        {
+          "attempt": 1,
+          "platform": "JotForm",
+          "error": "No successful form fills to submit"
+        }
+      ]
+    }
+  },
+  "adaptations": [
+    {
+      "category": "navigation",
+      "priority": "high",
+      "issue": "Timeout issues on complex sites",
+      "solution": "Implement progressive loading strategies and fallback URLs",
+      "implementation": "navigation_timeout_handling"
+    },
+    {
+      "category": "discovery",
+      "priority": "high",
+      "issue": "Need more surveys like the successful one",
+      "solution": "Prioritize homepage_form type surveys from SurveyPlanet",
+      "implementation": "prioritize_working_patterns"
+    },
+    {
+      "category": "formFilling",
+      "priority": "high",
+      "issue": "Multiple attempts failed due to no questions detected",
+      "solution": "Improve question detection algorithms and add fallback strategies",
+      "implementation": "enhanced_question_detection"
+    },
+    {
+      "category": "navigation",
+      "priority": "medium",
+      "issue": "404 pages still loading but no content",
+      "solution": "Add pre-flight checks for URL validity",
+      "implementation": "url_validation"
+    },
+    {
+      "category": "discovery",
+      "priority": "medium",
+      "issue": "2/3 URLs were invalid or inaccessible",
+      "solution": "Implement URL health checking before attempting surveys",
+      "implementation": "url_health_checker"
+    },
+    {
+      "category": "submission",
+      "priority": "medium",
+      "issue": "URL change is a good success indicator",
+      "solution": "Prioritize URL change detection in success analysis",
+      "implementation": "enhanced_success_detection"
+    },
+    {
+      "category": "formFilling",
+      "priority": "low",
+      "issue": "Form filling is working perfectly",
+      "solution": "Maintain current approach, focus on question discovery",
+      "implementation": "maintain_current_approach"
+    }
+  ],
+  "groupedAdaptations": {
+    "navigation": [
+      {
+        "category": "navigation",
+        "priority": "high",
+        "issue": "Timeout issues on complex sites",
+        "solution": "Implement progressive loading strategies and fallback URLs",
+        "implementation": "navigation_timeout_handling"
+      },
+      {
+        "category": "navigation",
+        "priority": "medium",
+        "issue": "404 pages still loading but no content",
+        "solution": "Add pre-flight checks for URL validity",
+        "implementation": "url_validation"
+      }
+    ],
+    "discovery": [
+      {
+        "category": "discovery",
+        "priority": "high",
+        "issue": "Need more surveys like the successful one",
+        "solution": "Prioritize homepage_form type surveys from SurveyPlanet",
+        "implementation": "prioritize_working_patterns"
+      },
+      {
+        "category": "discovery",
+        "priority": "medium",
+        "issue": "2/3 URLs were invalid or inaccessible",
+        "solution": "Implement URL health checking before attempting surveys",
+        "implementation": "url_health_checker"
+      }
+    ],
+    "formFilling": [
+      {
+        "category": "formFilling",
+        "priority": "high",
+        "issue": "Multiple attempts failed due to no questions detected",
+        "solution": "Improve question detection algorithms and add fallback strategies",
+        "implementation": "enhanced_question_detection"
+      },
+      {
+        "category": "formFilling",
+        "priority": "low",
+        "issue": "Form filling is working perfectly",
+        "solution": "Maintain current approach, focus on question discovery",
+        "implementation": "maintain_current_approach"
+      }
+    ],
+    "submission": [
+      {
+        "category": "submission",
+        "priority": "medium",
+        "issue": "URL change is a good success indicator",
+        "solution": "Prioritize URL change detection in success analysis",
+        "implementation": "enhanced_success_detection"
+      }
+    ]
+  },
+  "metadata": {
+    "totalAttempts": 3,
+    "successRate": 0.3333333333333333,
+    "keyBottleneck": "question_detection"
+  }
+}

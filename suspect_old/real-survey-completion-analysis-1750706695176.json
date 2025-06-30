@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-06-23T19:24:55.176Z",
+  "testType": "real_survey_completion",
+  "totalScenarios": 3,
+  "successfulScenarios": 2,
+  "totalFormsInteracted": 2,
+  "totalFieldsCompleted": 2,
+  "totalInteractions": 2,
+  "averageCompletionTime": 3832,
+  "successRate": 0.6666666666666666,
+  "insights": [
+    "Successfully demonstrated real form interaction capabilities",
+    "Advanced behavioral modeling demonstrates human-like interactions"
+  ],
+  "recommendations": [
+    "Continue enhancing form detection algorithms",
+    "Expand interaction strategies for complex platforms",
+    "Implement more sophisticated response patterns",
+    "Add advanced error recovery mechanisms"
+  ]
+}

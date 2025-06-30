@@ -1,0 +1,35 @@
+{
+  "recoveryDate": "2025-06-24T07:13:51.213Z",
+  "sourceFiles": [
+    "backup-dbs-1750711218160/ai-optimized-registration.db",
+    "backup-dbs-1750711218160/complete-attack-system.db",
+    "backup-dbs-1750711218160/complete-correlation.db",
+    "backup-dbs-1750711218160/distilled-knowledge.db",
+    "backup-dbs-1750711218160/email-proof.db",
+    "backup-dbs-1750711218160/enhanced-poll-automation.db",
+    "backup-dbs-1750711218160/focused-correlation.db",
+    "backup-dbs-1750711218160/meta-learning-graph.db",
+    "backup-dbs-1750711218160/polls-dev.db",
+    "backup-dbs-1750711218160/polls.db",
+    "backup-dbs-1750711218160/real-survey-registration.db",
+    "backup-dbs-1750711218160/realistic-registration.db",
+    "backup-dbs-1750711218160/registrations.db",
+    "backup-dbs-1750711218160/simple-survey-test.db",
+    "backup-dbs-1750711218160/test-end-to-end.db",
+    "backup-dbs-1750711218160/test-registrations.db",
+    "backup-dbs-1750711218160/unified-poll-automation.db",
+    "data/polls.db",
+    "data/registrations.db",
+    "poll-automation-consolidated.db"
+  ],
+  "statistics": {
+    "totalDatabases": 20,
+    "originalRecords": 1250,
+    "recoveredRecords": 717,
+    "errors": 0,
+    "duplicatesSkipped": 178,
+    "schemaAdaptations": 122
+  },
+  "finalRecordCount": 185,
+  "recoveryRate": 57.36
+}

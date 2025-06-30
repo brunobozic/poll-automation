@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-06-23T19:16:09.991Z",
+  "results": [
+    {
+      "solvingId": "solving_1750706145191_5k30lt",
+      "url": "https://surveyplanet.com",
+      "startTime": 1750706145191,
+      "questions": [],
+      "responses": [],
+      "navigationSteps": [],
+      "adaptations": [],
+      "success": false,
+      "questionsAnswered": 0,
+      "completionTime": 2683,
+      "error": "page.evaluate: TypeError: this.calculateComplexity is not a function\n    at eval (eval at evaluate (:291:30), <anonymous>:41:43)\n    at UtilityScript.evaluate (<anonymous>:293:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+      "solvingId": "solving_1750706150802_vb70oy",
+      "url": "https://www.surveymonkey.com",
+      "startTime": 1750706150802,
+      "questions": [],
+      "responses": [],
+      "navigationSteps": [],
+      "adaptations": [],
+      "success": false,
+      "questionsAnswered": 0,
+      "completionTime": 3679,
+      "error": "page.evaluate: TypeError: this.calculateComplexity is not a function\n    at eval (eval at evaluate (:291:30), <anonymous>:41:43)\n    at UtilityScript.evaluate (<anonymous>:293:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+      "solvingId": "solving_1750706156868_yo616u",
+      "url": "https://www.typeform.com",
+      "startTime": 1750706156868,
+      "questions": [],
+      "responses": [],
+      "navigationSteps": [],
+      "adaptations": [],
+      "success": false,
+      "questionsAnswered": 0,
+      "completionTime": 2254,
+      "error": "page.evaluate: TypeError: this.calculateComplexity is not a function\n    at eval (eval at evaluate (:291:30), <anonymous>:41:43)\n    at UtilityScript.evaluate (<anonymous>:293:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+      "solvingId": "solving_1750706164571_81juha",
+      "url": "https://forms.google.com",
+      "startTime": 1750706164571,
+      "questions": [],
+      "responses": [],
+      "navigationSteps": [],
+      "adaptations": [],
+      "success": false,
+      "questionsAnswered": 0,
+      "completionTime": 1903,
+      "error": "page.evaluate: TypeError: this.calculateComplexity is not a function\n    at eval (eval at evaluate (:291:30), <anonymous>:41:43)\n    at UtilityScript.evaluate (<anonymous>:293:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    }
+  ],
+  "statistics": {
+    "surveysCompleted": 4,
+    "questionsAnswered": 0,
+    "averageCompletionTime": 2142.5625,
+    "successRate": 0,
+    "adaptationImprovements": 0,
+    "qualityScore": 0
+  },
+  "adaptations": []
+}

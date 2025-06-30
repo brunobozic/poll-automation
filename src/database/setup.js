@@ -1,7 +1,8 @@
+const { getDatabaseManager } = require('./database-manager.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, '../../data/polls.db');
+const DB_PATH = path.join(__dirname, '../../poll-automation.db');
 
 const createTables = () => {
   return new Promise((resolve, reject) => {
@@ -120,6 +121,66 @@ const createTables = () => {
         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (poll_session_id) REFERENCES poll_sessions (id)
       );
+
+      CREATE TABLE IF NOT EXISTS page_analysis (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id TEXT NOT NULL,
+        url TEXT NOT NULL,
+        title TEXT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        
+        -- Question detection results
+        questions_found INTEGER DEFAULT 0,
+        question_details TEXT, -- JSON array of question data
+        
+        -- Page structure analysis
+        page_structure TEXT, -- Complete JSON analysis
+        total_forms INTEGER DEFAULT 0,
+        total_inputs INTEGER DEFAULT 0,
+        total_buttons INTEGER DEFAULT 0,
+        
+        -- Input type breakdown
+        input_radio INTEGER DEFAULT 0,
+        input_checkbox INTEGER DEFAULT 0,
+        input_text INTEGER DEFAULT 0,
+        input_email INTEGER DEFAULT 0,
+        input_select INTEGER DEFAULT 0,
+        input_textarea INTEGER DEFAULT 0,
+        input_submit INTEGER DEFAULT 0,
+        
+        -- Content analysis
+        body_text_length INTEGER DEFAULT 0,
+        question_marks_count INTEGER DEFAULT 0,
+        heading_count INTEGER DEFAULT 0,
+        paragraph_count INTEGER DEFAULT 0,
+        
+        -- Survey indicators
+        question_classes INTEGER DEFAULT 0,
+        field_classes INTEGER DEFAULT 0,
+        survey_classes INTEGER DEFAULT 0,
+        poll_classes INTEGER DEFAULT 0,
+        form_groups INTEGER DEFAULT 0,
+        
+        -- Page state
+        has_error_messages BOOLEAN DEFAULT FALSE,
+        has_loading_elements BOOLEAN DEFAULT FALSE,
+        has_success_messages BOOLEAN DEFAULT FALSE,
+        has_modal_dialogs BOOLEAN DEFAULT FALSE,
+        
+        -- Sample content for debugging
+        first_paragraph TEXT,
+        first_heading TEXT,
+        body_start TEXT, -- First 500 chars
+        visible_forms TEXT, -- Sample form HTML
+        
+        -- Analysis metadata
+        analysis_success BOOLEAN DEFAULT TRUE,
+        analysis_error TEXT,
+        
+        -- Performance tracking
+        analysis_duration_ms INTEGER,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `;
 
     db.exec(schema, (err) => {
@@ -208,4 +269,24 @@ if (require.main === module) {
   setupDatabase();
 }
 
-module.exports = { setupDatabase, DB_PATH };
+class DatabaseSetup {
+    constructor() {
+        this.dbPath = DB_PATH;
+    }
+    
+    async setupDatabase() {
+        return setupDatabase();
+    }
+    
+    async createTables() {
+        return createTables();
+    }
+    
+    async insertSampleData() {
+        return insertSampleData();
+    }
+}
+
+module.exports = DatabaseSetup;
+module.exports.setupDatabase = setupDatabase;
+module.exports.DB_PATH = DB_PATH;

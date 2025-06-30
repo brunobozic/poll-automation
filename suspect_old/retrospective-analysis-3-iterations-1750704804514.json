@@ -1,0 +1,80 @@
+{
+  "timestamp": "2025-06-23T18:53:24.513Z",
+  "totalIterations": 3,
+  "overallMetrics": {
+    "totalSitesAnalyzed": 15,
+    "totalExecutionTime": 11711,
+    "totalKnowledgeDistilled": 75,
+    "averageSitesPerIteration": 5,
+    "averageTimePerIteration": 3903.6666666666665,
+    "averageKnowledgePerIteration": 25
+  },
+  "learningEvolution": {
+    "learningRateProgression": [
+      1.3162224415926291,
+      1.0757314974182446,
+      1.4910536779324055
+    ],
+    "learningRateImprovement": 0.1328280318091451,
+    "knowledgeAccumulationRate": [
+      12,
+      29,
+      34
+    ]
+  },
+  "velocityTrends": {
+    "averageTimeProgression": [
+      759.5,
+      929.4,
+      670.3333333333334
+    ],
+    "velocityImprovement": 0.11740179942944914,
+    "velocityConsistency": 107.46174628015423
+  },
+  "knowledgeAccumulation": {
+    "knowledgeByType": {
+      "site_patterns": 40,
+      "velocity_optimizations": 15,
+      "success_strategies": 20
+    },
+    "totalKnowledgeTypes": 3,
+    "knowledgeDiversity": 0.04
+  },
+  "accelerationInsights": {
+    "totalOpportunities": 4,
+    "opportunitiesByType": {
+      "pattern_optimization": 2,
+      "learning_acceleration": 2
+    },
+    "topAccelerationTargets": [
+      {
+        "type": "pattern_optimization",
+        "count": 2
+      },
+      {
+        "type": "learning_acceleration",
+        "count": 2
+      }
+    ]
+  },
+  "futureOptimizations": [
+    {
+      "category": "velocity",
+      "optimization": "Implement parallel site analysis",
+      "expectedImprovement": "8.5x speed increase",
+      "priority": "high"
+    },
+    {
+      "category": "learning",
+      "optimization": "Deploy meta-learning knowledge graphs",
+      "expectedImprovement": "0.1x learning acceleration",
+      "priority": "high"
+    },
+    {
+      "category": "knowledge",
+      "optimization": "Implement predictive knowledge application",
+      "expectedImprovement": "6 knowledge patterns predicted",
+      "priority": "medium"
+    }
+  ]
+}

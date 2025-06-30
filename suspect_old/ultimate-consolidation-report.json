@@ -1,0 +1,678 @@
+{
+  "consolidationDate": "2025-06-24T07:13:35.448Z",
+  "sourceFiles": [
+    "backup-dbs-1750711218160/ai-optimized-registration.db",
+    "backup-dbs-1750711218160/complete-attack-system.db",
+    "backup-dbs-1750711218160/complete-correlation.db",
+    "backup-dbs-1750711218160/distilled-knowledge.db",
+    "backup-dbs-1750711218160/email-proof.db",
+    "backup-dbs-1750711218160/enhanced-poll-automation.db",
+    "backup-dbs-1750711218160/focused-correlation.db",
+    "backup-dbs-1750711218160/meta-learning-graph.db",
+    "backup-dbs-1750711218160/poll-automation.db",
+    "backup-dbs-1750711218160/polls-dev.db",
+    "backup-dbs-1750711218160/polls.db",
+    "backup-dbs-1750711218160/real-survey-registration.db",
+    "backup-dbs-1750711218160/realistic-registration.db",
+    "backup-dbs-1750711218160/registrations.db",
+    "backup-dbs-1750711218160/simple-survey-test.db",
+    "backup-dbs-1750711218160/test-end-to-end.db",
+    "backup-dbs-1750711218160/test-registrations.db",
+    "backup-dbs-1750711218160/unified-poll-automation.db",
+    "data/polls.db",
+    "data/registrations.db",
+    "poll-automation.db"
+  ],
+  "statistics": {
+    "totalDatabases": 21,
+    "originalTables": 70,
+    "originalRecords": 1250,
+    "consolidatedTables": 70,
+    "consolidatedRecords": 584,
+    "schemaConflicts": 22,
+    "dataLoss": 0,
+    "duplicatesRemoved": 738
+  },
+  "finalCounts": {
+    "email_accounts": 11,
+    "registration_attempts": 0,
+    "registration_steps": 53,
+    "form_interactions": 12,
+    "ai_interactions": 0,
+    "system_events": 107,
+    "performance_metrics": 12,
+    "detection_events": 13,
+    "registration_questions": 12,
+    "user_profiles": 5,
+    "survey_sites": 0,
+    "site_defenses": 4,
+    "site_questions": 7,
+    "distilled_site_patterns": 0,
+    "distilled_form_structures": 0,
+    "distilled_error_solutions": 0,
+    "distilled_success_strategies": 0,
+    "distilled_platform_behaviors": 0,
+    "distilled_automation_rules": 0,
+    "distilled_meta_learning": 0,
+    "distilled_velocity_optimizations": 0,
+    "knowledge_relationships": 0,
+    "knowledge_usage_analytics": 0,
+    "knowledge_validation": 0,
+    "knowledge_nodes": 0,
+    "learning_paths": 0,
+    "pattern_predictions": 0,
+    "meta_learning_insights": 0,
+    "knowledge_clusters": 0,
+    "poll_sites": 1,
+    "credentials": 0,
+    "sessions": 0,
+    "polls": 0,
+    "logs": 26,
+    "poll_sessions": 0,
+    "question_responses": 0,
+    "poll_errors": 0,
+    "registration_failures": 0,
+    "llm_insights": 35,
+    "failure_scenarios": 1,
+    "failure_analysis": 1,
+    "improvement_recommendations": 1,
+    "reproduction_tests": 0,
+    "feedback_loop_metrics": 0,
+    "learning_patterns": 1,
+    "fix_implementations": 0,
+    "page_analysis": 49,
+    "enhanced_failure_analysis": 2,
+    "failure_recommendations": 2,
+    "failure_patterns": 1,
+    "predictive_insights": 2,
+    "performance_analytics": 22,
+    "migrations": 6,
+    "form_analysis_sessions": 5,
+    "llm_prompt_templates": 1,
+    "llm_response_analysis": 0,
+    "prompt_optimization_experiments": 0,
+    "field_identification_accuracy": 0,
+    "llm_comprehension_issues": 0,
+    "prompt_effectiveness_metrics": 0,
+    "learning_iterations": 4,
+    "survey_discovery_analytics": 1,
+    "platform_behavior_intelligence": 0,
+    "form_complexity_intelligence": 0,
+    "predictive_model_analytics": 0,
+    "adaptive_strategy_analytics": 0,
+    "agent_prompt_analytics": 0,
+    "learning_pattern_analytics": 0,
+    "cross_iteration_insights": 1,
+    "database_migrations": 6
+  },
+  "totalFinalRecords": 404,
+  "recoveryRate": 32.32,
+  "schemaConflicts": [
+    {
+      "tableName": "knowledge_relationships",
+      "existingSource": "backup-dbs-1750711218160/distilled-knowledge.db",
+      "currentSource": "backup-dbs-1750711218160/meta-learning-graph.db",
+      "onlyInExisting": [
+        "source_knowledge_id:TEXT",
+        "source_knowledge_type:TEXT",
+        "target_knowledge_id:TEXT",
+        "target_knowledge_type:TEXT",
+        "relationship_data:TEXT"
+      ],
+      "onlyInCurrent": [
+        "source_node_id:TEXT",
+        "target_node_id:TEXT",
+        "confidence_score:REAL",
+        "evidence_count:INTEGER",
+        "creation_context:TEXT",
+        "validation_status:TEXT",
+        "last_validated:DATETIME"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "ai_interactions",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "backup-dbs-1750711218160/polls.db",
+      "onlyInExisting": [],
+      "onlyInCurrent": [
+        "interaction_type:TEXT",
+        "prompt_length:INTEGER",
+        "response_length:INTEGER",
+        "input_tokens:INTEGER",
+        "output_tokens:INTEGER",
+        "created_at:DATETIME",
+        "confidence_score:REAL",
+        "response_quality_score:REAL"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "ai_interactions",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "backup-dbs-1750711218160/registrations.db",
+      "onlyInExisting": [],
+      "onlyInCurrent": [
+        "interaction_type:TEXT",
+        "prompt_length:INTEGER",
+        "response_length:INTEGER",
+        "input_tokens:INTEGER",
+        "output_tokens:INTEGER",
+        "created_at:DATETIME",
+        "confidence_score:REAL",
+        "response_quality_score:REAL"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "ai_interactions",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "data/polls.db",
+      "onlyInExisting": [],
+      "onlyInCurrent": [
+        "interaction_type:TEXT",
+        "prompt_length:INTEGER",
+        "response_length:INTEGER",
+        "input_tokens:INTEGER",
+        "output_tokens:INTEGER",
+        "created_at:DATETIME",
+        "confidence_score:REAL",
+        "response_quality_score:REAL"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "ai_interactions",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "data/registrations.db",
+      "onlyInExisting": [],
+      "onlyInCurrent": [
+        "interaction_type:TEXT",
+        "prompt_length:INTEGER",
+        "response_length:INTEGER",
+        "input_tokens:INTEGER",
+        "output_tokens:INTEGER",
+        "created_at:DATETIME",
+        "confidence_score:REAL",
+        "response_quality_score:REAL"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "email_accounts",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "session_id:TEXT",
+        "verified_at:DATETIME",
+        "status:TEXT",
+        "verification_attempts:INTEGER",
+        "last_checked:DATETIME",
+        "metadata:TEXT",
+        "notes:TEXT"
+      ],
+      "onlyInCurrent": [
+        "username:TEXT",
+        "inbox_url:TEXT",
+        "service_specific_data:JSON",
+        "is_verified:BOOLEAN",
+        "is_active:BOOLEAN",
+        "daily_usage_count:INTEGER",
+        "last_used_date:DATE",
+        "updated_at:DATETIME"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "survey_sites",
+      "existingSource": "backup-dbs-1750711218160/complete-attack-system.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "site_name:TEXT",
+        "base_url:TEXT",
+        "registration_url:TEXT",
+        "site_category:TEXT",
+        "first_visited:DATETIME",
+        "last_visited:DATETIME",
+        "visit_count:INTEGER",
+        "successful_registrations:INTEGER",
+        "failed_registrations:INTEGER",
+        "total_questions:INTEGER",
+        "average_complexity:REAL",
+        "yield_potential:REAL",
+        "accessibility_score:REAL",
+        "status:TEXT"
+      ],
+      "onlyInCurrent": [
+        "name:TEXT",
+        "url:TEXT",
+        "domain:TEXT",
+        "category:TEXT",
+        "difficulty_level:INTEGER",
+        "anti_bot_measures:JSON",
+        "success_rate:REAL",
+        "total_attempts:INTEGER",
+        "successful_attempts:INTEGER",
+        "last_successful_attempt:DATETIME",
+        "site_intelligence:JSON",
+        "form_structure:JSON",
+        "is_active:BOOLEAN",
+        "created_at:DATETIME",
+        "updated_at:DATETIME"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "registration_attempts",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "target_site:TEXT",
+        "target_url:TEXT",
+        "status:TEXT",
+        "current_step:TEXT",
+        "ip_address:TEXT"
+      ],
+      "onlyInCurrent": [
+        "site_id:INTEGER",
+        "attempt_date:DATETIME",
+        "error_category:TEXT",
+        "step_reached:INTEGER",
+        "execution_time_ms:INTEGER",
+        "proxy_used:TEXT",
+        "fingerprint_data:JSON",
+        "automation_metadata:JSON",
+        "verification_required:BOOLEAN",
+        "verification_completed:BOOLEAN",
+        "verification_method:TEXT",
+        "site_url:TEXT",
+        "site_name:TEXT",
+        "failure_reason:TEXT",
+        "duration_seconds:INTEGER"
+      ],
+      "canMerge": false
+    },
+    {
+      "tableName": "registration_steps",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "step_type:TEXT",
+        "started_at:DATETIME",
+        "completed_at:DATETIME",
+        "status:TEXT",
+        "input_data:TEXT",
+        "output_data:TEXT",
+        "ai_analysis:TEXT",
+        "error_details:TEXT"
+      ],
+      "onlyInCurrent": [
+        "step_status:TEXT",
+        "start_time:DATETIME",
+        "end_time:DATETIME",
+        "action_details:JSON",
+        "page_url:TEXT",
+        "page_title:TEXT",
+        "error_details:JSON",
+        "ai_reasoning:TEXT",
+        "retry_count:INTEGER"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "form_interactions",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "step_id:INTEGER",
+        "input_value:TEXT",
+        "ai_generated:BOOLEAN",
+        "success:BOOLEAN",
+        "error_message:TEXT"
+      ],
+      "onlyInCurrent": [
+        "registration_id:INTEGER",
+        "field_label:TEXT",
+        "expected_value:TEXT",
+        "actual_value:TEXT",
+        "interaction_success:BOOLEAN",
+        "is_honeypot:BOOLEAN",
+        "is_required:BOOLEAN",
+        "validation_error:TEXT",
+        "ai_confidence:REAL",
+        "ai_reasoning:TEXT",
+        "retry_count:INTEGER"
+      ],
+      "canMerge": false
+    },
+    {
+      "tableName": "registration_questions",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "field_selector:TEXT",
+        "ai_generated:BOOLEAN",
+        "demographic_category:TEXT",
+        "yield_optimization_factor:REAL"
+      ],
+      "onlyInCurrent": [
+        "answer_type:TEXT",
+        "available_options:JSON",
+        "is_required:BOOLEAN",
+        "confidence_score:REAL"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "user_profiles",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "registration_id:INTEGER",
+        "email_id:INTEGER",
+        "age:INTEGER",
+        "gender:TEXT",
+        "income_bracket:TEXT",
+        "education_level:TEXT",
+        "occupation:TEXT",
+        "location_city:TEXT",
+        "location_state:TEXT",
+        "location_country:TEXT",
+        "marital_status:TEXT",
+        "household_size:INTEGER",
+        "interests:TEXT",
+        "ai_optimization_score:REAL",
+        "yield_prediction:REAL",
+        "demographic_balance_score:REAL"
+      ],
+      "onlyInCurrent": [
+        "demographic_data:JSON",
+        "interests:JSON",
+        "behavioral_pattern:TEXT",
+        "usage_frequency:TEXT",
+        "success_rate:REAL",
+        "total_uses:INTEGER",
+        "is_active:BOOLEAN",
+        "updated_at:DATETIME"
+      ],
+      "canMerge": false
+    },
+    {
+      "tableName": "ai_interactions",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "step_id:INTEGER",
+        "prompt:TEXT",
+        "response:TEXT",
+        "cost_usd:DECIMAL(10, 6)"
+      ],
+      "onlyInCurrent": [
+        "interaction_type:TEXT",
+        "prompt_text:TEXT",
+        "response_text:TEXT",
+        "cost_usd:REAL",
+        "confidence_score:REAL",
+        "form_analysis_context:JSON",
+        "input_field_mapping:JSON",
+        "selector_accuracy_score:REAL",
+        "honeypot_detection_accuracy:REAL",
+        "field_identification_errors:JSON",
+        "prompt_version:TEXT",
+        "response_quality_score:REAL"
+      ],
+      "canMerge": false
+    },
+    {
+      "tableName": "failure_scenarios",
+      "existingSource": "backup-dbs-1750711218160/polls.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "first_occurrence:TIMESTAMP",
+        "last_occurrence:TIMESTAMP",
+        "reproduction_recipe:TEXT",
+        "browser_state:TEXT",
+        "automation_state:TEXT",
+        "llm_interaction_chain:TEXT",
+        "defense_context:TEXT",
+        "environment_data:TEXT",
+        "created_at:TIMESTAMP",
+        "updated_at:TIMESTAMP",
+        "resolved_at:TIMESTAMP"
+      ],
+      "onlyInCurrent": [
+        "first_occurrence:DATETIME",
+        "last_occurrence:DATETIME",
+        "reproduction_recipe:JSON",
+        "browser_state:JSON",
+        "automation_state:JSON",
+        "llm_interaction_chain:JSON",
+        "defense_context:JSON",
+        "environment_data:JSON",
+        "is_resolved:BOOLEAN",
+        "created_at:DATETIME",
+        "updated_at:DATETIME"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "failure_analysis",
+      "existingSource": "backup-dbs-1750711218160/polls.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "analysis_version:TEXT",
+        "similar_failures:TEXT",
+        "pattern_insights:TEXT",
+        "affected_site_types:TEXT",
+        "impact_assessment:TEXT",
+        "business_impact_score:REAL",
+        "technical_debt_score:REAL",
+        "llm_model_used:TEXT",
+        "analysis_cost_usd:REAL",
+        "created_at:TIMESTAMP",
+        "analyst_type:TEXT",
+        "review_status:TEXT",
+        "reviewer_notes:TEXT"
+      ],
+      "onlyInCurrent": [
+        "similar_failures:JSON",
+        "pattern_insights:JSON",
+        "impact_assessment:JSON",
+        "created_at:DATETIME"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "improvement_recommendations",
+      "existingSource": "backup-dbs-1750711218160/polls.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "target_files:TEXT",
+        "code_examples:TEXT",
+        "configuration_changes:TEXT",
+        "test_scenarios:TEXT",
+        "regression_risks:TEXT",
+        "github_issue_template:TEXT",
+        "implementation_checklist:TEXT",
+        "created_at:TIMESTAMP",
+        "implemented_at:TIMESTAMP",
+        "implementation_result:TEXT",
+        "effectiveness_score:REAL",
+        "rollback_instructions:TEXT"
+      ],
+      "onlyInCurrent": [
+        "status:TEXT",
+        "implemented_at:DATETIME",
+        "created_at:DATETIME"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "reproduction_tests",
+      "existingSource": "backup-dbs-1750711218160/polls.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "recommendation_id:INTEGER",
+        "test_description:TEXT",
+        "test_category:TEXT",
+        "test_environment:TEXT",
+        "test_dependencies:TEXT",
+        "test_data:TEXT",
+        "setup_code:TEXT",
+        "teardown_code:TEXT",
+        "success_criteria:TEXT",
+        "failure_criteria:TEXT",
+        "last_run_timestamp:TIMESTAMP",
+        "last_run_duration_ms:INTEGER",
+        "last_run_output:TEXT",
+        "last_run_error:TEXT",
+        "success_count:INTEGER",
+        "failure_count:INTEGER",
+        "error_count:INTEGER",
+        "avg_runtime_ms:REAL",
+        "created_at:TIMESTAMP",
+        "updated_at:TIMESTAMP",
+        "test_timeout_ms:INTEGER",
+        "retry_count:INTEGER"
+      ],
+      "onlyInCurrent": [
+        "last_run_at:DATETIME",
+        "success_rate:REAL",
+        "created_at:DATETIME"
+      ],
+      "canMerge": false
+    },
+    {
+      "tableName": "feedback_loop_metrics",
+      "existingSource": "backup-dbs-1750711218160/polls.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "metric_hour:INTEGER",
+        "new_failures:INTEGER",
+        "resolved_failures:INTEGER",
+        "recurring_failures:INTEGER",
+        "high_priority_recommendations:INTEGER",
+        "implemented_fixes:INTEGER",
+        "successful_fixes:INTEGER",
+        "failed_fixes:INTEGER",
+        "success_rate_improvement:REAL",
+        "avg_analysis_time_ms:INTEGER",
+        "avg_fix_implementation_time_hours:REAL",
+        "avg_test_creation_time_minutes:REAL",
+        "pattern_recognition_accuracy:REAL",
+        "recommendation_effectiveness:REAL",
+        "top_failure_categories:TEXT",
+        "top_affected_sites:TEXT",
+        "emerging_patterns:TEXT",
+        "llm_analysis_cost_usd:REAL",
+        "total_tokens_used:INTEGER",
+        "cost_per_resolution_usd:REAL",
+        "created_at:TIMESTAMP",
+        "updated_at:TIMESTAMP"
+      ],
+      "onlyInCurrent": [
+        "total_registrations:INTEGER",
+        "successful_registrations:INTEGER",
+        "implemented_improvements:INTEGER",
+        "ai_tokens_used:INTEGER",
+        "ai_cost_usd:REAL",
+        "average_success_rate:REAL",
+        "created_at:DATETIME",
+        "updated_at:DATETIME"
+      ],
+      "canMerge": false
+    },
+    {
+      "tableName": "site_defenses",
+      "existingSource": "backup-dbs-1750711218160/complete-attack-system.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "registration_id:INTEGER",
+        "defense_subtype:TEXT",
+        "severity_level:INTEGER",
+        "detected_at:DATETIME",
+        "description:TEXT",
+        "bypass_attempted:BOOLEAN",
+        "bypass_successful:BOOLEAN",
+        "bypass_method:TEXT",
+        "detection_details:TEXT",
+        "screenshot_path:TEXT"
+      ],
+      "onlyInCurrent": [
+        "defense_description:TEXT",
+        "detection_method:TEXT",
+        "first_detected:DATETIME",
+        "last_encountered:DATETIME",
+        "encounter_count:INTEGER",
+        "bypass_success_rate:REAL",
+        "bypass_methods:JSON",
+        "difficulty_score:INTEGER",
+        "is_active:BOOLEAN",
+        "notes:TEXT"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "site_questions",
+      "existingSource": "backup-dbs-1750711218160/complete-attack-system.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "question_type:TEXT",
+        "field_name:TEXT",
+        "demographic_category:TEXT",
+        "has_options:BOOLEAN",
+        "question_options:TEXT",
+        "frequency_seen:INTEGER",
+        "yield_importance:REAL"
+      ],
+      "onlyInCurrent": [
+        "question_hash:TEXT",
+        "question_category:TEXT",
+        "field_type:TEXT",
+        "available_options:JSON",
+        "appearance_frequency:INTEGER",
+        "best_answers:JSON",
+        "ai_analysis:JSON"
+      ],
+      "canMerge": true
+    },
+    {
+      "tableName": "detection_events",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "detection_type:TEXT",
+        "severity_level:INTEGER",
+        "detected_at:DATETIME",
+        "details:TEXT",
+        "countermeasure_applied:TEXT"
+      ],
+      "onlyInCurrent": [
+        "site_id:INTEGER",
+        "event_type:TEXT",
+        "detection_signal:TEXT",
+        "response_action:TEXT",
+        "success:BOOLEAN",
+        "event_timestamp:DATETIME",
+        "session_data:JSON",
+        "countermeasure_used:TEXT"
+      ],
+      "canMerge": false
+    },
+    {
+      "tableName": "system_events",
+      "existingSource": "backup-dbs-1750711218160/ai-optimized-registration.db",
+      "currentSource": "poll-automation.db",
+      "onlyInExisting": [
+        "event_data:TEXT",
+        "message:TEXT"
+      ],
+      "onlyInCurrent": [
+        "event_category:TEXT",
+        "event_message:TEXT",
+        "event_data:JSON"
+      ],
+      "canMerge": true
+    }
+  ]
+}

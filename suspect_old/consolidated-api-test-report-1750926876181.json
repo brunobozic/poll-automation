@@ -1,0 +1,38 @@
+{
+  "summary": {
+    "apiBaseUrl": "http://localhost:3000",
+    "totalDuration": 286622,
+    "totalSuites": 3,
+    "successfulSuites": 2,
+    "failedSuites": 1,
+    "successRate": 66.66666666666666,
+    "overallSuccess": false
+  },
+  "suites": [
+    {
+      "name": "Basic Functionality Tests",
+      "script": "./test-api-workflow.js",
+      "duration": 65589,
+      "success": true,
+      "error": null
+    },
+    {
+      "name": "Performance Tests",
+      "script": "./test-api-performance.js",
+      "duration": 90191,
+      "success": false,
+      "error": "Script exited with code 1"
+    },
+    {
+      "name": "Integration Tests",
+      "script": "./test-api-integration.js",
+      "duration": 120763,
+      "success": true,
+      "error": null
+    }
+  ],
+  "recommendations": [
+    "Optimize API performance - check database queries and processing logic"
+  ],
+  "timestamp": "2025-06-26T08:34:36.181Z"
+}

@@ -1,0 +1,112 @@
+{
+  "summary": {
+    "totalDuration": 120636,
+    "workflowTests": 3,
+    "successfulWorkflows": 0,
+    "failedWorkflows": 3,
+    "successRate": 0
+  },
+  "sessionData": {
+    "emails": [],
+    "personas": [],
+    "registrations": [],
+    "surveys": [],
+    "automationJobs": []
+  },
+  "testResults": {
+    "workflows": [
+      {
+        "name": "Complete Workflow Chain",
+        "startTime": 1750926755533,
+        "steps": [],
+        "success": false,
+        "data": {},
+        "error": "timeout of 45000ms exceeded",
+        "endTime": 1750926801111,
+        "duration": 45578
+      },
+      {
+        "name": "Full Automation Pipeline",
+        "startTime": 1750926831138,
+        "configurations": [],
+        "success": false,
+        "error": "Request failed with status code 400",
+        "endTime": 1750926831144,
+        "duration": 6
+      },
+      {
+        "name": "Concurrent Workflows",
+        "startTime": 1750926831150,
+        "workflows": [
+          {
+            "workflowId": 1,
+            "success": false,
+            "error": "timeout of 45000ms exceeded"
+          },
+          {
+            "workflowId": 2,
+            "success": false,
+            "error": "timeout of 45000ms exceeded"
+          },
+          {
+            "workflowId": 3,
+            "success": false,
+            "error": "timeout of 45000ms exceeded"
+          }
+        ],
+        "success": false,
+        "endTime": 1750926876168,
+        "duration": 45018
+      },
+      {
+        "name": "Resource Cleanup",
+        "dataGenerated": {
+          "emails": 0,
+          "personas": 0,
+          "registrations": 0,
+          "surveys": 0
+        },
+        "success": true,
+        "details": "Resource tracking functional, cleanup endpoints would be tested here"
+      }
+    ],
+    "dataCorrelation": [
+      {
+        "name": "Data Persistence Correlation",
+        "startTime": 1750926801112,
+        "checks": [],
+        "success": false,
+        "error": "timeout of 30000ms exceeded",
+        "endTime": 1750926831138,
+        "duration": 30026
+      }
+    ],
+    "errorRecovery": [
+      {
+        "name": "Error Recovery and Retry",
+        "startTime": 1750926831144,
+        "scenarios": [
+          {
+            "scenario": "invalid_input",
+            "success": true,
+            "details": "Properly rejected invalid input with 400 status"
+          },
+          {
+            "scenario": "timeout_handling",
+            "success": true,
+            "details": "Timeout properly detected and handled"
+          },
+          {
+            "scenario": "resource_limits",
+            "success": true,
+            "details": "Resource limits properly enforced"
+          }
+        ],
+        "success": true,
+        "endTime": 1750926831150,
+        "duration": 6
+      }
+    ]
+  },
+  "timestamp": "2025-06-26T08:34:36.169Z"
+}

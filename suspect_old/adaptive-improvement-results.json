@@ -1,0 +1,62 @@
+{
+  "healthCheck": {
+    "totalUrls": 5,
+    "healthyUrls": 3,
+    "unhealthyUrls": 2,
+    "healthRate": "60.0",
+    "report": {
+      "timestamp": "2025-06-23T14:19:29.443Z",
+      "summary": {
+        "total": 5,
+        "healthy": 3,
+        "healthRate": "60.0"
+      },
+      "healthyUrls": 3,
+      "unhealthyUrls": 2,
+      "recommendations": [
+        "🔗 Many 404 errors - update URL sources to remove dead links"
+      ],
+      "failureReasons": {
+        "HTTP 404 error": 1,
+        "Unknown failure": 1
+      }
+    }
+  },
+  "questionDetection": {
+    "questionsFound": 1,
+    "successfulStrategy": "traditional_form_detection",
+    "strategiesUsed": 1,
+    "fallbacksAttempted": 0
+  },
+  "patternPrioritization": {
+    "prioritizedSurveys": 8,
+    "topPriority": {
+      "url": "https://surveyplanet.com",
+      "platform": "SurveyPlanet",
+      "type": "homepage_form",
+      "confidence": 1,
+      "lastTested": "2025-06-23T14:19:29.444Z",
+      "characteristics": [
+        "simple_single_input",
+        "fast_loading",
+        "clear_submit_button",
+        "url_change_success"
+      ],
+      "priority": 1,
+      "reason": "Previously successful"
+    },
+    "recommendations": [
+      "🏢 Focus on SurveyPlanet platform (score: 10/10)",
+      "📝 Prioritize homepage_form type surveys (score: 10/10)",
+      "✅ Test variations of known working surveys first"
+    ]
+  },
+  "overallImprovement": {
+    "prioritizedSurveys": 3,
+    "healthyUrls": 2,
+    "questionsDetected": 1,
+    "questionsFilled": 1,
+    "successfulStrategy": "traditional_form_detection",
+    "complete": true
+  }
+}

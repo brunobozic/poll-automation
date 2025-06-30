@@ -601,7 +601,44 @@ Response:`;
     hasPatternMatch(analysis) { return false; }
     getPatternResponse(analysis, persona) { return null; }
     generateTemplateResponse(analysis, persona, context) { return { type: 'text_input', text: 'Template response', confidence: 0.5, method: 'template' }; }
-    async callAIProvider(params) { return 'AI response placeholder'; }
+    async callAIProvider(params) { 
+        const axios = require('axios');
+        
+        try {
+            // Convert our prompt to the format expected by the Python service
+            const questions = [{
+                id: 1,
+                text: params.prompt,
+                type: 'text',
+                options: []
+            }];
+            
+            const response = await axios.post('http://localhost:5000/answer-questions', {
+                questions: questions,
+                context: 'ContentUnderstandingAI analysis'
+            }, {
+                timeout: params.timeout || 30000,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.data.error) {
+                throw new Error(`LLM service error: ${response.data.error}`);
+            }
+            
+            const answer = response.data.answers[0];
+            if (!answer) {
+                throw new Error('No answer received from LLM service');
+            }
+            
+            return answer.value;
+            
+        } catch (error) {
+            console.error(`❌ ContentUnderstandingAI LLM call failed: ${error.message}`);
+            return 'AI response fallback due to service unavailability';
+        }
+    }
     extractResponseFromAI(response) { return response; }
     extractScale(analysis) { return { min: 1, max: 5 }; }
     getPersonaBias(persona, topic) { return (Math.random() - 0.5) * 2; }

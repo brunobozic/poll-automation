@@ -11,6 +11,32 @@ const ContextualDataGenerator = require('./contextual-data-generator');
 const PersonaConsistencyTracker = require('../database/persona-consistency-tracker');
 
 class UniversalFormAutomator {
+    
+    /**
+     * Initialize the Universal Form Automator
+     */
+    async initialize() {
+        this.log('🚀 Initializing Universal Form Automator...');
+        
+        if (this.contentAI && typeof this.contentAI.initialize === 'function') {
+            await this.contentAI.initialize();
+        }
+        
+        if (this.formFiller && typeof this.formFiller.initialize === 'function') {
+            await this.formFiller.initialize();
+        }
+        
+        this.initialized = true;
+        this.log('✅ Universal Form Automator initialized successfully');
+        return true;
+    }
+
+    /**
+     * Alias for autoFillForm - required by diagnostic system
+     */
+    async fillForm(page, userData, siteName, options) {
+        return this.autoFillForm(page, userData, siteName, options);
+    }
     constructor(contentAI, options = {}) {
         this.contentAI = contentAI;
         this.options = {

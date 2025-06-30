@@ -1,0 +1,430 @@
+{
+  "platformBehaviors": {
+    "Unknown": {
+      "platform": "Unknown",
+      "avgLoadTime": 771,
+      "commonPatterns": [],
+      "successIndicators": [],
+      "failurePatterns": [],
+      "formStructures": [
+        {
+          "formCount": 0,
+          "inputCount": 0,
+          "hasProgressBar": false
+        },
+        {
+          "formCount": 0,
+          "inputCount": 0,
+          "hasProgressBar": false
+        },
+        {
+          "formCount": 0,
+          "inputCount": 0,
+          "hasProgressBar": false
+        }
+      ],
+      "jsFrameworks": [],
+      "securityMeasures": []
+    },
+    "SurveyMonkey": {
+      "platform": "SurveyMonkey",
+      "avgLoadTime": 373,
+      "commonPatterns": [],
+      "successIndicators": [],
+      "failurePatterns": [],
+      "formStructures": [
+        {
+          "formCount": 0,
+          "inputCount": 0,
+          "hasProgressBar": false
+        },
+        {
+          "formCount": 0,
+          "inputCount": 0,
+          "hasProgressBar": false
+        },
+        {
+          "formCount": 0,
+          "inputCount": 4,
+          "hasProgressBar": false
+        }
+      ],
+      "jsFrameworks": [],
+      "securityMeasures": []
+    },
+    "Typeform": {
+      "platform": "Typeform",
+      "avgLoadTime": 348.3333333333333,
+      "commonPatterns": [],
+      "successIndicators": [],
+      "failurePatterns": [],
+      "formStructures": [
+        {
+          "formCount": 0,
+          "inputCount": 1,
+          "hasProgressBar": true
+        },
+        {
+          "formCount": 0,
+          "inputCount": 1,
+          "hasProgressBar": true
+        },
+        {
+          "formCount": 0,
+          "inputCount": 0,
+          "hasProgressBar": false
+        }
+      ],
+      "jsFrameworks": [
+        "jQuery",
+        "jQuery"
+      ],
+      "securityMeasures": []
+    },
+    "JotForm": {
+      "platform": "JotForm",
+      "avgLoadTime": 385.5,
+      "commonPatterns": [],
+      "successIndicators": [],
+      "failurePatterns": [
+        "page.goto: net::ERR_ABORTED at https://region1.google-analytics.com/g/collect?v=2&tid=G-6L93NJ9EPN&gtm=45je56k1h2v9184510642za200&_p=1750703439176&gcd=13l3l3l2l1l1&npa=1&dma_cps=syphamo&dma=1&tag_exp=101509157~103116026~103200004~103233427~103351869~103351871~104573694~104684204~104684207~104718208~104791498~104791500&cid=1299804136.1750703439&ul=en-us&sr=1280x720&uaa=x86&uab=64&uafvl=Not)A%253BBrand%3B8.0.0.0%7CChromium%3B138.0.7204.15&uamb=0&uam=&uap=Windows&uapv=10.0&uaw=0&are=1&frm=0&pscdl=noapi&_s=1&sid=1750703439&sct=1&seg=0&dl=https%3A%2F%2Fwww.jotform.com%2Fform-templates%2Fsurvey&dt=Sorry%2C%20we%20couldn%E2%80%99t%20find%20that%20page&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=920\nCall log:\n\u001b[2m  - navigating to \"https://region1.google-analytics.com/g/collect?v=2&tid=G-6L93NJ9EPN&gtm=45je56k1h2v9184510642za200&_p=1750703439176&gcd=13l3l3l2l1l1&npa=1&dma_cps=syphamo&dma=1&tag_exp=101509157~103116026~103200004~103233427~103351869~103351871~104573694~104684204~104684207~104718208~104791498~104791500&cid=1299804136.1750703439&ul=en-us&sr=1280x720&uaa=x86&uab=64&uafvl=Not)A%253BBrand%3B8.0.0.0%7CChromium%3B138.0.7204.15&uamb=0&uam=&uap=Windows&uapv=10.0&uaw=0&are=1&frm=0&pscdl=noapi&_s=1&sid=1750703439&sct=1&seg=0&dl=https%3A%2F%2Fwww.jotform.com%2Fform-templates%2Fsurvey&dt=Sorry%2C%20we%20couldn%E2%80%99t%20find%20that%20page&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=920\", waiting until \"domcontentloaded\"\u001b[22m\n"
+      ],
+      "formStructures": [
+        {
+          "formCount": 0,
+          "inputCount": 0,
+          "hasProgressBar": false
+        },
+        {
+          "formCount": 0,
+          "inputCount": 0,
+          "hasProgressBar": false
+        }
+      ],
+      "jsFrameworks": [],
+      "securityMeasures": []
+    },
+    "Formstack": {
+      "platform": "Formstack",
+      "avgLoadTime": 657.5,
+      "commonPatterns": [],
+      "successIndicators": [],
+      "failurePatterns": [
+        "page.goto: net::ERR_FILE_NOT_FOUND at blob:https://webflow-prod.formstack.com/6c5b3f3d-cc75-4134-825c-7339eb01cdd5\nCall log:\n\u001b[2m  - navigating to \"blob:https://webflow-prod.formstack.com/6c5b3f3d-cc75-4134-825c-7339eb01cdd5\", waiting until \"domcontentloaded\"\u001b[22m\n"
+      ],
+      "formStructures": [
+        {
+          "formCount": 2,
+          "inputCount": 39,
+          "hasProgressBar": false
+        },
+        {
+          "formCount": 2,
+          "inputCount": 42,
+          "hasProgressBar": false
+        }
+      ],
+      "jsFrameworks": [
+        "jQuery",
+        "jQuery"
+      ],
+      "securityMeasures": []
+    },
+    "SurveyPlanet": {
+      "platform": "SurveyPlanet",
+      "avgLoadTime": 0,
+      "commonPatterns": [],
+      "successIndicators": [],
+      "failurePatterns": [
+        "page.goto: Navigation to \"https://surveyplanet.com/\" is interrupted by another navigation to \"chrome-error://chromewebdata/\"\nCall log:\n\u001b[2m  - navigating to \"https://surveyplanet.com/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+      ],
+      "formStructures": [],
+      "jsFrameworks": [],
+      "securityMeasures": []
+    }
+  },
+  "surveyPatterns": {},
+  "formComplexities": {
+    "https://www.surveytandem.com/": {
+      "score": 0,
+      "factors": {
+        "elementCount": 0,
+        "hasMultipleChoice": false,
+        "hasTextInput": false,
+        "hasDropdowns": false,
+        "hasValidation": false,
+        "isMultiPage": false,
+        "hasDynamicContent": false
+      },
+      "details": {
+        "formCount": 0,
+        "inputCount": 0,
+        "selectCount": 0,
+        "textareaCount": 0,
+        "radioCount": 0,
+        "checkboxCount": 0
+      }
+    },
+    "https://www.surveytandem.com/?ch=1&js=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJKb2tlbiIsImV4cCI6MTc1MDcxMDQ3MywiaWF0IjoxNzUwNzAzMjczLCJpc3MiOiJKb2tlbiIsImpzIjoxLCJqdGkiOiIzMTVydW1nbXE1Y2xtODI1Nm8wNGx1Z3AiLCJuYmYiOjE3NTA3MDMyNzMsInRzIjoxNzUwNzAzMjczODE0MzE2fQ.SEBt3uXlLLSdFjXoPDsKHrI48np697rylq4oSazYL2U&sid=c6eecda4-505f-11f0-8d22-10ff10f0bd4a": {
+      "score": 0,
+      "factors": {
+        "elementCount": 0,
+        "hasMultipleChoice": false,
+        "hasTextInput": false,
+        "hasDropdowns": false,
+        "hasValidation": false,
+        "isMultiPage": false,
+        "hasDynamicContent": false
+      },
+      "details": {
+        "formCount": 0,
+        "inputCount": 0,
+        "selectCount": 0,
+        "textareaCount": 0,
+        "radioCount": 0,
+        "checkboxCount": 0
+      }
+    },
+    "http://ww1.surveytandem.com/?subid1=c6eecda4-505f-11f0-8d22-10ff10f0bd4a": {
+      "score": 0,
+      "factors": {
+        "elementCount": 0,
+        "hasMultipleChoice": false,
+        "hasTextInput": false,
+        "hasDropdowns": false,
+        "hasValidation": false,
+        "isMultiPage": false,
+        "hasDynamicContent": false
+      },
+      "details": {
+        "formCount": 0,
+        "inputCount": 0,
+        "selectCount": 0,
+        "textareaCount": 0,
+        "radioCount": 0,
+        "checkboxCount": 0
+      }
+    },
+    "http://ww1.surveytandem.com/munin/a/tr/browserjs?domain=surveytandem.com&toggle=browserjs&uid=MTc1MDcwMzI3NC44OTE1OjlmYzZmZTU5MGVlMDY4OTFjZGE3MGJhY2U2N2EwM2E3MTM1NTAwZWU0NjIxNThlOTVmOTNjNDk0OGM1ODVjNGQ6Njg1OTljYWFkOWE0Mw%3D%3D": {
+      "score": 0,
+      "factors": {
+        "elementCount": 0,
+        "hasMultipleChoice": false,
+        "hasTextInput": false,
+        "hasDropdowns": false,
+        "hasValidation": false,
+        "isMultiPage": false,
+        "hasDynamicContent": false
+      },
+      "details": {
+        "formCount": 0,
+        "inputCount": 0,
+        "selectCount": 0,
+        "textareaCount": 0,
+        "radioCount": 0,
+        "checkboxCount": 0
+      }
+    }
+  },
+  "successPredictors": {
+    "features": [
+      "platform_type",
+      "form_complexity_score",
+      "load_time",
+      "input_count",
+      "has_multiple_choice",
+      "has_validation",
+      "js_framework",
+      "security_measures"
+    ],
+    "weights": {
+      "platform_type": 0.3,
+      "form_complexity_score": 0.2,
+      "load_time": 0.15,
+      "input_count": 0.1,
+      "has_multiple_choice": 0.1,
+      "has_validation": 0.05,
+      "js_framework": 0.05,
+      "security_measures": 0.05
+    },
+    "confidence": 0.8,
+    "predictions": {
+      "https://www.surveytandem.com/": {
+        "score": 0.7,
+        "confidence": 0.7,
+        "factors": {
+          "platform": "Unknown",
+          "platformBehavior": true
+        }
+      },
+      "https://www.surveytandem.com/?ch=1&js=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJKb2tlbiIsImV4cCI6MTc1MDcxMDU5NiwiaWF0IjoxNzUwNzAzMzk2LCJpc3MiOiJKb2tlbiIsImpzIjoxLCJqdGkiOiIzMTVydXRscnQ1aXBldWhpZmMwOWFvZ2kiLCJuYmYiOjE3NTA3MDMzOTYsInRzIjoxNzUwNzAzMzk2ODQzMjA4fQ.uzYXOOup7TMf59NzrjUypz-3wY_mvCJsiAICCuZVVXI&sid=10437e97-5060-11f0-9d71-10ffa5929985": {
+        "score": 0.7,
+        "confidence": 0.7,
+        "factors": {
+          "platform": "Unknown",
+          "platformBehavior": true
+        }
+      },
+      "http://ww1.surveytandem.com/?subid1=10437e97-5060-11f0-9d71-10ffa5929985": {
+        "score": 0.7,
+        "confidence": 0.7,
+        "factors": {
+          "platform": "Unknown",
+          "platformBehavior": true
+        }
+      },
+      "http://ww1.surveytandem.com/munin/a/tr/browserjs?domain=surveytandem.com&toggle=browserjs&uid=MTc1MDcwMzM5OC4yMTc2OjdkMGVkYTA4NDRiZjI4MzA2MTI2M2VhYmE1ZmQ1YzFkNzMyNDAzYjE3YWM4YTJiY2U0NGE5Y2ZkMjQ4ZWRkNTI6Njg1OTlkMjYzNTFlZA%3D%3D": {
+        "score": 0.7,
+        "confidence": 0.7,
+        "factors": {
+          "platform": "Unknown",
+          "platformBehavior": true
+        }
+      },
+      "http://ww1.surveytandem.com/munin/a/ls?t=68599d26&token=d312e4b332aba47030448d31e546471bfcdc3509": {
+        "score": 0.7,
+        "confidence": 0.7,
+        "factors": {
+          "platform": "Unknown",
+          "platformBehavior": true
+        }
+      }
+    },
+    "recommendations": [
+      "Continue learning from platform behaviors",
+      "Expand discovery to academic and government sources"
+    ]
+  },
+  "adaptiveStrategies": {
+    "Unknown_optimized": {
+      "avgLoadTime": 771,
+      "recommendedTimeout": 15000,
+      "jsFrameworks": [],
+      "securityMeasures": [],
+      "approach": {
+        "waitStrategy": "standard",
+        "detectionMethod": [],
+        "fillStrategy": "standard"
+      }
+    },
+    "SurveyMonkey_optimized": {
+      "avgLoadTime": 373,
+      "recommendedTimeout": 15000,
+      "jsFrameworks": [],
+      "securityMeasures": [],
+      "approach": {
+        "waitStrategy": "standard",
+        "detectionMethod": [],
+        "fillStrategy": "standard"
+      }
+    },
+    "Typeform_optimized": {
+      "avgLoadTime": 348.3333333333333,
+      "recommendedTimeout": 15000,
+      "jsFrameworks": [
+        "jQuery",
+        "jQuery"
+      ],
+      "securityMeasures": [],
+      "approach": {
+        "waitStrategy": "standard",
+        "detectionMethod": [],
+        "fillStrategy": "standard"
+      }
+    },
+    "JotForm_optimized": {
+      "avgLoadTime": 385.5,
+      "recommendedTimeout": 15000,
+      "jsFrameworks": [],
+      "securityMeasures": [],
+      "approach": {
+        "waitStrategy": "standard",
+        "detectionMethod": [],
+        "fillStrategy": "standard"
+      }
+    },
+    "Formstack_optimized": {
+      "avgLoadTime": 657.5,
+      "recommendedTimeout": 15000,
+      "jsFrameworks": [
+        "jQuery",
+        "jQuery"
+      ],
+      "securityMeasures": [],
+      "approach": {
+        "waitStrategy": "standard",
+        "detectionMethod": [],
+        "fillStrategy": "standard"
+      }
+    },
+    "SurveyPlanet_optimized": {
+      "avgLoadTime": 0,
+      "recommendedTimeout": 15000,
+      "jsFrameworks": [],
+      "securityMeasures": [],
+      "approach": {
+        "waitStrategy": "standard",
+        "detectionMethod": [],
+        "fillStrategy": "standard"
+      }
+    },
+    "success_pattern_optimization": {
+      "workingPatterns": [
+        "surveyplanet_homepage",
+        "simple_single_input",
+        "fast_loading"
+      ],
+      "failurePatterns": [
+        "404_errors",
+        "timeout_issues",
+        "complex_multi_page"
+      ],
+      "optimizations": [
+        "url_validation",
+        "timeout_adjustment",
+        "retry_logic"
+      ]
+    },
+    "complexity_adaptive": {
+      "averageComplexity": 0,
+      "simpleFormApproach": true,
+      "moderateFormApproach": false,
+      "complexFormApproach": false,
+      "recommendedStrategies": [
+        "rapid_fill",
+        "single_strategy_detection",
+        "fast_submission"
+      ]
+    }
+  },
+  "iterationMetrics": [
+    {
+      "iterationId": 1750701929164,
+      "timestamp": "2025-06-23T18:07:09.961Z",
+      "surveysDiscovered": 25,
+      "adaptationsApplied": 3,
+      "learningsGenerated": 25
+    },
+    {
+      "iterationId": 1750703157548,
+      "timestamp": "2025-06-23T18:27:36.122Z",
+      "surveysDiscovered": 25,
+      "adaptationsApplied": 3,
+      "learningsGenerated": 25
+    },
+    {
+      "iterationId": 1750703270533,
+      "timestamp": "2025-06-23T18:29:37.392Z",
+      "surveysDiscovered": 25,
+      "adaptationsApplied": 3,
+      "learningsGenerated": 25
+    },
+    {
+      "iterationId": 1750703393838,
+      "timestamp": "2025-06-23T18:31:32.919Z",
+      "surveysDiscovered": 25,
+      "adaptationsApplied": 3,
+      "learningsGenerated": 25
+    }
+  ]
+}

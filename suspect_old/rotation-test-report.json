@@ -1,0 +1,258 @@
+{
+  "timestamp": "2025-06-24T18:17:24.048Z",
+  "testResults": {
+    "userAgentRotation": [
+      {
+        "iteration": 1,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap...",
+        "unique": false
+      },
+      {
+        "iteration": 2,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb...",
+        "unique": false
+      },
+      {
+        "iteration": 3,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap...",
+        "unique": false
+      },
+      {
+        "iteration": 4,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb...",
+        "unique": false
+      },
+      {
+        "iteration": 5,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap...",
+        "unique": false
+      },
+      {
+        "iteration": 6,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb...",
+        "unique": false
+      },
+      {
+        "iteration": 7,
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36...",
+        "unique": false
+      },
+      {
+        "iteration": 8,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb...",
+        "unique": false
+      },
+      {
+        "iteration": 9,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0...",
+        "unique": false
+      },
+      {
+        "iteration": 10,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap...",
+        "unique": false
+      }
+    ],
+    "emailServiceRotation": [
+      {
+        "iteration": 1,
+        "serviceName": "10MinuteMail",
+        "reliability": 0.8,
+        "weight": 0.3
+      },
+      {
+        "iteration": 2,
+        "serviceName": "Guerrilla Mail",
+        "reliability": 0.7,
+        "weight": 0.2
+      },
+      {
+        "iteration": 3,
+        "serviceName": "TempMail",
+        "reliability": 0.9,
+        "weight": 0.4
+      },
+      {
+        "iteration": 4,
+        "serviceName": "ProtonMail",
+        "reliability": 0.95,
+        "weight": 0.1
+      },
+      {
+        "iteration": 5,
+        "serviceName": "Guerrilla Mail",
+        "reliability": 0.7,
+        "weight": 0.2
+      },
+      {
+        "iteration": 6,
+        "serviceName": "10MinuteMail",
+        "reliability": 0.8,
+        "weight": 0.3
+      },
+      {
+        "iteration": 7,
+        "serviceName": "TempMail",
+        "reliability": 0.9,
+        "weight": 0.4
+      },
+      {
+        "iteration": 8,
+        "serviceName": "10MinuteMail",
+        "reliability": 0.8,
+        "weight": 0.3
+      }
+    ],
+    "viewportRotation": [
+      {
+        "iteration": 1,
+        "viewport": "1600x900",
+        "width": 1600,
+        "height": 900
+      },
+      {
+        "iteration": 2,
+        "viewport": "1366x768",
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "iteration": 3,
+        "viewport": "1920x1080",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "iteration": 4,
+        "viewport": "1280x720",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "iteration": 5,
+        "viewport": "1536x864",
+        "width": 1536,
+        "height": 864
+      },
+      {
+        "iteration": 6,
+        "viewport": "1440x900",
+        "width": 1440,
+        "height": 900
+      }
+    ],
+    "timingPatternRotation": [
+      {
+        "iteration": 1,
+        "patternName": "average_user",
+        "readTime": {
+          "min": 1500,
+          "max": 5000
+        },
+        "typeSpeed": {
+          "min": 60,
+          "max": 150
+        },
+        "weight": 0.5
+      },
+      {
+        "iteration": 2,
+        "patternName": "careful_user",
+        "readTime": {
+          "min": 3000,
+          "max": 8000
+        },
+        "typeSpeed": {
+          "min": 80,
+          "max": 200
+        },
+        "weight": 0.3
+      },
+      {
+        "iteration": 3,
+        "patternName": "average_user",
+        "readTime": {
+          "min": 1500,
+          "max": 5000
+        },
+        "typeSpeed": {
+          "min": 60,
+          "max": 150
+        },
+        "weight": 0.5
+      },
+      {
+        "iteration": 4,
+        "patternName": "careful_user",
+        "readTime": {
+          "min": 3000,
+          "max": 8000
+        },
+        "typeSpeed": {
+          "min": 80,
+          "max": 200
+        },
+        "weight": 0.3
+      },
+      {
+        "iteration": 5,
+        "patternName": "average_user",
+        "readTime": {
+          "min": 1500,
+          "max": 5000
+        },
+        "typeSpeed": {
+          "min": 60,
+          "max": 150
+        },
+        "weight": 0.5
+      },
+      {
+        "iteration": 6,
+        "patternName": "fast_user",
+        "readTime": {
+          "min": 800,
+          "max": 2500
+        },
+        "typeSpeed": {
+          "min": 40,
+          "max": 100
+        },
+        "weight": 0.2
+      }
+    ],
+    "fingerprinting": [
+      {
+        "iteration": 1,
+        "screen": "1920x1080",
+        "timezone": "Europe/London",
+        "platform": "MacIntel",
+        "hardwareConcurrency": 10,
+        "deviceMemory": 4
+      },
+      {
+        "iteration": 2,
+        "screen": "1440x900",
+        "timezone": "America/Denver",
+        "platform": "MacIntel",
+        "hardwareConcurrency": 10,
+        "deviceMemory": 4
+      },
+      {
+        "iteration": 3,
+        "screen": "1366x768",
+        "timezone": "America/Los_Angeles",
+        "platform": "MacIntel",
+        "hardwareConcurrency": 9,
+        "deviceMemory": 4
+      }
+    ],
+    "errors": []
+  },
+  "summary": {
+    "successRate": 100,
+    "totalTests": 5,
+    "passedTests": 5,
+    "errors": 0
+  }
+}

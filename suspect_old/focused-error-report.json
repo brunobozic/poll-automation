@@ -1,0 +1,23 @@
+{
+  "summary": {
+    "total": 21,
+    "successful": 19,
+    "failed": 2,
+    "successRate": "90.5"
+  },
+  "errors": [
+    {
+      "test": "DB Stats",
+      "error": "Command timed out after 10000ms",
+      "stack": "Error: Command timed out after 10000ms\n    at Timeout._onTimeout (/home/brunobozic/poll-automation/focused-error-logging.js:212:32)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)",
+      "timestamp": "2025-06-25T21:26:45.620Z"
+    },
+    {
+      "test": "LLM Test",
+      "error": "Command timed out after 15000ms",
+      "stack": "Error: Command timed out after 15000ms\n    at Timeout._onTimeout (/home/brunobozic/poll-automation/focused-error-logging.js:212:32)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)",
+      "timestamp": "2025-06-25T21:27:00.635Z"
+    }
+  ],
+  "timestamp": "2025-06-25T21:27:00.635Z"
+}

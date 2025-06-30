@@ -1,0 +1,106 @@
+{
+  "timestamp": "2025-06-23T19:17:35.968Z",
+  "results": [
+    {
+      "solvingId": "solving_1750706230401_2jcuu6",
+      "url": "https://surveyplanet.com",
+      "startTime": 1750706230401,
+      "questions": [],
+      "responses": [],
+      "navigationSteps": [],
+      "adaptations": [],
+      "success": true,
+      "questionsAnswered": 0,
+      "completionTime": 1800,
+      "surveyAnalysis": {
+        "platform": "surveyplanet",
+        "formCount": 1,
+        "questionCount": 1,
+        "inputCount": 1,
+        "buttonCount": 1,
+        "title": "Free Online Survey Maker | Unlimited Surveys | SurveyPlanet",
+        "hasProgressBar": false,
+        "isMultiPage": false,
+        "estimatedComplexity": 1
+      }
+    },
+    {
+      "solvingId": "solving_1750706235022_pghz37",
+      "url": "https://www.surveymonkey.com",
+      "startTime": 1750706235022,
+      "questions": [],
+      "responses": [],
+      "navigationSteps": [],
+      "adaptations": [],
+      "success": true,
+      "questionsAnswered": 0,
+      "completionTime": 3334,
+      "surveyAnalysis": {
+        "platform": "unknown",
+        "formCount": 0,
+        "questionCount": 0,
+        "inputCount": 3,
+        "buttonCount": 43,
+        "title": "SurveyMonkey: The World’s Most Popular Survey Platform",
+        "hasProgressBar": false,
+        "isMultiPage": false,
+        "estimatedComplexity": 1
+      }
+    },
+    {
+      "solvingId": "solving_1750706243394_woyvk8",
+      "url": "https://www.typeform.com",
+      "startTime": 1750706243394,
+      "questions": [],
+      "responses": [],
+      "navigationSteps": [],
+      "adaptations": [],
+      "success": true,
+      "questionsAnswered": 0,
+      "completionTime": 3088,
+      "surveyAnalysis": {
+        "platform": "unknown",
+        "formCount": 0,
+        "questionCount": 0,
+        "inputCount": 8,
+        "buttonCount": 13,
+        "title": "Typeform: People-Friendly Forms and Surveys",
+        "hasProgressBar": true,
+        "isMultiPage": false,
+        "estimatedComplexity": 1
+      }
+    },
+    {
+      "solvingId": "solving_1750706250114_e5cftc",
+      "url": "https://forms.google.com",
+      "startTime": 1750706250114,
+      "questions": [],
+      "responses": [],
+      "navigationSteps": [],
+      "adaptations": [],
+      "success": true,
+      "questionsAnswered": 0,
+      "completionTime": 1985,
+      "surveyAnalysis": {
+        "platform": "unknown",
+        "formCount": 1,
+        "questionCount": 0,
+        "inputCount": 8,
+        "buttonCount": 4,
+        "title": "Google Forms: Sign-in",
+        "hasProgressBar": false,
+        "isMultiPage": true,
+        "estimatedComplexity": 2
+      }
+    }
+  ],
+  "statistics": {
+    "surveysCompleted": 4,
+    "questionsAnswered": 0,
+    "averageCompletionTime": 2293.75,
+    "successRate": 0.9375,
+    "adaptationImprovements": 0,
+    "qualityScore": 0
+  },
+  "adaptations": []
+}

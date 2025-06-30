@@ -1,0 +1,264 @@
+{
+  "totalNavigation": 2,
+  "totalQuestions": 1,
+  "totalFills": 1,
+  "totalSubmissions": 1,
+  "attempts": [
+    {
+      "id": 1,
+      "timestamp": "2025-06-23T14:12:49.161Z",
+      "target": {
+        "url": "https://www.jotform.com/form/202052941568154/preview",
+        "platform": "JotForm",
+        "type": "survey_template",
+        "expectedComplexity": "medium"
+      },
+      "phases": {
+        "navigation": {
+          "success": true,
+          "httpStatus": 404,
+          "finalUrl": "https://www.jotform.com/form/202052941568154/preview",
+          "pageTitle": "Form not found",
+          "loadTime": 1288,
+          "pageAnalysis": {
+            "hasForm": false,
+            "inputCount": 0,
+            "visibleInputCount": 0,
+            "hasRadioButtons": false,
+            "hasCheckboxes": false,
+            "hasDropdowns": false,
+            "pageTextLength": 1616,
+            "hasSubmitButton": false
+          }
+        },
+        "questionDetection": {
+          "success": true,
+          "questionsFound": 0,
+          "questionsWithInputs": 0,
+          "detectionTime": 10,
+          "questions": []
+        },
+        "formFilling": {
+          "success": false,
+          "error": "No questions available for filling"
+        },
+        "submission": {
+          "success": false,
+          "error": "No successful form fills to submit"
+        }
+      },
+      "metrics": {
+        "totalDuration": 1300
+      },
+      "errors": [
+        {
+          "type": "http_error",
+          "message": "404 https://www.jotform.com/form/202052941568154/preview",
+          "timestamp": 1750687969414
+        },
+        {
+          "type": "browser_error",
+          "message": "Failed to load resource: the server responded with a status of 404 ()",
+          "timestamp": 1750687969418
+        },
+        {
+          "type": "form_filling_error",
+          "message": "No questions available for filling",
+          "timestamp": 1750687970462
+        },
+        {
+          "type": "submission_error",
+          "message": "No successful form fills to submit",
+          "timestamp": 1750687970462
+        }
+      ],
+      "successes": [
+        {
+          "type": "navigation_success",
+          "message": "Loaded JotForm successfully",
+          "timestamp": 1750687970452
+        },
+        {
+          "type": "question_detection_success",
+          "message": "Found 0 questions",
+          "timestamp": 1750687970462
+        }
+      ],
+      "learnings": [
+        "❌ Form Filling: Complete failure - No questions available for filling",
+        "❌ Submission: Failed - No successful form fills to submit"
+      ]
+    },
+    {
+      "id": 2,
+      "timestamp": "2025-06-23T14:12:52.464Z",
+      "target": {
+        "url": "https://surveyplanet.com",
+        "platform": "SurveyPlanet",
+        "type": "homepage_form",
+        "expectedComplexity": "low"
+      },
+      "phases": {
+        "navigation": {
+          "success": true,
+          "httpStatus": 200,
+          "finalUrl": "https://surveyplanet.com/",
+          "pageTitle": "Free Online Survey Maker | Unlimited Surveys | SurveyPlanet",
+          "loadTime": 1554,
+          "pageAnalysis": {
+            "hasForm": true,
+            "inputCount": 1,
+            "visibleInputCount": 1,
+            "hasRadioButtons": false,
+            "hasCheckboxes": false,
+            "hasDropdowns": false,
+            "pageTextLength": 13586,
+            "hasSubmitButton": false
+          }
+        },
+        "questionDetection": {
+          "success": true,
+          "questionsFound": 1,
+          "questionsWithInputs": 1,
+          "detectionTime": 10,
+          "questions": [
+            {
+              "text": "Get started",
+              "type": "text",
+              "inputCount": 1,
+              "confidence": 0.7
+            }
+          ]
+        },
+        "formFilling": {
+          "success": true,
+          "questionsAttempted": 1,
+          "successfulFills": 1,
+          "fillResults": [
+            {
+              "questionIndex": 1,
+              "questionText": "Get started",
+              "questionType": "text",
+              "inputCount": 1,
+              "success": true,
+              "duration": 564,
+              "error": null
+            }
+          ],
+          "fillTime": 573,
+          "successRate": "100.0"
+        },
+        "submission": {
+          "success": true,
+          "submitted": true,
+          "preSubmissionState": {
+            "url": "https://surveyplanet.com/",
+            "title": "Free Online Survey Maker | Unlimited Surveys | SurveyPlanet",
+            "timestamp": 1750687974605
+          },
+          "postSubmissionState": {
+            "url": "https://app.surveyplanet.com/signup?email=Excellent",
+            "title": "Signup | SurveyPlanet",
+            "timestamp": 1750687986350
+          },
+          "submissionAnalysis": {
+            "likelySuccess": true,
+            "indicator": "URL changed without errors",
+            "issue": "",
+            "urlChanged": true,
+            "titleChanged": true,
+            "pageAnalysis": {
+              "hasSuccessIndicators": false,
+              "hasErrorIndicators": false,
+              "pageTextSample": "\n  \n\ngo pronew surveyaccounthelplog out\n\t\n\t\t\n\t\n\tcreate account\n\t\n\t\tsignup for free unlimited surveys, questions & responses. \n\t\talready a member? login\n\t\n\n\n\n\t\n\t\n\n\t\t\n\t\t\tfull name\n\t\t\t\n\t\t\n\n\t\t\n\t\t\temail\n\t\t\t\n\t\t\n\n\t\t\n\t\t\tverify email\n\t\t\t\n\t\t\n\n\t\t\n\t\t\tpassword\n\t\t\tshow password\n\t\t\n\t\t  \n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t"
+            }
+          },
+          "submissionTime": 11748
+        }
+      },
+      "metrics": {
+        "totalDuration": 13888
+      },
+      "errors": [],
+      "successes": [
+        {
+          "type": "navigation_success",
+          "message": "Loaded SurveyPlanet successfully",
+          "timestamp": 1750687974021
+        },
+        {
+          "type": "question_detection_success",
+          "message": "Found 1 questions",
+          "timestamp": 1750687974031
+        },
+        {
+          "type": "question_fill_success",
+          "message": "Question 1 filled",
+          "timestamp": 1750687974604
+        },
+        {
+          "type": "submission_success",
+          "message": "URL changed without errors",
+          "timestamp": 1750687986352
+        }
+      ],
+      "learnings": [
+        "✅ Navigation: Standard HTTP 200 response worked",
+        "🔄 Navigation: URL redirect occurred (https://surveyplanet.com → https://surveyplanet.com/)",
+        "✅ Question Detection: Successfully found 1 fillable questions",
+        "🏆 Form Filling: Perfect success rate - current approach works well",
+        "🚀 Submission: Successful with indicator: URL changed without errors"
+      ]
+    },
+    {
+      "id": 3,
+      "timestamp": "2025-06-23T14:13:08.352Z",
+      "target": {
+        "url": "https://www.typeform.com/templates/c/surveys/",
+        "platform": "Typeform",
+        "type": "template_gallery",
+        "expectedComplexity": "high"
+      },
+      "phases": {
+        "navigation": {
+          "success": false,
+          "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.typeform.com/templates/c/surveys/\", waiting until \"networkidle\"\u001b[22m\n"
+        }
+      },
+      "metrics": {
+        "totalDuration": 30851
+      },
+      "errors": [
+        {
+          "type": "navigation_error",
+          "message": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.typeform.com/templates/c/surveys/\", waiting until \"networkidle\"\u001b[22m\n",
+          "timestamp": 1750688019203
+        },
+        {
+          "type": "attempt_fatal_error",
+          "message": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.typeform.com/templates/c/surveys/\", waiting until \"networkidle\"\u001b[22m\n",
+          "timestamp": 1750688019203
+        }
+      ],
+      "successes": [],
+      "learnings": []
+    }
+  ],
+  "learningPatterns": {
+    "Form Filling": [
+      "❌ Form Filling: Complete failure - No questions available for filling",
+      "🏆 Form Filling: Perfect success rate - current approach works well"
+    ],
+    "Submission": [
+      "❌ Submission: Failed - No successful form fills to submit",
+      "🚀 Submission: Successful with indicator: URL changed without errors"
+    ],
+    "Navigation": [
+      "✅ Navigation: Standard HTTP 200 response worked",
+      "🔄 Navigation: URL redirect occurred (https://surveyplanet.com → https://surveyplanet.com/)"
+    ],
+    "Question Detection": [
+      "✅ Question Detection: Successfully found 1 fillable questions"
+    ]
+  }
+}

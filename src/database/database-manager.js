@@ -231,12 +231,24 @@ class DatabaseManager {
             const dbSize = (sizeResult.page_count * pageSizeResult.page_size) / (1024 * 1024); // MB
             
             // Get table counts
-            const tables = await this.all(`
-                SELECT name, 
-                       (SELECT COUNT(*) FROM ${name}) as row_count
+            const tableNames = await this.all(`
+                SELECT name 
                 FROM sqlite_master 
                 WHERE type='table' AND name NOT LIKE 'sqlite_%'
             `);
+            
+            const tables = [];
+            for (const table of tableNames) {
+                try {
+                    const countResult = await this.get(`SELECT COUNT(*) as row_count FROM "${table.name}"`);
+                    tables.push({
+                        name: table.name,
+                        row_count: countResult.row_count
+                    });
+                } catch (error) {
+                    console.error(`Error counting table ${table.name}:`, error.message);
+                }
+            }
             
             this.stats.dbSize = dbSize;
             this.stats.tables = tables.reduce((acc, table) => {

@@ -147,6 +147,11 @@ class LLMAnalysisLogger {
         console.log('🔍 Analyzing form analysis response...');
         
         try {
+            // Validate aiInteractionId before proceeding
+            if (!aiInteractionId || typeof aiInteractionId !== 'number') {
+                console.log('⚠️ Invalid aiInteractionId, skipping response analysis');
+                return;
+            }
             const response = interactionData.parsedResponse || {};
             const actualFields = interactionData.actualFields || [];
             const context = interactionData.context || {};

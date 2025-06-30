@@ -1,15 +1,27 @@
 const { chromium } = require('playwright');
 const BasePage = require('../playwright/base-page');
 const PollPage = require('../playwright/poll-page');
+const RotationManager = require('../utils/rotation-manager');
 
 class StealthBrowser {
-  constructor() {
+  constructor(options = {}) {
     this.browser = null;
     this.context = null;
     this.pages = new Map();
+    this.rotationManager = new RotationManager();
+    this.options = {
+      enableRotation: true,
+      enableProxyRotation: false, // Disabled by default for stability
+      ...options
+    };
   }
 
   async launch(proxyConfig = null) {
+    // Generate rotated browser configuration
+    const config = this.options.enableRotation ? 
+      this.rotationManager.generateRotatedBrowserConfig() : 
+      this.getDefaultConfig();
+
     const launchOptions = {
       headless: true, // Set to false for debugging
       args: [
@@ -25,38 +37,31 @@ class StealthBrowser {
         '--disable-backgrounding-occluded-windows',
         '--disable-renderer-backgrounding',
         '--disable-features=TranslateUI',
-        '--disable-ipc-flooding-protection',
-        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        '--disable-ipc-flooding-protection'
       ]
     };
 
-    // Add proxy if provided
-    if (proxyConfig) {
+    // Add proxy if rotation enabled and available
+    if (this.options.enableProxyRotation && config.proxy) {
+      launchOptions.proxy = {
+        server: `${config.proxy.type}://${config.proxy.host}:${config.proxy.port}`
+      };
+    } else if (proxyConfig) {
       launchOptions.proxy = proxyConfig;
     }
 
     this.browser = await chromium.launch(launchOptions);
 
+    // Create context with rotated configuration
     this.context = await this.browser.newContext({
-      viewport: { width: 1366, height: 768 },
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      viewport: config.viewport,
+      userAgent: config.userAgent,
       locale: 'en-US',
-      timezoneId: 'America/New_York',
+      timezoneId: config.fingerprint?.timezone || 'America/New_York',
       permissions: ['geolocation'],
       geolocation: { latitude: 40.7128, longitude: -74.0060 },
       colorScheme: 'light',
-      extraHTTPHeaders: {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Cache-Control': 'max-age=0'
-      }
+      extraHTTPHeaders: config.extraHTTPHeaders || this.getDefaultHeaders()
     });
 
     // Add stealth scripts to every page
@@ -175,45 +180,71 @@ class StealthBrowser {
   }
 
   async addHumanBehavior(page) {
-    // Random delays between actions
+    // Get current timing pattern for adaptive behavior
+    const timingPattern = this.getCurrentTimingPattern();
+    
+    // Random delays between actions (adaptive)
     page.humanDelay = async () => {
-      const delay = Math.random() * 2000 + 500; // 500-2500ms
+      const pattern = timingPattern.pauseBetweenFields;
+      const delay = Math.random() * (pattern.max - pattern.min) + pattern.min;
       await page.waitForTimeout(delay);
     };
 
-    // Human-like typing
+    // Human-like typing with adaptive speed
     page.humanType = async (selector, text) => {
       await page.click(selector);
       await this.randomDelay(100, 300);
       
+      const pattern = timingPattern.typeSpeed;
       for (const char of text) {
         await page.keyboard.type(char);
-        await this.randomDelay(50, 150);
+        const typeDelay = Math.random() * (pattern.max - pattern.min) + pattern.min;
+        await this.randomDelay(typeDelay * 0.8, typeDelay * 1.2);
       }
     };
 
-    // Human-like clicking with mouse movement
+    // Human-like clicking with mouse movement and natural pauses
     page.humanClick = async (selector) => {
       const element = await page.locator(selector);
       const box = await element.boundingBox();
       
       if (box) {
-        // Move mouse to random point near element
+        // Move mouse to random point near element with natural movement
         const x = box.x + Math.random() * box.width;
         const y = box.y + Math.random() * box.height;
         
+        // Add subtle mouse movement before clicking
+        await page.mouse.move(x - 5, y - 5);
+        await this.randomDelay(50, 150);
         await page.mouse.move(x, y);
-        await this.randomDelay(100, 300);
+        
+        const clickDelay = Math.random() * 200 + 100;
+        await this.randomDelay(clickDelay, clickDelay + 100);
         await page.mouse.click(x, y);
       }
     };
 
-    // Random scrolling
+    // Adaptive reading time based on timing pattern
+    page.humanRead = async (elementCount = 1) => {
+      const pattern = timingPattern.readTime;
+      const baseTime = Math.random() * (pattern.max - pattern.min) + pattern.min;
+      const readTime = baseTime * Math.log(elementCount + 1); // More content = more reading time
+      await page.waitForTimeout(readTime);
+    };
+
+    // Random scrolling with natural patterns
     page.humanScroll = async () => {
       const scrollAmount = Math.random() * 500 + 200;
       await page.mouse.wheel(0, scrollAmount);
-      await this.randomDelay(500, 1500);
+      
+      // Natural pause after scrolling
+      const pattern = timingPattern.pauseBetweenFields;
+      const pauseTime = Math.random() * (pattern.max - pattern.min) + pattern.min;
+      await this.randomDelay(pauseTime * 0.5, pauseTime);
     };
+
+    // Add timing pattern info to page for debugging
+    page.getTimingPattern = () => timingPattern;
   }
 
   async randomDelay(min = 100, max = 500) {
@@ -244,8 +275,91 @@ class StealthBrowser {
       totalPages: this.pages.size,
       isLaunched: !!this.browser,
       hasContext: !!this.context,
-      pages: Array.from(this.pages.keys())
+      pages: Array.from(this.pages.keys()),
+      rotationStats: this.options.enableRotation ? this.rotationManager.getRotationStats() : null
     };
+  }
+
+  /**
+   * Get default configuration when rotation is disabled
+   */
+  getDefaultConfig() {
+    return {
+      viewport: { width: 1366, height: 768 },
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      proxy: null,
+      timingPattern: {
+        name: 'average_user',
+        readTime: { min: 1500, max: 5000 },
+        typeSpeed: { min: 60, max: 150 },
+        pauseBetweenFields: { min: 200, max: 1000 }
+      },
+      extraHTTPHeaders: this.getDefaultHeaders(),
+      fingerprint: {
+        timezone: 'America/New_York'
+      }
+    };
+  }
+
+  /**
+   * Get default HTTP headers
+   */
+  getDefaultHeaders() {
+    return {
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+      'Accept-Language': 'en-US,en;q=0.5',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'DNT': '1',
+      'Connection': 'keep-alive',
+      'Upgrade-Insecure-Requests': '1',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none',
+      'Cache-Control': 'max-age=0'
+    };
+  }
+
+  /**
+   * Get current timing pattern for human-like behavior
+   */
+  getCurrentTimingPattern() {
+    if (this.options.enableRotation && this.rotationManager.lastUsed.timingPattern) {
+      return this.rotationManager.lastUsed.timingPattern;
+    }
+    return this.getDefaultConfig().timingPattern;
+  }
+
+  /**
+   * Report email service success/failure for rotation optimization
+   */
+  reportEmailServiceResult(serviceName, success) {
+    if (this.options.enableRotation) {
+      if (success) {
+        this.rotationManager.reportServiceSuccess(serviceName);
+      } else {
+        this.rotationManager.reportServiceFailure(serviceName);
+      }
+    }
+  }
+
+  /**
+   * Get next email service using rotation
+   */
+  getNextEmailService() {
+    if (this.options.enableRotation) {
+      return this.rotationManager.getNextEmailService();
+    }
+    return null;
+  }
+
+  /**
+   * Reset rotation history
+   */
+  resetRotation() {
+    if (this.options.enableRotation) {
+      this.rotationManager.resetRotationHistory();
+      console.log('🔄 Browser rotation reset');
+    }
   }
 }
 

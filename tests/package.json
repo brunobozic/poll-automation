@@ -1,0 +1,50 @@
+{
+  "name": "poll-automation-api-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive test suite for Poll Automation REST API",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:e2e": "jest --testPathPattern=e2e",
+    "test:performance": "jest --testPathPattern=performance",
+    "test:security": "jest --testPathPattern=security",
+    "test:contract": "jest --testPathPattern=contract",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "test:verbose": "jest --verbose",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "@types/jest": "^29.5.8",
+    "jest-environment-node": "^29.7.0",
+    "artillery": "^2.0.3",
+    "nyc": "^15.1.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "lodash": "^4.17.21"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "../src/**/*.js",
+      "../api-server.js",
+      "!../src/**/*.test.js",
+      "!../node_modules/**"
+    ],
+    "coverageDirectory": "./coverage",
+    "coverageReporters": ["text", "lcov", "html"],
+    "testMatch": [
+      "**/__tests__/**/*.js",
+      "**/?(*.)+(spec|test).js"
+    ],
+    "testTimeout": 30000,
+    "setupFilesAfterEnv": ["<rootDir>/setup.js"],
+    "verbose": true
+  }
+}

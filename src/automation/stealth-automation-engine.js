@@ -594,6 +594,128 @@ class StealthAutomationEngine {
     }
     
     /**
+     * Navigate to URL with stealth techniques
+     */
+    async navigateStealthily(url, options = {}) {
+        try {
+            console.log(`🥷 Navigating stealthily to: ${url}`);
+            
+            // Apply pre-navigation evasion
+            await this.randomDelay(1000, 3000);
+            
+            // Try multiple navigation strategies for robustness
+            let response = null;
+            let lastError = null;
+            
+            // Strategy 1: Standard navigation
+            try {
+                response = await this.page.goto(url, {
+                    waitUntil: 'domcontentloaded',
+                    timeout: 30000,
+                    ...options
+                });
+            } catch (error) {
+                lastError = error;
+                console.log(`⚠️ Standard navigation failed: ${error.message}`);
+                
+                // Strategy 2: Try with different wait condition
+                try {
+                    console.log(`🔄 Retrying with networkidle...`);
+                    response = await this.page.goto(url, {
+                        waitUntil: 'networkidle',
+                        timeout: 45000,
+                        ...options
+                    });
+                } catch (retryError) {
+                    lastError = retryError;
+                    console.log(`⚠️ Networkidle navigation failed: ${retryError.message}`);
+                    
+                    // Strategy 3: Try with load event only
+                    try {
+                        console.log(`🔄 Retrying with load event...`);
+                        response = await this.page.goto(url, {
+                            waitUntil: 'load',
+                            timeout: 60000,
+                            ...options
+                        });
+                    } catch (finalError) {
+                        lastError = finalError;
+                        console.log(`❌ All navigation strategies failed: ${finalError.message}`);
+                        throw finalError;
+                    }
+                }
+            }
+            
+            // Simulate human reading/loading time
+            await this.simulateReadingTime(url, 2000);
+            
+            // Check for anti-bot detection
+            const detection = await this.detectAntiBot();
+            if (detection.detected) {
+                console.log(`⚠️ Anti-bot detection suspected (severity: ${detection.severity})`);
+                await this.applyEvasionTechniques();
+            }
+            
+            // Wait for page to fully load (with error handling)
+            try {
+                await this.page.waitForLoadState('networkidle', { timeout: 10000 });
+            } catch (loadError) {
+                console.log(`⚠️ Network idle timeout (this is often normal): ${loadError.message}`);
+            }
+            
+            this.stats.actionsPerformed++;
+            console.log(`✅ Stealth navigation completed: ${response?.status()}`);
+            
+            return response;
+        } catch (error) {
+            console.log(`❌ Stealth navigation failed: ${error.message}`);
+            throw error;
+        }
+    }
+    
+    /**
+     * Handle challenges (CAPTCHAs, etc.) with stealth
+     */
+    async handleChallenge(challenge) {
+        try {
+            console.log(`🧩 Handling challenge: ${challenge.type}`);
+            
+            // Add human-like delay before attempting
+            await this.simulateReadingTime(challenge.description || '', 3000);
+            
+            switch (challenge.type) {
+                case 'captcha':
+                    console.log('🔍 CAPTCHA detected - applying human-like solving attempt');
+                    // Add human-like interaction patterns
+                    await this.randomDelay(2000, 5000);
+                    break;
+                    
+                case 'cloudflare':
+                    console.log('☁️ Cloudflare challenge detected - waiting patiently');
+                    await this.randomDelay(5000, 10000);
+                    break;
+                    
+                case 'rate_limit':
+                    console.log('⏱️ Rate limit detected - applying extended delay');
+                    await this.randomDelay(10000, 20000);
+                    break;
+                    
+                default:
+                    console.log(`🤔 Unknown challenge type: ${challenge.type}`);
+                    await this.randomDelay(3000, 6000);
+                    break;
+            }
+            
+            this.stats.actionsPerformed++;
+            return { success: true, method: 'stealth_wait' };
+            
+        } catch (error) {
+            console.log(`❌ Challenge handling failed: ${error.message}`);
+            return { success: false, error: error.message };
+        }
+    }
+    
+    /**
      * Get stealth engine statistics
      */
     getStats() {

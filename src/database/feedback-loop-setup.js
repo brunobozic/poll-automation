@@ -3,10 +3,11 @@
  * Enhanced schema for intelligent failure analysis and continuous improvement
  */
 
+const { getDatabaseManager } = require('./database-manager.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-async function setupFeedbackLoopDatabase(dbPath = './data/polls.db') {
+async function setupFeedbackLoopDatabase(dbPath = './poll-automation.db') {
     console.log('🧠 Setting up Intelligent Feedback Loop Database...');
     
     return new Promise((resolve, reject) => {

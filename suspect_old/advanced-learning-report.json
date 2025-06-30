@@ -1,0 +1,83 @@
+{
+  "timestamp": "2025-06-23T18:35:31.980Z",
+  "summary": {
+    "totalIterations": 4,
+    "totalSurveysDiscovered": 100,
+    "totalPlatformsAnalyzed": 0,
+    "totalStrategiesDeveloped": 30
+  },
+  "patterns": {
+    "discoveryPatterns": [
+      {
+        "hunting_strategy": "academic_research_platforms",
+        "usage_count": 4,
+        "avg_surveys_found": 8,
+        "avg_confidence": 0.8342033986754991,
+        "success_rate": 100
+      },
+      {
+        "hunting_strategy": "market_research_sites",
+        "usage_count": 4,
+        "avg_surveys_found": 6,
+        "avg_confidence": 0.8281536582016242,
+        "success_rate": 100
+      },
+      {
+        "hunting_strategy": "survey_aggregator_sites",
+        "usage_count": 4,
+        "avg_surveys_found": 6,
+        "avg_confidence": 0.8218454742886367,
+        "success_rate": 100
+      },
+      {
+        "hunting_strategy": "government_survey_portals",
+        "usage_count": 4,
+        "avg_surveys_found": 2,
+        "avg_confidence": 0.8840971382652836,
+        "success_rate": 100
+      },
+      {
+        "hunting_strategy": "survey_platform_exploration",
+        "usage_count": 4,
+        "avg_surveys_found": 2,
+        "avg_confidence": 0.8051335707758618,
+        "success_rate": 100
+      },
+      {
+        "hunting_strategy": "social_media_survey_discovery",
+        "usage_count": 4,
+        "avg_surveys_found": 1,
+        "avg_confidence": 0.8372006142055785,
+        "success_rate": 100
+      }
+    ],
+    "platformPatterns": [],
+    "complexityPatterns": [],
+    "modelTrends": [],
+    "analysis": {
+      "topDiscoveryStrategy": "academic_research_platforms",
+      "topPlatform": "none",
+      "mostFeasiblePlatform": "none",
+      "learningTrend": "insufficient_data"
+    }
+  },
+  "insights": [
+    {
+      "type": "discovery_optimization",
+      "description": "academic_research_platforms is the most effective discovery strategy with 8.0 avg surveys found and 100.0% success rate",
+      "confidence": 0.8342033986754991,
+      "actionability": 0.9,
+      "expectedImpact": 0.7
+    }
+  ],
+  "promptOptimizations": [],
+  "recommendations": [
+    {
+      "category": "discovery_optimization",
+      "priority": "high",
+      "action": "Focus 70% of discovery efforts on academic_research_platforms",
+      "expectedImpact": "Increase discovery rate by 40-60%",
+      "implementationComplexity": "low"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "migrationDate": "2025-06-24T06:56:09.856Z",
+  "sourceFiles": [
+    "backup-dbs-1750711218160/ai-optimized-registration.db",
+    "backup-dbs-1750711218160/complete-attack-system.db",
+    "backup-dbs-1750711218160/complete-correlation.db",
+    "backup-dbs-1750711218160/distilled-knowledge.db",
+    "backup-dbs-1750711218160/email-proof.db",
+    "backup-dbs-1750711218160/enhanced-poll-automation.db",
+    "backup-dbs-1750711218160/focused-correlation.db",
+    "backup-dbs-1750711218160/meta-learning-graph.db",
+    "backup-dbs-1750711218160/polls-dev.db",
+    "backup-dbs-1750711218160/polls.db",
+    "backup-dbs-1750711218160/real-survey-registration.db",
+    "backup-dbs-1750711218160/realistic-registration.db",
+    "backup-dbs-1750711218160/registrations.db",
+    "backup-dbs-1750711218160/simple-survey-test.db",
+    "backup-dbs-1750711218160/test-end-to-end.db",
+    "backup-dbs-1750711218160/test-registrations.db",
+    "backup-dbs-1750711218160/unified-poll-automation.db",
+    "data/polls.db",
+    "data/registrations.db"
+  ],
+  "statistics": {
+    "totalDatabases": 19,
+    "totalRecords": 0,
+    "migratedRecords": 44,
+    "errors": 490,
+    "conflicts": 0,
+    "duplicates": 105
+  },
+  "finalRecordCount": 158
+}

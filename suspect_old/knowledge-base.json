@@ -1,0 +1,103 @@
+{
+  "successPatterns": [
+    [
+      "https://httpbin.org/forms/post_universal_adaptive",
+      {
+        "count": 3,
+        "totalTime": 12479,
+        "averageTime": 4159.666666666667,
+        "lastSuccess": 1750709543394
+      }
+    ],
+    [
+      "https://surveyplanet.com_universal_adaptive",
+      {
+        "count": 3,
+        "totalTime": 5285,
+        "averageTime": 1761.6666666666667,
+        "lastSuccess": 1750709545097
+      }
+    ],
+    [
+      "https://forms.google.com_universal_adaptive",
+      {
+        "count": 3,
+        "totalTime": 9402,
+        "averageTime": 3134,
+        "lastSuccess": 1750709548135
+      }
+    ]
+  ],
+  "failurePatterns": [],
+  "siteProfiles": [
+    [
+      "https://httpbin.org/forms/post",
+      {
+        "interactions": 3,
+        "successes": 3,
+        "averageTime": 0,
+        "bestStrategy": {
+          "name": "universal_adaptive",
+          "successRate": 1,
+          "averageTime": 5606,
+          "techniques": [
+            "progressive_element_discovery",
+            "adaptive_timing",
+            "fallback_selectors",
+            "context_aware_interactions"
+          ]
+        },
+        "learned": [
+          "Best strategy updated: universal_adaptive"
+        ]
+      }
+    ],
+    [
+      "https://surveyplanet.com",
+      {
+        "interactions": 3,
+        "successes": 3,
+        "averageTime": 0,
+        "bestStrategy": {
+          "name": "universal_adaptive",
+          "successRate": 1,
+          "averageTime": 1866,
+          "techniques": [
+            "progressive_element_discovery",
+            "adaptive_timing",
+            "fallback_selectors",
+            "context_aware_interactions"
+          ]
+        },
+        "learned": [
+          "Best strategy updated: universal_adaptive"
+        ]
+      }
+    ],
+    [
+      "https://forms.google.com",
+      {
+        "interactions": 3,
+        "successes": 3,
+        "averageTime": 0,
+        "bestStrategy": {
+          "name": "universal_adaptive",
+          "successRate": 1,
+          "averageTime": 3308,
+          "techniques": [
+            "progressive_element_discovery",
+            "adaptive_timing",
+            "fallback_selectors",
+            "context_aware_interactions"
+          ]
+        },
+        "learned": [
+          "Best strategy updated: universal_adaptive"
+        ]
+      }
+    ]
+  ],
+  "inputStrategies": [],
+  "timingOptimizations": [],
+  "recoveryStrategies": []
+}

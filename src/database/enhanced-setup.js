@@ -3,9 +3,10 @@
  * Comprehensive SQLite schema for email-site correlation and intelligence tracking
  */
 
-const sqlite3 = require('sqlite3').verbose();
+const { getDatabaseManager } = require('./database-manager.js');
 const path = require('path');
 const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
 
 const DB_PATH = path.join(__dirname, '../../data/polls.db');
 

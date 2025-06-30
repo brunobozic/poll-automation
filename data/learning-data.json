@@ -1,0 +1,17 @@
+{
+  "questionPatterns": {},
+  "responseStrategies": {
+    "final_submit_form button:last-child": 47,
+    "final_submit_strategy_5": 20,
+    "final_submit_button:last-of-type": 47,
+    "final_submit_strategy_1": 20,
+    "final_submit_strategy_2": 18,
+    "next_page_button:last-of-type": 27,
+    "next_page_strategy_5": 27,
+    "final_submit_strategy_3": 18,
+    "final_submit_strategy_4": 18
+  },
+  "errorPatterns": {},
+  "siteSpecificAdaptations": {},
+  "lastUpdated": 1750887246561
+}

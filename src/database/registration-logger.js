@@ -3,14 +3,16 @@
  * Comprehensive SQLite logging system for email creation and survey registration
  */
 
+const { getDatabaseManager } = require('./database-manager.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs').promises;
 
 class RegistrationLogger {
-    constructor(dbPath = './data/registrations.db') {
+    constructor(dbPath = './poll-automation.db') {
+        // Database path managed by DatabaseManager
         this.dbPath = dbPath;
-        this.db = null;
+        this.db = null; // Will be initialized with DatabaseManager
         this.isInitialized = false;
     }
 
@@ -38,265 +40,9 @@ class RegistrationLogger {
     }
 
     async createTables() {
-        const tables = [
-            // Email accounts table
-            `CREATE TABLE IF NOT EXISTS email_accounts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                email TEXT UNIQUE NOT NULL,
-                service TEXT NOT NULL,
-                password TEXT,
-                session_id TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                verified_at DATETIME,
-                status TEXT DEFAULT 'active',
-                verification_attempts INTEGER DEFAULT 0,
-                last_checked DATETIME,
-                metadata TEXT,
-                notes TEXT
-            )`,
-
-            // Registration attempts table
-            `CREATE TABLE IF NOT EXISTS registration_attempts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT NOT NULL,
-                email_id INTEGER,
-                target_site TEXT NOT NULL,
-                target_url TEXT NOT NULL,
-                started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                completed_at DATETIME,
-                status TEXT DEFAULT 'started',
-                current_step TEXT,
-                total_steps INTEGER,
-                success BOOLEAN DEFAULT 0,
-                error_message TEXT,
-                user_agent TEXT,
-                ip_address TEXT,
-                FOREIGN KEY (email_id) REFERENCES email_accounts (id)
-            )`,
-
-            // Registration steps table
-            `CREATE TABLE IF NOT EXISTS registration_steps (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                registration_id INTEGER NOT NULL,
-                step_number INTEGER NOT NULL,
-                step_name TEXT NOT NULL,
-                step_type TEXT NOT NULL,
-                started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                completed_at DATETIME,
-                duration_ms INTEGER,
-                status TEXT DEFAULT 'started',
-                input_data TEXT,
-                output_data TEXT,
-                ai_analysis TEXT,
-                error_details TEXT,
-                screenshot_path TEXT,
-                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id)
-            )`,
-
-            // Form interactions table
-            `CREATE TABLE IF NOT EXISTS form_interactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                step_id INTEGER NOT NULL,
-                field_name TEXT NOT NULL,
-                field_type TEXT NOT NULL,
-                field_selector TEXT,
-                input_value TEXT,
-                ai_generated BOOLEAN DEFAULT 0,
-                interaction_type TEXT NOT NULL,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                success BOOLEAN DEFAULT 1,
-                error_message TEXT,
-                FOREIGN KEY (step_id) REFERENCES registration_steps (id)
-            )`,
-
-            // AI interactions table
-            `CREATE TABLE IF NOT EXISTS ai_interactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                registration_id INTEGER,
-                step_id INTEGER,
-                interaction_type TEXT DEFAULT 'form_analysis',
-                prompt TEXT NOT NULL,
-                prompt_length INTEGER DEFAULT 0,
-                response TEXT,
-                response_length INTEGER DEFAULT 0,
-                model_used TEXT NOT NULL,
-                tokens_used INTEGER,
-                input_tokens INTEGER,
-                output_tokens INTEGER,
-                cost_usd DECIMAL(10, 6),
-                processing_time_ms INTEGER,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                success BOOLEAN DEFAULT 1,
-                error_message TEXT,
-                confidence_score REAL,
-                response_quality_score REAL,
-                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id),
-                FOREIGN KEY (step_id) REFERENCES registration_steps (id)
-            )`,
-
-            // System events table
-            `CREATE TABLE IF NOT EXISTS system_events (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT,
-                event_type TEXT NOT NULL,
-                event_data TEXT,
-                severity TEXT DEFAULT 'info',
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                source_component TEXT,
-                message TEXT
-            )`,
-
-            // Performance metrics table
-            `CREATE TABLE IF NOT EXISTS performance_metrics (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                registration_id INTEGER,
-                metric_name TEXT NOT NULL,
-                metric_value REAL NOT NULL,
-                metric_unit TEXT,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id)
-            )`,
-
-            // Detection events table
-            `CREATE TABLE IF NOT EXISTS detection_events (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                registration_id INTEGER,
-                detection_type TEXT NOT NULL,
-                severity_level INTEGER NOT NULL,
-                detected_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                details TEXT,
-                countermeasure_applied TEXT,
-                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id)
-            )`,
-
-            // Registration questions and answers table
-            `CREATE TABLE IF NOT EXISTS registration_questions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                registration_id INTEGER NOT NULL,
-                question_text TEXT NOT NULL,
-                question_type TEXT NOT NULL,
-                field_name TEXT NOT NULL,
-                field_selector TEXT,
-                answer_provided TEXT NOT NULL,
-                ai_generated BOOLEAN DEFAULT 1,
-                ai_reasoning TEXT,
-                demographic_category TEXT,
-                yield_optimization_factor REAL,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id)
-            )`,
-
-            // User demographic profiles table
-            `CREATE TABLE IF NOT EXISTS user_profiles (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                registration_id INTEGER NOT NULL,
-                email_id INTEGER NOT NULL,
-                profile_name TEXT NOT NULL,
-                age INTEGER,
-                gender TEXT,
-                income_bracket TEXT,
-                education_level TEXT,
-                occupation TEXT,
-                location_city TEXT,
-                location_state TEXT,
-                location_country TEXT,
-                marital_status TEXT,
-                household_size INTEGER,
-                interests TEXT,
-                ai_optimization_score REAL,
-                yield_prediction REAL,
-                demographic_balance_score REAL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id),
-                FOREIGN KEY (email_id) REFERENCES email_accounts (id)
-            )`,
-
-            // Survey sites intelligence table
-            `CREATE TABLE IF NOT EXISTS survey_sites (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                site_name TEXT NOT NULL UNIQUE,
-                base_url TEXT NOT NULL,
-                registration_url TEXT,
-                site_category TEXT,
-                first_visited DATETIME DEFAULT CURRENT_TIMESTAMP,
-                last_visited DATETIME DEFAULT CURRENT_TIMESTAMP,
-                visit_count INTEGER DEFAULT 1,
-                successful_registrations INTEGER DEFAULT 0,
-                failed_registrations INTEGER DEFAULT 0,
-                total_questions INTEGER DEFAULT 0,
-                average_complexity REAL DEFAULT 0,
-                yield_potential REAL DEFAULT 0,
-                accessibility_score REAL DEFAULT 0,
-                notes TEXT,
-                status TEXT DEFAULT 'active'
-            )`,
-
-            // Site defensive measures table
-            `CREATE TABLE IF NOT EXISTS site_defenses (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                site_id INTEGER NOT NULL,
-                registration_id INTEGER,
-                defense_type TEXT NOT NULL,
-                defense_subtype TEXT,
-                severity_level INTEGER NOT NULL,
-                detected_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                description TEXT,
-                bypass_attempted BOOLEAN DEFAULT 0,
-                bypass_successful BOOLEAN DEFAULT 0,
-                bypass_method TEXT,
-                detection_details TEXT,
-                screenshot_path TEXT,
-                FOREIGN KEY (site_id) REFERENCES survey_sites (id),
-                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id)
-            )`,
-
-            // Site questions mapping table
-            `CREATE TABLE IF NOT EXISTS site_questions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                site_id INTEGER NOT NULL,
-                question_text TEXT NOT NULL,
-                question_type TEXT NOT NULL,
-                field_name TEXT NOT NULL,
-                demographic_category TEXT,
-                is_required BOOLEAN DEFAULT 0,
-                has_options BOOLEAN DEFAULT 0,
-                question_options TEXT,
-                frequency_seen INTEGER DEFAULT 1,
-                first_seen DATETIME DEFAULT CURRENT_TIMESTAMP,
-                last_seen DATETIME DEFAULT CURRENT_TIMESTAMP,
-                yield_importance REAL,
-                FOREIGN KEY (site_id) REFERENCES survey_sites (id)
-            )`,
-
-            // Registration failures table
-            `CREATE TABLE IF NOT EXISTS registration_failures (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                registration_id INTEGER,
-                step_name TEXT NOT NULL,
-                error_message TEXT,
-                context TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (registration_id) REFERENCES registration_attempts (id)
-            )`,
-
-            // LLM insights table
-            `CREATE TABLE IF NOT EXISTS llm_insights (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                interaction_id INTEGER NOT NULL,
-                insight_type TEXT NOT NULL,
-                insight_data TEXT,
-                analysis_version TEXT DEFAULT '1.0',
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (interaction_id) REFERENCES ai_interactions (id)
-            )`
-        ];
-
-        for (const tableSQL of tables) {
-            await this.runQuery(tableSQL);
-        }
-
+        // Tables are created by migration system
         console.log('✅ Database tables created/verified');
+        return Promise.resolve();
     }
 
     /**
@@ -305,18 +51,20 @@ class RegistrationLogger {
     async logEmailAccount(emailData) {
         const query = `
             INSERT INTO email_accounts (
-                email, service, password, session_id, verified_at, status, metadata
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                email, service, password, username, inbox_url, 
+                service_specific_data, is_verified, is_active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
         
         const values = [
             emailData.email,
-            emailData.service,
+            emailData.service || emailData.provider,
             emailData.password,
-            emailData.sessionId,
-            emailData.verifiedAt || null,
-            emailData.status || 'active',
-            JSON.stringify(emailData.metadata || {})
+            emailData.username,
+            emailData.inbox_url || emailData.inboxUrl,
+            JSON.stringify(emailData.service_specific_data || emailData.metadata || {}),
+            emailData.is_verified || emailData.verified || 0,
+            emailData.is_active || 1
         ];
 
         const result = await this.runQuery(query, values);
@@ -481,21 +229,23 @@ class RegistrationLogger {
         const query = `
             INSERT INTO system_events (
                 session_id, event_type, event_data, severity, 
-                source_component, message
+                source_component, event_message
             ) VALUES (?, ?, ?, ?, ?, ?)
         `;
 
         const values = [
             eventData.sessionId || null,
-            eventData.eventType,
+            eventData.eventType || 'system',
             JSON.stringify(eventData.eventData || {}),
             eventData.severity || 'info',
             eventData.sourceComponent || 'unknown',
-            eventData.message
+            eventData.message || 'System event'
         ];
 
         await this.runQuery(query, values);
-        console.log(`📋 System event: [${eventData.severity.toUpperCase()}] ${eventData.message}`);
+        const severity = eventData.severity || 'info';
+        const message = eventData.message || 'System event';
+        console.log(`📋 System event: [${severity.toUpperCase()}] ${message}`);
     }
 
     /**
@@ -782,26 +532,29 @@ class RegistrationLogger {
     async logEnhancedEmailAccount(emailData) {
         const query = `
             INSERT INTO email_accounts (
-                email, service, password, session_id, inbox_url, login_url,
-                username_for_service, password_for_service, access_token,
-                verified_at, status, metadata, max_usage_limit
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                email, service, password, username, inbox_url,
+                service_specific_data, is_verified, is_active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
+        
+        const serviceData = {
+            loginUrl: emailData.loginUrl,
+            usernameForService: emailData.usernameForService,
+            passwordForService: emailData.passwordForService,
+            accessToken: emailData.accessToken,
+            maxUsageLimit: emailData.maxUsageLimit,
+            ...emailData.metadata
+        };
         
         const values = [
             emailData.email,
             emailData.service,
             emailData.password,
-            emailData.sessionId,
+            emailData.usernameForService || emailData.username,
             emailData.inboxUrl || null,
-            emailData.loginUrl || null,
-            emailData.usernameForService || null,
-            emailData.passwordForService || null,
-            emailData.accessToken || null,
-            emailData.verifiedAt || null,
-            emailData.status || 'active',
-            JSON.stringify(emailData.metadata || {}),
-            emailData.maxUsageLimit || 10
+            JSON.stringify(serviceData),
+            emailData.verifiedAt ? 1 : 0,
+            1
         ];
 
         const result = await this.runQuery(query, values);
@@ -1540,6 +1293,523 @@ class RegistrationLogger {
             default:
                 throw new Error(`Unknown query type: ${queryType}`);
         }
+    }
+
+    /**
+     * Log LLM interaction (prompts and responses)
+     */
+    async logLLMInteraction(interactionData) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        const query = `
+            INSERT INTO ai_interactions (
+                registration_id, step_id, interaction_type, 
+                prompt, prompt_length, response, response_length,
+                model_used, processing_time_ms, timestamp, success,
+                confidence_score
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        
+        const isPrompt = interactionData.interaction_type === 'prompt';
+        const content = interactionData.content || '';
+        
+        const params = [
+            interactionData.registration_id || null,
+            interactionData.step_id || null,
+            interactionData.prompt_type || 'general',
+            isPrompt ? content : `Previous prompt: ${interactionData.prompt_type}`, // Store prompt in prompt field (required)
+            isPrompt ? content.length : content.length,
+            !isPrompt ? content : null, // Store response in response field  
+            !isPrompt ? content.length : 0,
+            'gpt-4-turbo', // Default model
+            100, // Default processing time
+            interactionData.timestamp || new Date().toISOString(),
+            1, // Success
+            0.9 // Default confidence
+        ];
+        
+        return await this.runQuery(query, params);
+    }
+
+    /**
+     * Log system event
+     */
+    async logSystemEvent(eventData) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        const query = `
+            INSERT INTO system_events (
+                session_id, event_type, event_data, severity, 
+                source_component, event_message, timestamp
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+        
+        const params = [
+            eventData.session_id || null,
+            eventData.category || eventData.event_type || 'SYSTEM',
+            eventData.data || '{}',
+            eventData.level || eventData.severity || 'info',
+            eventData.component || eventData.source_component || 'Unknown',
+            eventData.message || '',
+            eventData.timestamp || new Date().toISOString()
+        ];
+        
+        return await this.runQuery(query, params);
+    }
+
+    /**
+     * Log persona generation
+     */
+    async logPersona(personaData) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        const query = `
+            INSERT INTO user_profiles (
+                email_address, site_domain, demographics, identity, 
+                professional, lifestyle, consumer_profile, optimization_score,
+                llm_optimized, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        
+        const params = [
+            personaData.email_address || null,
+            personaData.site_domain || null,
+            personaData.demographics || '{}',
+            personaData.identity || '{}',
+            personaData.professional || '{}',
+            personaData.lifestyle || '{}',
+            personaData.consumer_profile || '{}',
+            personaData.optimization_score || null,
+            personaData.llm_optimized || 0,
+            personaData.created_at || new Date().toISOString(),
+            personaData.updated_at || new Date().toISOString()
+        ];
+        
+        return await this.runQuery(query, params);
+    }
+
+    /**
+     * Get registration by email and site
+     */
+    async getRegistrationByEmailAndSite(email, site) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        const query = `
+            SELECT ra.*, ea.email, sc.password, sc.login_url
+            FROM registration_attempts ra
+            JOIN email_accounts ea ON ra.email_id = ea.id
+            LEFT JOIN site_credentials sc ON sc.email_id = ea.id AND sc.site_id = ra.site_id
+            WHERE ea.email = ? AND (ra.target_site = ? OR ra.target_site LIKE ?)
+            AND ra.success = 1
+            ORDER BY ra.completed_at DESC
+            LIMIT 1
+        `;
+        
+        return await this.getQuery(query, [email, site, `%${site}%`]);
+    }
+
+    /**
+     * Get persona by email
+     */
+    async getPersonaByEmail(email) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        const query = `
+            SELECT * FROM user_profiles 
+            WHERE email_address = ?
+            ORDER BY created_at DESC
+            LIMIT 1
+        `;
+        
+        return await this.getQuery(query, [email]);
+    }
+
+    /**
+     * Get registered sites by email
+     */
+    async getRegisteredSitesByEmail(email) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        const query = `
+            SELECT DISTINCT ra.target_site, ra.target_url, ra.completed_at,
+                   sc.username, sc.login_url
+            FROM registration_attempts ra
+            JOIN email_accounts ea ON ra.email_id = ea.id
+            LEFT JOIN site_credentials sc ON sc.email_id = ea.id
+            WHERE ea.email = ? AND ra.success = 1
+            ORDER BY ra.completed_at DESC
+        `;
+        
+        return await this.allQuery(query, [email]);
+    }
+
+    /**
+     * Log survey event
+     */
+    async logSurveyEvent(eventData) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        const query = `
+            INSERT INTO system_events (
+                session_id, event_type, event_category, severity, source_component, event_message, 
+                event_data, timestamp
+            ) VALUES (?, ?, 'SURVEY', 'INFO', 'SurveyAPI', ?, ?, ?)
+        `;
+        
+        const params = [
+            eventData.session_id || null,
+            eventData.event_type || 'survey_event',
+            eventData.message || 'Survey event',
+            eventData.data || '{}',
+            eventData.timestamp || new Date().toISOString()
+        ];
+        
+        return await this.runQuery(query, params);
+    }
+
+    /**
+     * Save session data
+     */
+    async saveSession(sessionData) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        // For now, just log to system events
+        // In a full implementation, you might want a dedicated sessions table
+        return await this.logSystemEvent({
+            category: 'SESSION',
+            level: 'INFO',
+            component: 'SessionManager',
+            message: 'Session saved',
+            data: JSON.stringify(sessionData)
+        });
+    }
+
+    /**
+     * Log login attempt
+     */
+    async logLoginAttempt(loginData) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+        
+        return await this.logSystemEvent({
+            category: 'LOGIN',
+            level: loginData.success ? 'INFO' : 'ERROR',
+            component: 'AutomaticLoginSystem',
+            message: loginData.success ? 'Login successful' : 'Login failed',
+            data: JSON.stringify(loginData)
+        });
+    }
+
+    /**
+     * Log LLM interaction (prompts and responses)
+     */
+    async logLLMInteraction(interactionData) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+
+        const query = `INSERT INTO ai_interactions (
+            registration_id, step_id, interaction_type, prompt, prompt_length, 
+            response, response_length, model_used, processing_time_ms, timestamp, 
+            success, confidence_score, tokens_used, cost_usd
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+        const isPrompt = interactionData.interaction_type === 'prompt';
+        const content = interactionData.content || '';
+        
+        const values = [
+            interactionData.registration_id || null,
+            interactionData.step_id || null,
+            interactionData.interaction_type || interactionData.prompt_type || 'unknown',
+            isPrompt ? content : (interactionData.prompt || ''), // For prompts, use content as prompt
+            isPrompt ? content.length : (interactionData.prompt?.length || 0),
+            !isPrompt ? content : (interactionData.response || ''), // For responses, use content as response
+            !isPrompt ? content.length : (interactionData.response?.length || 0),
+            interactionData.model_used || 'unknown',
+            interactionData.processing_time_ms || null,
+            interactionData.timestamp || new Date().toISOString(),
+            interactionData.success !== false ? 1 : 0,
+            interactionData.confidence_score || null,
+            interactionData.tokens_used || null,
+            interactionData.cost_usd || null
+        ];
+
+        const result = await this.runQuery(query, values);
+        console.log(`🤖 LLM ${interactionData.interaction_type} logged: ${interactionData.prompt_type}`);
+        return result.lastID;
+    }
+
+    /**
+     * Log system event
+     */
+    async logSystemEvent(eventData) {
+        // Ensure we have a database connection
+        if (!this.db) {
+            await this.initialize();
+        }
+
+        const query = `INSERT INTO system_events (
+            session_id, event_type, event_data, severity, 
+            source_component, event_message
+        ) VALUES (?, ?, ?, ?, ?, ?)`;
+
+        const values = [
+            eventData.session_id || null,
+            eventData.event_type || eventData.category || 'system',
+            eventData.data || '{}',
+            eventData.severity || eventData.level || 'info',
+            eventData.source_component || eventData.component || 'unknown',
+            eventData.message || ''
+        ];
+
+        const result = await this.runQuery(query, values);
+        console.log(`📋 System event logged: [${eventData.level?.toUpperCase()}] ${eventData.message}`);
+        return result.lastID;
+    }
+
+    /**
+     * Log registration attempt with ML features
+     */
+    async logRegistrationAttempt(attemptData) {
+        // Enhanced logging for ML with detailed features
+        await this.logSystemEvent({
+            eventType: 'registration_attempt',
+            message: `Registration ${attemptData.success ? 'succeeded' : 'failed'} on ${attemptData.siteName || attemptData.siteUrl}`,
+            eventData: {
+                // Core data
+                siteUrl: attemptData.siteUrl,
+                siteName: attemptData.siteName,
+                success: attemptData.success,
+                stepsCompleted: attemptData.stepsCompleted,
+                timeSpent: attemptData.timeSpent,
+                failureReason: attemptData.failureReason,
+                
+                // ML Features for learning
+                difficulty: attemptData.difficulty,
+                formStructure: attemptData.formStructure,
+                antiDetectionMeasures: attemptData.antiDetectionMeasures,
+                userAgentUsed: attemptData.userAgentUsed,
+                viewportUsed: attemptData.viewportUsed,
+                timingPattern: attemptData.timingPattern,
+                emailServiceUsed: attemptData.emailServiceUsed,
+                
+                // Success predictors
+                formFieldCount: attemptData.formFieldCount,
+                hasHoneypots: attemptData.hasHoneypots,
+                hasCaptcha: attemptData.hasCaptcha,
+                hasCloudflare: attemptData.hasCloudflare,
+                pageLoadTime: attemptData.pageLoadTime,
+                
+                // Behavioral metrics
+                mouseMovements: attemptData.mouseMovements,
+                keystrokes: attemptData.keystrokes,
+                scrollEvents: attemptData.scrollEvents,
+                focusEvents: attemptData.focusEvents
+            },
+            severity: attemptData.success ? 'info' : 'warning',
+            sourceComponent: 'training_system'
+        });
+        
+        console.log(`📝 Registration attempt logged: ${attemptData.siteUrl} - ${attemptData.success ? 'SUCCESS' : 'FAILED'}`);
+    }
+
+    /**
+     * Log survey completion attempt with ML features
+     */
+    async logSurveyCompletion(surveyData) {
+        await this.logSystemEvent({
+            eventType: 'survey_completion',
+            message: `Survey ${surveyData.success ? 'completed' : 'failed'} on ${surveyData.siteName}`,
+            eventData: {
+                // Core survey data
+                siteUrl: surveyData.siteUrl,
+                siteName: surveyData.siteName,
+                surveyUrl: surveyData.surveyUrl,
+                success: surveyData.success,
+                questionsAnswered: surveyData.questionsAnswered,
+                totalQuestions: surveyData.totalQuestions,
+                timeSpent: surveyData.timeSpent,
+                completionRate: surveyData.completionRate,
+                
+                // ML Features
+                questionTypes: surveyData.questionTypes, // Array of types encountered
+                difficultyLevel: surveyData.difficultyLevel,
+                surveyLength: surveyData.surveyLength,
+                hasLogicBranching: surveyData.hasLogicBranching,
+                hasValidation: surveyData.hasValidation,
+                hasProgressBar: surveyData.hasProgressBar,
+                
+                // Response patterns
+                responseStrategies: surveyData.responseStrategies,
+                averageResponseTime: surveyData.averageResponseTime,
+                longestPause: surveyData.longestPause,
+                shortestResponse: surveyData.shortestResponse,
+                
+                // Technical details
+                userAgentUsed: surveyData.userAgentUsed,
+                viewportUsed: surveyData.viewportUsed,
+                rotationPattern: surveyData.rotationPattern,
+                
+                // Error/failure analysis
+                failureReason: surveyData.failureReason,
+                errorStep: surveyData.errorStep,
+                lastQuestionType: surveyData.lastQuestionType
+            },
+            severity: surveyData.success ? 'info' : 'warning',
+            sourceComponent: 'survey_filler'
+        });
+        
+        console.log(`📋 Survey completion logged: ${surveyData.surveyUrl} - ${surveyData.success ? 'COMPLETED' : 'FAILED'}`);
+    }
+
+    /**
+     * Log form interaction details for ML learning
+     */
+    async logFormInteractionML(interactionData) {
+        await this.logSystemEvent({
+            eventType: 'form_interaction_ml',
+            message: `Form interaction: ${interactionData.action} on ${interactionData.fieldType}`,
+            eventData: {
+                // Form field details
+                fieldType: interactionData.fieldType,
+                fieldName: interactionData.fieldName,
+                fieldSelector: interactionData.fieldSelector,
+                fieldLabel: interactionData.fieldLabel,
+                fieldPlaceholder: interactionData.fieldPlaceholder,
+                fieldRequired: interactionData.fieldRequired,
+                fieldVisible: interactionData.fieldVisible,
+                
+                // Interaction details
+                action: interactionData.action, // 'fill', 'click', 'select', 'skip'
+                inputValue: interactionData.inputValue,
+                interactionTime: interactionData.interactionTime,
+                retryCount: interactionData.retryCount,
+                success: interactionData.success,
+                
+                // AI decisions
+                aiClassification: interactionData.aiClassification,
+                confidenceScore: interactionData.confidenceScore,
+                alternativeStrategies: interactionData.alternativeStrategies,
+                
+                // Detection avoidance
+                honeypotDetected: interactionData.honeypotDetected,
+                humanLikeDelay: interactionData.humanLikeDelay,
+                mouseMovementPattern: interactionData.mouseMovementPattern,
+                typingPattern: interactionData.typingPattern,
+                
+                // Context
+                siteUrl: interactionData.siteUrl,
+                siteName: interactionData.siteName,
+                formIndex: interactionData.formIndex,
+                fieldIndex: interactionData.fieldIndex
+            },
+            severity: interactionData.success ? 'info' : 'warning',
+            sourceComponent: 'form_automation'
+        });
+    }
+
+    /**
+     * Log rotation system performance for optimization
+     */
+    async logRotationPerformance(rotationData) {
+        await this.logSystemEvent({
+            eventType: 'rotation_performance',
+            message: `Rotation performance: ${rotationData.componentType}`,
+            eventData: {
+                componentType: rotationData.componentType, // 'user_agent', 'email_service', 'viewport', etc.
+                selectedValue: rotationData.selectedValue,
+                successRate: rotationData.successRate,
+                usageCount: rotationData.usageCount,
+                reliability: rotationData.reliability,
+                
+                // Performance metrics
+                selectionTime: rotationData.selectionTime,
+                diversityScore: rotationData.diversityScore,
+                repetitionAvoidance: rotationData.repetitionAvoidance,
+                
+                // Context
+                sessionId: rotationData.sessionId,
+                totalRotations: rotationData.totalRotations,
+                uniqueValues: rotationData.uniqueValues,
+                
+                // Adaptation data
+                weightAdjustment: rotationData.weightAdjustment,
+                reliabilityChange: rotationData.reliabilityChange,
+                optimalValue: rotationData.optimalValue
+            },
+            severity: 'info',
+            sourceComponent: 'rotation_manager'
+        });
+    }
+
+    /**
+     * Log detection event for countermeasure analysis
+     */
+    async logDetectionEvent(detectionData) {
+        await this.logSystemEvent({
+            eventType: 'detection_event',
+            message: `Detection event: ${detectionData.detectionType} on ${detectionData.siteName}`,
+            eventData: {
+                // Detection details
+                detectionType: detectionData.detectionType, // 'captcha', 'rate_limit', 'blocked', 'suspicious'
+                detectionMethod: detectionData.detectionMethod,
+                severity: detectionData.severity,
+                bypassAttempted: detectionData.bypassAttempted,
+                bypassSuccess: detectionData.bypassSuccess,
+                
+                // Site context
+                siteUrl: detectionData.siteUrl,
+                siteName: detectionData.siteName,
+                pageType: detectionData.pageType, // 'registration', 'survey', 'login'
+                
+                // Browser fingerprint at detection
+                userAgent: detectionData.userAgent,
+                viewport: detectionData.viewport,
+                ipAddress: detectionData.ipAddress,
+                
+                // Behavioral markers that may have triggered detection
+                requestRate: detectionData.requestRate,
+                mouseMovements: detectionData.mouseMovements,
+                typingSpeed: detectionData.typingSpeed,
+                sessionDuration: detectionData.sessionDuration,
+                
+                // Recovery strategy
+                recoveryStrategy: detectionData.recoveryStrategy,
+                recoverySuccess: detectionData.recoverySuccess,
+                rotationTriggered: detectionData.rotationTriggered
+            },
+            severity: 'warning',
+            sourceComponent: 'anti_detection'
+        });
+        
+        console.log(`🚨 Detection event logged: ${detectionData.detectionType} on ${detectionData.siteName}`);
     }
 
     /**

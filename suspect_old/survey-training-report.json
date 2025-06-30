@@ -1,0 +1,97 @@
+{
+  "trainingDate": "2025-06-24T18:19:17.168Z",
+  "statistics": {
+    "sitesProcessed": 4,
+    "registrationsAttempted": 4,
+    "registrationsSuccessful": 2,
+    "surveysCompleted": 0,
+    "errorsEncountered": 0,
+    "learningInsights": [
+      {
+        "siteName": "SurveyPlanet",
+        "registrationSuccess": false,
+        "learningPoints": [
+          "Need better error handling"
+        ],
+        "improvementAreas": [
+          "No registration form found"
+        ],
+        "successFactors": []
+      },
+      {
+        "siteName": "TypeForm",
+        "registrationSuccess": false,
+        "learningPoints": [
+          "Need better error handling"
+        ],
+        "improvementAreas": [
+          "page.goto: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://typeform.com/signup\", waiting until \"networkidle\"\u001b[22m\n"
+        ],
+        "successFactors": []
+      },
+      {
+        "siteName": "Google Forms",
+        "registrationSuccess": true,
+        "learningPoints": [
+          "Site patterns recognized correctly"
+        ],
+        "improvementAreas": [],
+        "successFactors": [
+          "Registration automation successful"
+        ]
+      },
+      {
+        "siteName": "Survey Monkey",
+        "registrationSuccess": true,
+        "learningPoints": [
+          "Site patterns recognized correctly"
+        ],
+        "improvementAreas": [],
+        "successFactors": [
+          "Registration automation successful"
+        ]
+      }
+    ]
+  },
+  "trainingSites": [
+    {
+      "name": "SurveyPlanet",
+      "baseUrl": "https://surveyplanet.com",
+      "registrationUrl": "https://surveyplanet.com/auth/register",
+      "sampleSurveys": [
+        "https://surveyplanet.com/examples/customer-satisfaction",
+        "https://surveyplanet.com/examples/market-research"
+      ],
+      "difficulty": "medium",
+      "priority": "high"
+    },
+    {
+      "name": "TypeForm",
+      "baseUrl": "https://typeform.com",
+      "registrationUrl": "https://typeform.com/signup",
+      "sampleSurveys": [],
+      "difficulty": "medium",
+      "priority": "medium"
+    },
+    {
+      "name": "Google Forms",
+      "baseUrl": "https://forms.google.com",
+      "registrationUrl": "https://accounts.google.com/signup",
+      "sampleSurveys": [],
+      "difficulty": "high",
+      "priority": "medium"
+    },
+    {
+      "name": "Survey Monkey",
+      "baseUrl": "https://surveymonkey.com",
+      "registrationUrl": "https://surveymonkey.com/user/sign-up",
+      "sampleSurveys": [],
+      "difficulty": "high",
+      "priority": "medium"
+    }
+  ],
+  "recommendations": [
+    "Develop better survey question understanding",
+    "Improve answer generation logic"
+  ]
+}

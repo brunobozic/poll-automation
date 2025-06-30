@@ -1,12 +1,14 @@
+const { getDatabaseManager } = require('./database-manager.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const EncryptionManager = require('../security/encryption');
+// const EncryptionManager = require('../security/encryption'); // Module not found
 
 class DatabaseManager {
-  constructor() {
-    this.dbPath = path.join(__dirname, '../../data/polls.db');
-    this.db = null;
-    this.encryption = new EncryptionManager();
+  constructor(dbPath = './poll-automation.db') {
+    // Database path managed by DatabaseManager
+        this.dbPath = dbPath;
+        this.db = null; // Will be initialized with DatabaseManager
+        // this.encryption = new EncryptionManager(); // Module not found
   }
 
   // Initialize database connection

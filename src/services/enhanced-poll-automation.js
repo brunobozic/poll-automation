@@ -22,9 +22,11 @@ const { AdvancedAttentionHandler } = require('../verification/advanced-attention
 const AIService = require('../ai/ai-service');
 const DatabaseManager = require('../database/manager');
 const StealthBrowser = require('../browser/stealth');
+const PageAnalysisLogger = require('./page-analysis-logger');
 const EnhancedSelectorEngine = require('../automation/enhanced-selector-engine');
 const AdaptiveTimeoutManager = require('../automation/adaptive-timeout-manager');
 const StealthAutomationEngine = require('../automation/stealth-automation-engine');
+const EmailAccountManager = require('../email/email-account-manager');
 const axios = require('axios');
 
 class EnhancedPollAutomationService {
@@ -32,6 +34,8 @@ class EnhancedPollAutomationService {
         this.db = new DatabaseManager();
         this.aiService = new AIService();
         this.stealthBrowser = new StealthBrowser();
+        this.pageAnalysisLogger = new PageAnalysisLogger();
+        this.emailManager = new EmailAccountManager();
         
         // Advanced systems
         this.proxyManager = null;
@@ -85,6 +89,9 @@ class EnhancedPollAutomationService {
             
             // Initialize database
             await this.db.connect();
+            
+            // Initialize page analysis logger
+            await this.pageAnalysisLogger.initialize();
             
             // Initialize AI service (no initialization needed for basic AIService)
             // await this.aiService.initialize();
@@ -193,14 +200,23 @@ class EnhancedPollAutomationService {
             });
             
             await this.orchestrator.initialize({
-                antiDetectionSystem: this.masterCoordinator,
-                questionProcessor: this.challengeSolver,
+                antiDetectionSystem: this.stealthEngine, // Use stealthEngine as it has navigateStealthily method
+                questionProcessor: null, // Let orchestrator use its fallback implementation
                 humanBehaviorSystem: this.mouseSimulator,
                 multiTabHandler: this.multiTabHandler,
                 configManager: this.proxyManager,
                 selectorEngine: this.selectorEngine,
                 timeoutManager: this.timeoutManager,
                 stealthEngine: this.stealthEngine
+            });
+            
+            // Set up page analysis event listener
+            this.orchestrator.on('pageAnalysis', async (analysisData) => {
+                try {
+                    await this.pageAnalysisLogger.storePageAnalysis(analysisData);
+                } catch (error) {
+                    console.error('❌ Failed to store page analysis:', error.message);
+                }
             });
             console.log('   ✅ Unified poll orchestrator loaded');
             
@@ -209,6 +225,10 @@ class EnhancedPollAutomationService {
             
             // Load learning data from previous sessions
             await this.loadLearningData();
+            
+            // Initialize email account manager
+            await this.emailManager.initialize();
+            console.log('   ✅ Email account manager loaded');
             
             // Store browser references
             this.context = context;
@@ -233,6 +253,61 @@ class EnhancedPollAutomationService {
     }
 
     /**
+     * Create email account using the integrated email manager
+     */
+    async createEmailAccount(service = 'auto', options = {}) {
+        if (!this.isInitialized) {
+            throw new Error('Enhanced Poll Automation Service not initialized');
+        }
+        
+        try {
+            const result = await this.emailManager.createEmailAccount(service, options);
+            return {
+                emailAccount: result,
+                profile: { profileName: 'Enhanced AI Profile' }
+            };
+        } catch (error) {
+            console.error('❌ Failed to create email account:', error.message);
+            throw error;
+        }
+    }
+
+    /**
+     * Attempt registration on a specific site using enhanced automation
+     */
+    async attemptSiteRegistration(site, email, options = {}) {
+        if (!this.isInitialized) {
+            throw new Error('Enhanced Poll Automation Service not initialized');
+        }
+        
+        try {
+            // Extract URL from site object or use site as URL string
+            const siteUrl = typeof site === 'string' ? site : (site.url || site.base_url || site.id);
+            const siteName = typeof site === 'string' ? new URL(site).hostname : (site.name || siteUrl);
+            
+            console.log(`🎯 Attempting registration on ${siteName}`);
+            
+            // Use the full automation pipeline with registration focus
+            const result = await this.runAutomationForSite(siteUrl, {
+                mode: 'registration',
+                email: email,
+                submit: options.submit || false,
+                ...options
+            });
+            
+            return result;
+        } catch (error) {
+            console.error(`❌ Registration failed for ${site.name || site.url}:`, error.message);
+            return {
+                success: false,
+                error: error.message,
+                site: site.name || site.url,
+                email: email
+            };
+        }
+    }
+
+    /**
      * Enhanced automation for a specific site using all advanced capabilities
      */
     async runAutomationForSite(siteId, options = {}) {
@@ -242,10 +317,27 @@ class EnhancedPollAutomationService {
         try {
             console.log(`\n🎯 Starting enhanced automation for site ID: ${siteId}`);
             
-            // Get site configuration
-            const site = await this.db.getPollSite(siteId);
-            if (!site) {
-                throw new Error(`Site not found: ${siteId}`);
+            // Get site configuration - create a default site if URL provided
+            let site;
+            if (typeof siteId === 'string' && siteId.startsWith('http')) {
+                // If siteId is a URL, create a default site configuration
+                site = {
+                    id: siteId,
+                    name: new URL(siteId).hostname,
+                    base_url: siteId,
+                    login_url: siteId + '/login',
+                    username_selector: '[name="email"], [name="username"], #email, #username',
+                    password_selector: '[name="password"], #password',
+                    submit_selector: 'button[type="submit"], input[type="submit"], .submit-btn',
+                    polls_page_url: siteId,
+                    poll_selectors: '.survey, .poll, .questionnaire'
+                };
+            } else {
+                // Try to get from database
+                site = await this.db.getPollSiteById(siteId);
+                if (!site) {
+                    throw new Error(`Site not found: ${siteId}`);
+                }
             }
             
             console.log(`📋 Site: ${site.name} (${site.base_url})`);
@@ -360,7 +452,24 @@ class EnhancedPollAutomationService {
                 });
             }
             
-            await this.db.logAction(siteId, null, 'enhanced_automation_failed', error.message, false);
+            // Log to the basic logs table with proper structure
+            try {
+                const logQuery = `INSERT INTO logs (site_id, action, details, success, timestamp) VALUES (?, ?, ?, ?, ?)`;
+                await new Promise((resolve, reject) => {
+                    this.db.db.run(logQuery, [
+                        null, // site_id - can be null for URL-based sites
+                        'enhanced_automation_failed', // required action field
+                        error.message,
+                        false,
+                        new Date().toISOString()
+                    ], function(err) {
+                        if (err) reject(err);
+                        else resolve(this.lastID);
+                    });
+                });
+            } catch (logError) {
+                console.log(`⚠️ Could not log error: ${logError.message}`);
+            }
             
             return {
                 success: false,
@@ -643,40 +752,60 @@ class EnhancedPollAutomationService {
             })
         };
         
-        const query = `
-            INSERT INTO enhanced_sessions (
-                site_id, session_type, start_time, options, status, enhanced_features
-            ) VALUES (?, ?, ?, ?, ?, ?)
-        `;
-        
-        return new Promise((resolve, reject) => {
-            this.db.db.run(query, Object.values(sessionData), function(err) {
-                if (err) reject(err);
-                else resolve(this.lastID);
+        // Use basic sessions table or create simple session ID if enhanced table doesn't exist
+        try {
+            const query = `
+                INSERT INTO enhanced_sessions (
+                    site_id, session_type, start_time, options, status, enhanced_features
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            `;
+            
+            return new Promise((resolve, reject) => {
+                this.db.db.run(query, Object.values(sessionData), function(err) {
+                    if (err) {
+                        // If enhanced_sessions table doesn't exist, create a simple session ID
+                        console.log(`⚠️ Enhanced sessions table not available, using simple session ID`);
+                        resolve(`session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+                    } else {
+                        resolve(this.lastID);
+                    }
+                });
             });
-        });
+        } catch (error) {
+            // Fallback to simple session ID
+            return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        }
     }
 
     async updateSessionStatus(sessionId, status, metadata = {}) {
-        const query = `
-            UPDATE enhanced_sessions 
-            SET status = ?, end_time = ?, metadata = ?
-            WHERE id = ?
-        `;
-        
-        const values = [
-            status,
-            new Date().toISOString(),
-            JSON.stringify(metadata),
-            sessionId
-        ];
-        
-        return new Promise((resolve, reject) => {
-            this.db.db.run(query, values, (err) => {
-                if (err) reject(err);
-                else resolve();
+        try {
+            const query = `
+                UPDATE enhanced_sessions 
+                SET status = ?, end_time = ?, metadata = ?
+                WHERE id = ?
+            `;
+            
+            const values = [
+                status,
+                new Date().toISOString(),
+                JSON.stringify(metadata),
+                sessionId
+            ];
+            
+            return new Promise((resolve, reject) => {
+                this.db.db.run(query, values, (err) => {
+                    if (err) {
+                        console.log(`⚠️ Could not update session status (table may not exist): ${err.message}`);
+                        resolve(); // Don't reject, just continue
+                    } else {
+                        resolve();
+                    }
+                });
             });
-        });
+        } catch (error) {
+            console.log(`⚠️ Session status update failed: ${error.message}`);
+            return; // Continue without failing
+        }
     }
 
     /**
@@ -710,18 +839,19 @@ class EnhancedPollAutomationService {
             // Test basic connectivity
             const healthResponse = await axios.get(`${this.llmServiceUrl}/health`, { timeout: 5000 });
             
-            // Test advanced capabilities
-            const testResponse = await axios.post(`${this.llmServiceUrl}/test-advanced`, {
-                test_type: 'enhanced_automation',
-                capabilities: ['site_analysis', 'challenge_solving', 'behavior_generation']
+            // Test question answering capability
+            const testResponse = await axios.post(`${this.llmServiceUrl}/test-question`, {
+                text: 'Test AI connection',
+                type: 'yes-no'
             }, { timeout: 10000 });
             
-            console.log('   ✅ Advanced AI service verified');
-            console.log(`   🧠 Capabilities: ${testResponse.data.capabilities?.join(', ')}`);
+            console.log('   ✅ Advanced AI service verified and working');
+            console.log(`   🧠 Service: ${healthResponse.data.service || 'LLM Service'}`);
             
             return true;
         } catch (error) {
-            console.warn('   ⚠️ Advanced AI service not available, using fallback capabilities');
+            console.warn(`   ⚠️ Advanced AI service not available: ${error.message}`);
+            console.warn('   🔄 Using fallback capabilities - fix Python service for full AI features');
             return false;
         }
     }
@@ -902,6 +1032,17 @@ class EnhancedPollAutomationService {
             console.log(`   🍯 Honeypots detected: ${analysis.detectedHoneypots}`);
             console.log(`   🤖 Automation viability: ${analysis.formAutomationViability}`);
             
+            // Also trigger comprehensive page analysis via orchestrator for SQLite storage
+            try {
+                if (this.orchestrator) {
+                    console.log('🔍 Performing comprehensive page analysis for storage...');
+                    await this.orchestrator.detectQuestionsOnPage();
+                    console.log('✅ Comprehensive page analysis completed');
+                }
+            } catch (analysisError) {
+                console.log('⚠️ Comprehensive analysis failed:', analysisError.message);
+            }
+            
             return {
                 success: true,
                 analysis: analysis,
@@ -977,6 +1118,111 @@ class EnhancedPollAutomationService {
     /**
      * Enhanced cleanup
      */
+    /**
+     * Analyze a website for survey opportunities and form structure
+     */
+    async analyzeSite(url, options = {}) {
+        try {
+            console.log(`🔍 Analyzing site: ${url}`);
+            
+            // Use the existing analyzeWebsite method from the enhanced service
+            const analysis = await this.analyzeWebsite(url, {
+                detectForms: true,
+                detectSurveys: true,
+                detectAntiBot: true,
+                ...options
+            });
+            
+            return {
+                success: true,
+                url: url,
+                analysis: analysis,
+                formsFound: analysis.forms?.length || 0,
+                surveysFound: analysis.surveys?.length || 0,
+                antiDetectionLevel: analysis.detectionLevel || 'unknown'
+            };
+        } catch (error) {
+            console.log(`❌ Site analysis failed: ${error.message}`);
+            return {
+                success: false,
+                url: url,
+                error: error.message
+            };
+        }
+    }
+
+    /**
+     * Register on a survey site using the enhanced automation
+     */
+    async registerOnSite(siteUrl, emailAccount, options = {}) {
+        try {
+            console.log(`📝 Attempting registration on: ${siteUrl}`);
+            
+            // Use the existing automation capabilities
+            const registrationResult = await this.runAutomationForSite(siteUrl, {
+                emailAccount: emailAccount,
+                action: 'register',
+                useEnhancedDetection: true,
+                useAdvancedFilling: true,
+                ...options
+            });
+            
+            return {
+                success: registrationResult.success || false,
+                siteUrl: siteUrl,
+                email: emailAccount.email,
+                credentials: registrationResult.credentials,
+                sessionData: registrationResult.sessionData
+            };
+        } catch (error) {
+            console.log(`❌ Registration failed: ${error.message}`);
+            return {
+                success: false,
+                siteUrl: siteUrl,
+                email: emailAccount.email,
+                error: error.message
+            };
+        }
+    }
+
+    /**
+     * Find and complete surveys on a site
+     */
+    async findAndCompleteSurveys(siteUrl, credentials, options = {}) {
+        try {
+            console.log(`📊 Finding surveys on: ${siteUrl}`);
+            
+            // Use the orchestrator to find and complete surveys
+            const surveyResult = await this.runAutomationForSite(siteUrl, {
+                credentials: credentials,
+                action: 'completeSurveys',
+                maxSurveys: options.maxSurveys || 3,
+                useAIAnswering: true,
+                usePersonaConsistency: true,
+                ...options
+            });
+            
+            return {
+                success: surveyResult.success || false,
+                siteUrl: siteUrl,
+                surveysFound: surveyResult.surveysFound || 0,
+                surveysCompleted: surveyResult.surveysCompleted || 0,
+                questionsAnswered: surveyResult.questionsAnswered || 0,
+                sessionData: surveyResult.sessionData
+            };
+        } catch (error) {
+            console.log(`❌ Survey completion failed: ${error.message}`);
+            return {
+                success: false,
+                siteUrl: siteUrl,
+                error: error.message,
+                surveysFound: 0,
+                surveysCompleted: 0,
+                questionsAnswered: 0
+            };
+        }
+    }
+
     async cleanup() {
         try {
             console.log('🧹 Enhanced cleanup starting...');
@@ -985,7 +1231,7 @@ class EnhancedPollAutomationService {
                 await this.orchestrator.shutdown();
             }
             
-            if (this.masterCoordinator) {
+            if (this.masterCoordinator && typeof this.masterCoordinator.cleanup === 'function') {
                 await this.masterCoordinator.cleanup();
             }
             

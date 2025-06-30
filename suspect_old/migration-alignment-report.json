@@ -1,0 +1,49 @@
+{
+  "verificationDate": "2025-06-24T07:27:25.880Z",
+  "database": "./poll-automation.db",
+  "migrationFile": "src/database/migrations/001_complete_unified_schema.js",
+  "results": {
+    "totalTablesInDb": 60,
+    "totalTablesInMigration": 61,
+    "matchingTables": 60,
+    "missingFromMigration": [],
+    "extraInMigration": [
+      "performance_metrics"
+    ],
+    "schemaMatches": [
+      {
+        "table": "email_accounts",
+        "columns": 13,
+        "verified": true
+      },
+      {
+        "table": "registration_attempts",
+        "columns": 24,
+        "verified": true
+      },
+      {
+        "table": "ai_interactions",
+        "columns": 20,
+        "verified": true
+      },
+      {
+        "table": "survey_sites",
+        "columns": 17,
+        "verified": true
+      },
+      {
+        "table": "form_interactions",
+        "columns": 17,
+        "verified": true
+      },
+      {
+        "table": "system_events",
+        "columns": 9,
+        "verified": true
+      }
+    ],
+    "schemaMismatches": [],
+    "alignmentPercentage": 98.36065573770492
+  },
+  "recommendation": "Migrations are excellently aligned. No action needed."
+}

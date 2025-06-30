@@ -6,8 +6,10 @@
 
 const { chromium } = require('playwright');
 const crypto = require('crypto');
+const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs').promises;
 const path = require('path');
+const LLMEmailAnalyzer = require('./llm-email-analyzer');
 
 class EmailAccountManager {
     constructor(options = {}) {
@@ -53,9 +55,88 @@ class EmailAccountManager {
         ];
 
         this.activeAccounts = new Map();
+        this.db = null; // Will be initialized in initialize()
         this.verificationQueue = new Set();
+        this.llmAnalyzer = new LLMEmailAnalyzer(options);
     }
 
+    
+    async initializeDatabase() {
+        return new Promise((resolve, reject) => {
+            this.db = new sqlite3.Database('poll-automation.db', (err) => {
+                if (err) {
+                    this.log('❌ Database connection failed: ' + err.message);
+                    reject(err);
+                } else {
+                    this.log('✅ Database connected for email management');
+                    resolve();
+                }
+            });
+        });
+    }
+    
+    async saveEmailToDatabase(emailData) {
+        if (!this.db) {
+            await this.initializeDatabase();
+        }
+        
+        return new Promise((resolve, reject) => {
+            // First check if email already exists
+            const checkQuery = `SELECT id FROM email_accounts WHERE email = ?`;
+            
+            this.db.get(checkQuery, [emailData.email], (err, existingEmail) => {
+                if (err) {
+                    console.error('❌ Failed to check existing email:', err.message);
+                    reject(err);
+                    return;
+                }
+                
+                if (existingEmail) {
+                    console.log('⚠️ Email already exists in database, skipping:', emailData.email);
+                    resolve(existingEmail.id);
+                    return;
+                }
+                
+                // Email doesn't exist, proceed with insert
+                const insertQuery = `INSERT INTO email_accounts 
+                    (email, service, username, password, inbox_url, service_specific_data, is_verified, is_active) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+                
+                this.db.run(insertQuery, [
+                    emailData.email,
+                    emailData.service || 'tempmail',
+                    emailData.username || '',
+                    emailData.password || '',
+                    emailData.inboxUrl || '',
+                    JSON.stringify(emailData.serviceData || {}),
+                    emailData.verified ? 1 : 0,
+                    1 // is_active
+                ], function(err) {
+                    if (err) {
+                        if (err.message.includes('UNIQUE constraint failed')) {
+                            // Race condition - another process inserted the same email
+                            console.log('⚠️ Email was inserted by another process, continuing:', emailData.email);
+                            // Get the ID of the existing email
+                            this.get(checkQuery, [emailData.email], (checkErr, existingEmail) => {
+                                if (checkErr) {
+                                    reject(checkErr);
+                                } else {
+                                    resolve(existingEmail ? existingEmail.id : null);
+                                }
+                            });
+                        } else {
+                            console.error('❌ Failed to save email to database:', err.message);
+                            reject(err);
+                        }
+                    } else {
+                        console.log('✅ Email saved to database:', emailData.email);
+                        resolve(this.lastID);
+                    }
+                }.bind(this.db));
+            });
+        });
+    }
+    
     async initialize() {
         this.log('🚀 Initializing Email Account Manager...');
         
@@ -101,6 +182,86 @@ class EmailAccountManager {
     }
 
     /**
+     * Handle modal popups and consent dialogs using LLM intelligence
+     */
+    async handleModalPopups() {
+        try {
+            // Common modal/popup selectors
+            const modalSelectors = [
+                '.modal', '.popup', '.overlay', '.dialog', '[role="dialog"]',
+                '.consent', '.cookie', '.gdpr', '.privacy',
+                '[class*="modal"]', '[class*="popup"]', '[class*="overlay"]',
+                '[id*="modal"]', '[id*="popup"]', '[id*="consent"]'
+            ];
+
+            // Check for visible modals
+            for (const selector of modalSelectors) {
+                try {
+                    const modal = await this.page.locator(selector).first();
+                    if (await modal.isVisible({ timeout: 1000 })) {
+                        this.log(`🔍 Found modal: ${selector}`);
+                        
+                        // Get modal content for LLM analysis
+                        const modalText = await modal.textContent();
+                        
+                        // Common consent/agreement buttons
+                        const buttonSelectors = [
+                            'button:has-text("Accept")', 'button:has-text("Agree")', 
+                            'button:has-text("I Agree")', 'button:has-text("OK")',
+                            'button:has-text("Continue")', 'button:has-text("Allow")',
+                            'button:has-text("Yes")', 'button:has-text("Consent")',
+                            '[class*="accept"]', '[class*="agree"]', '[class*="continue"]',
+                            '.btn-primary', '.btn-accept', '.consent-btn'
+                        ];
+                        
+                        // Try to find and click appropriate button
+                        for (const btnSelector of buttonSelectors) {
+                            try {
+                                const button = modal.locator(btnSelector).first();
+                                if (await button.isVisible({ timeout: 500 })) {
+                                    this.log(`✅ Clicking consent button: ${btnSelector}`);
+                                    await button.click();
+                                    await this.page.waitForTimeout(1000);
+                                    return true;
+                                }
+                            } catch (e) {
+                                // Continue with next selector
+                            }
+                        }
+                        
+                        // If no standard button found, try close buttons
+                        const closeSelectors = [
+                            'button:has-text("×")', 'button:has-text("Close")',
+                            '.close', '.dismiss', '[aria-label="Close"]'
+                        ];
+                        
+                        for (const closeSelector of closeSelectors) {
+                            try {
+                                const closeBtn = modal.locator(closeSelector).first();
+                                if (await closeBtn.isVisible({ timeout: 500 })) {
+                                    this.log(`🚫 Closing modal: ${closeSelector}`);
+                                    await closeBtn.click();
+                                    await this.page.waitForTimeout(1000);
+                                    return true;
+                                }
+                            } catch (e) {
+                                // Continue
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // Continue with next modal selector
+                }
+            }
+            
+            return false;
+        } catch (error) {
+            this.log(`⚠️ Modal handling error: ${error.message}`);
+            return false;
+        }
+    }
+
+    /**
      * Create a new email account using the specified service
      */
     async createEmailAccount(service = 'auto', options = {}) {
@@ -109,30 +270,51 @@ class EmailAccountManager {
         
         this.log(`📧 Creating new email account (Session: ${sessionId})...`);
 
-        // Add retry logic for network issues
+        // Add retry logic for network issues and duplicate emails
         let lastError;
-        const maxRetries = 3;
+        const maxRetries = 5; // Increased retries for duplicate handling
+        const triedServices = new Set();
+        let currentService = service;
         
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 this.log(`🔄 Attempt ${attempt}/${maxRetries}...`);
                 
-                // Auto-select service if not specified
-                if (service === 'auto') {
-                    service = this.selectBestService();
+                // Auto-select service using rotation if available
+                if (currentService === 'auto') {
+                    currentService = this.selectBestServiceWithRotation(options.rotationManager);
                 }
 
-                const serviceConfig = this.getServiceConfig(service);
+                const serviceConfig = this.getServiceConfig(currentService);
                 if (!serviceConfig) {
-                    throw new Error(`Unsupported email service: ${service}`);
+                    throw new Error(`Unsupported email service: ${currentService}`);
                 }
 
                 this.log(`🎯 Using service: ${serviceConfig.name} (${serviceConfig.difficulty})`);
+                triedServices.add(serviceConfig.name);
 
                 // Execute service-specific creation method
                 const result = await this[serviceConfig.method + 'CreateAccount'](sessionId, options);
             
                 if (result.success) {
+                    // Check if this email already exists in database
+                    if (await this.emailExistsInDatabase(result.email)) {
+                        this.log(`⚠️ Email ${result.email} already exists, retrying with different service...`);
+                        
+                        // Try a different service if available
+                        const availableServices = this.supportedServices.filter(s => 
+                            !triedServices.has(s.name) && s.difficulty !== 'hard'
+                        );
+                        
+                        if (availableServices.length > 0) {
+                            currentService = availableServices[0].method;
+                            this.log(`🔄 Switching to service: ${availableServices[0].name}`);
+                            continue; // Try again with different service
+                        } else {
+                            this.log(`⚠️ All services tried, accepting duplicate email: ${result.email}`);
+                        }
+                    }
+
                     const account = {
                         ...result,
                         service: serviceConfig.name,
@@ -145,6 +327,27 @@ class EmailAccountManager {
 
                     this.activeAccounts.set(result.email, account);
                     this.log(`✅ Email account created: ${result.email} (${account.duration}ms)`);
+                    
+                    // Save to database (now handles duplicates gracefully)
+                    try {
+                        this.log(`💾 Saving email to database...`);
+                        const dbId = await this.saveEmailToDatabase({
+                            email: result.email,
+                            service: serviceConfig.name,
+                            username: result.username || '',
+                            password: result.password || '',
+                            inboxUrl: result.inbox,
+                            serviceData: result.sessionData || {},
+                            verified: false
+                        });
+                        this.log(`✅ Email saved to database successfully (ID: ${dbId})`);
+                        account.databaseId = dbId;
+                    } catch (error) {
+                        this.log(`⚠️ Database save failed: ${error.message}`);
+                        // Don't fail the entire operation if database save fails
+                        // The email account is still valid for use
+                        account.databaseSaveError = error.message;
+                    }
                     
                     return account;
                 } else {
@@ -159,10 +362,17 @@ class EmailAccountManager {
                     this.log(`⏳ Waiting before retry...`);
                     await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
                     
-                    // Try different service on retry
-                    if (attempt === 2 && service === 'tempmail') {
-                        service = 'tenminute';
-                        this.log(`🔄 Switching to backup service: 10MinuteMail`);
+                    // Try different service on retry based on what we haven't tried
+                    const availableServices = this.supportedServices.filter(s => 
+                        !triedServices.has(s.name) && s.difficulty !== 'hard'
+                    );
+                    
+                    if (availableServices.length > 0) {
+                        currentService = availableServices[0].method;
+                        this.log(`🔄 Switching to service: ${availableServices[0].name}`);
+                    } else {
+                        // Reset to original service if no alternatives available
+                        currentService = service === 'auto' ? 'tempmail' : service;
                     }
                 }
             }
@@ -173,86 +383,132 @@ class EmailAccountManager {
     }
 
     /**
+     * Check if email already exists in database
+     */
+    async emailExistsInDatabase(email) {
+        if (!this.db) {
+            await this.initializeDatabase();
+        }
+        
+        return new Promise((resolve, reject) => {
+            const query = `SELECT id FROM email_accounts WHERE email = ?`;
+            this.db.get(query, [email], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(!!row);
+                }
+            });
+        });
+    }
+
+    /**
      * TempMail account creation
      */
     async tempmailCreateAccount(sessionId, options = {}) {
-        this.log(`📨 Creating TempMail account (${sessionId})...`);
+        this.log(`📨 Creating TempMail account using LLM analysis (${sessionId})...`);
         
-        try {
-            this.log(`🌐 Navigating to https://temp-mail.org...`);
-            const response = await this.page.goto('https://temp-mail.org', { 
-                waitUntil: 'domcontentloaded',
-                timeout: 60000 
-            });
-            this.log(`📡 Navigation response: ${response.status()} ${response.statusText()}`);
-            
-            this.log(`⏳ Waiting for page to stabilize...`);
-            await this.page.waitForTimeout(3000);
-            
-            this.log(`🔍 Current URL: ${this.page.url()}`);
-            this.log(`📋 Page title: ${await this.page.title()}`);
-
-            // Get the auto-generated email address
-            const emailSelector = '#mail';
-            this.log(`🔍 Looking for email input: ${emailSelector}`);
-            
+        const maxEmailRetries = 3;
+        
+        for (let emailAttempt = 1; emailAttempt <= maxEmailRetries; emailAttempt++) {
             try {
-                await this.page.waitForSelector(emailSelector, { timeout: 10000 });
-                this.log(`✅ Found email input field`);
-            } catch (e) {
-                this.log(`❌ Email input not found, page content: ${(await this.page.content()).substring(0, 500)}...`);
-                throw new Error(`Email input selector not found: ${emailSelector}`);
-            }
-            
-            // Wait for the email to actually load (not just "Loading...")
-            this.log(`⏳ Waiting for email to be generated...`);
-            let email = null;
-            let attempts = 0;
-            const maxEmailAttempts = 10;
-            
-            while (attempts < maxEmailAttempts) {
-                email = await this.page.$eval(emailSelector, el => el.value);
-                this.log(`📧 Email attempt ${attempts + 1}: ${email}`);
+                this.log(`🌐 Navigating to https://temp-mail.org (attempt ${emailAttempt}/${maxEmailRetries})...`);
                 
-                if (email && email !== 'Loading...' && email.includes('@')) {
-                    this.log(`✅ Valid email retrieved: ${email}`);
-                    break;
+                // Add random parameter and clear any cached sessions to get fresh email
+                const randomParam = Math.random().toString(36).substring(7);
+                const timestamp = Date.now();
+                const url = `https://temp-mail.org?t=${randomParam}&_=${timestamp}`;
+                
+                // Clear cookies and local storage to ensure fresh session
+                try {
+                    await this.page.context().clearCookies();
+                    await this.page.evaluate(() => {
+                        localStorage.clear();
+                        sessionStorage.clear();
+                    });
+                } catch (e) {
+                    this.log(`⚠️ Could not clear session data: ${e.message}`);
                 }
                 
-                attempts++;
+                const response = await this.page.goto(url, { 
+                    waitUntil: 'domcontentloaded',
+                    timeout: 60000 
+                });
+                this.log(`📡 Navigation response: ${response.status()} ${response.statusText()}`);
+                
+                this.log(`⏳ Waiting for page to stabilize...`);
+                await this.page.waitForTimeout(3000 + Math.random() * 2000); // Random delay
+                
+                // Handle any modal popups or consent dialogs
+                this.log(`🔍 Checking for modals on TempMail...`);
+                await this.handleModalPopups();
                 await this.page.waitForTimeout(2000);
-            }
-
-            if (!email || email === 'Loading...' || !email.includes('@')) {
-                throw new Error(`Could not retrieve valid email address from TempMail after ${maxEmailAttempts} attempts`);
-            }
-
-            // Check if inbox is accessible
-            this.log(`🔍 Looking for inbox: #inbox`);
-            try {
-                await this.page.waitForSelector('#inbox', { timeout: 10000 });
-                this.log(`✅ Inbox found and accessible`);
-            } catch (e) {
-                this.log(`⚠️ Inbox not immediately accessible, but email retrieved successfully`);
-            }
-            
-            return {
-                success: true,
-                email: email,
-                password: null, // TempMail doesn't use passwords
-                inbox: 'https://temp-mail.org',
-                sessionData: {
-                    serviceUrl: 'https://temp-mail.org',
-                    inboxSelector: '#inbox'
+                
+                // Use LLM to analyze the page
+                this.log(`🧠 Using LLM to analyze TempMail page structure...`);
+                const analysis = await this.llmAnalyzer.analyzeEmailPage(this.page, 'TempMail');
+                
+                this.log(`📊 LLM Analysis Result: ${analysis.retrievalMethod} (confidence: ${analysis.confidence})`);
+                this.log(`🎯 Instructions: ${analysis.instructions}`);
+                
+                // Use LLM analysis to retrieve email
+                const result = await this.llmAnalyzer.retrieveEmailUsingAnalysis(this.page, analysis, 'TempMail');
+                
+                if (!result.success) {
+                    throw new Error(`LLM-powered email retrieval failed: ${result.error}`);
                 }
-            };
 
-        } catch (error) {
-            this.log(`❌ TempMail creation failed: ${error.message}`);
-            return {
-                success: false,
-                error: error.message
-            };
+                const email = result.email;
+                this.log(`✅ LLM successfully retrieved email: ${email}`);
+
+                // Check if this email already exists in our database before continuing
+                if (await this.emailExistsInDatabase(email)) {
+                    this.log(`⚠️ Email ${email} already exists in database, trying to get a new one...`);
+                    
+                    if (emailAttempt < maxEmailRetries) {
+                        // Refresh the page to get a new email
+                        this.log(`🔄 Refreshing page to get a new email...`);
+                        continue;
+                    } else {
+                        this.log(`⚠️ All attempts returned existing emails, proceeding with: ${email}`);
+                    }
+                }
+
+                // Verify inbox using LLM-suggested selector
+                this.log(`🔍 Verifying inbox access with LLM selector...`);
+                try {
+                    await this.page.waitForSelector(analysis.inboxSelector, { timeout: 5000 });
+                    this.log(`✅ Inbox found and accessible`);
+                } catch (e) {
+                    this.log(`⚠️ Inbox not immediately accessible, but email retrieved successfully`);
+                }
+                
+                return {
+                    success: true,
+                    email: email,
+                    password: null, // TempMail doesn't use passwords
+                    inbox: 'https://temp-mail.org',
+                    sessionData: {
+                        serviceUrl: 'https://temp-mail.org',
+                        inboxSelector: analysis.inboxSelector,
+                        llmAnalysis: analysis
+                    }
+                };
+
+            } catch (error) {
+                this.log(`❌ TempMail attempt ${emailAttempt} failed: ${error.message}`);
+                
+                if (emailAttempt === maxEmailRetries) {
+                    this.log(`❌ All TempMail attempts failed`);
+                    return {
+                        success: false,
+                        error: error.message
+                    };
+                }
+                
+                // Wait before retry
+                await this.page.waitForTimeout(1000 * emailAttempt);
+            }
         }
     }
 
@@ -262,43 +518,152 @@ class EmailAccountManager {
     async tenminuteCreateAccount(sessionId, options = {}) {
         this.log(`📨 Creating 10MinuteMail account (${sessionId})...`);
         
-        try {
-            await this.page.goto('https://10minutemail.com', { 
-                waitUntil: 'domcontentloaded',
-                timeout: 60000 
-            });
-            await this.page.waitForTimeout(3000);
-
-            // Get the auto-generated email address
-            const emailSelector = '#mailAddress';
-            await this.page.waitForSelector(emailSelector);
-            const email = await this.page.$eval(emailSelector, el => el.value);
-
-            if (!email) {
-                throw new Error('Could not retrieve email address from 10MinuteMail');
-            }
-
-            // Verify inbox is working
-            const inboxSelector = '.messages';
-            await this.page.waitForSelector(inboxSelector, { timeout: 5000 });
-            
-            return {
-                success: true,
-                email: email,
-                password: null,
-                inbox: 'https://10minutemail.com',
-                sessionData: {
-                    serviceUrl: 'https://10minutemail.com',
-                    inboxSelector: '.messages'
+        const maxEmailRetries = 3;
+        
+        for (let emailAttempt = 1; emailAttempt <= maxEmailRetries; emailAttempt++) {
+            try {
+                this.log(`🌐 Navigating to 10MinuteMail (attempt ${emailAttempt}/${maxEmailRetries})...`);
+                
+                // Add random parameter and clear cached sessions to get fresh email
+                const randomParam = Math.random().toString(36).substring(7);
+                const timestamp = Date.now();
+                const url = `https://10minutemail.com?t=${randomParam}&_=${timestamp}`;
+                
+                // Clear cookies and local storage to ensure fresh session
+                try {
+                    await this.page.context().clearCookies();
+                    await this.page.evaluate(() => {
+                        localStorage.clear();
+                        sessionStorage.clear();
+                    });
+                } catch (e) {
+                    this.log(`⚠️ Could not clear session data: ${e.message}`);
                 }
-            };
+                
+                await this.page.goto(url, { 
+                    waitUntil: 'domcontentloaded',
+                    timeout: 60000 
+                });
+                await this.page.waitForTimeout(5000 + Math.random() * 2000); // Random delay
 
-        } catch (error) {
-            this.log(`❌ 10MinuteMail creation failed: ${error.message}`);
-            return {
-                success: false,
-                error: error.message
-            };
+                // Handle any modal popups or consent dialogs
+                this.log(`🔍 Checking for modals on 10MinuteMail...`);
+                await this.handleModalPopups();
+                await this.page.waitForTimeout(3000);
+
+                this.log(`🔍 Current URL: ${this.page.url()}`);
+                this.log(`📋 Page title: ${await this.page.title()}`);
+
+                // 10MinuteMail uses different selectors - try these
+                const emailSelectors = [
+                    '.emailaddressbox input',   // Main email input
+                    '#fe_text',                 // Alternative input
+                    '.email-address',           // Email display
+                    'input[readonly]',          // Readonly email input
+                    '.copy-button',             // Copy button area
+                    '[data-clipboard-text]'     // Clipboard data attribute
+                ];
+                
+                let email = null;
+                
+                // Wait for page to fully load
+                await this.page.waitForTimeout(5000);
+                
+                // Try to find email with various selectors
+                for (const selector of emailSelectors) {
+                    try {
+                        this.log(`🔍 Trying selector: ${selector}`);
+                        const element = await this.page.$(selector);
+                        if (element) {
+                            // Try different ways to get the email
+                            const value = await element.inputValue().catch(() => null);
+                            const text = await element.textContent().catch(() => null);
+                            const dataClipboard = await element.getAttribute('data-clipboard-text').catch(() => null);
+                            
+                            this.log(`📧 Element found - value: "${value}" text: "${text}" clipboard: "${dataClipboard}"`);
+                            
+                            if (value && value.includes('@')) {
+                                email = value;
+                                this.log(`✅ Found email via value: ${email}`);
+                                break;
+                            } else if (text && text.includes('@')) {
+                                email = text.trim();
+                                this.log(`✅ Found email via text: ${email}`);
+                                break;
+                            } else if (dataClipboard && dataClipboard.includes('@')) {
+                                email = dataClipboard;
+                                this.log(`✅ Found email via clipboard: ${email}`);
+                                break;
+                            }
+                        } else {
+                            this.log(`❌ Selector not found: ${selector}`);
+                        }
+                    } catch (e) {
+                        this.log(`⚠️ Selector ${selector} failed: ${e.message}`);
+                        continue;
+                    }
+                }
+
+                // If no email found, dump page content for debugging
+                if (!email) {
+                    this.log(`🔍 No email found, dumping page content for analysis...`);
+                    const bodyText = await this.page.$eval('body', el => el.textContent).catch(() => 'No body text');
+                    this.log(`📄 Page text: ${bodyText.substring(0, 200)}...`);
+                    
+                    const bodyHTML = await this.page.$eval('body', el => el.innerHTML).catch(() => 'No body HTML');
+                    this.log(`📄 Page HTML: ${bodyHTML.substring(0, 300)}...`);
+                    
+                    throw new Error('Could not retrieve email address from 10MinuteMail - see debug output above');
+                }
+
+                // Check if this email already exists in our database before continuing
+                if (await this.emailExistsInDatabase(email)) {
+                    this.log(`⚠️ Email ${email} already exists in database, trying to get a new one...`);
+                    
+                    if (emailAttempt < maxEmailRetries) {
+                        // Refresh the page to get a new email
+                        this.log(`🔄 Refreshing page to get a new email...`);
+                        continue;
+                    } else {
+                        this.log(`⚠️ All attempts returned existing emails, proceeding with: ${email}`);
+                    }
+                }
+
+                // Verify inbox is working
+                this.log(`🔍 Verifying inbox access...`);
+                try {
+                    const inboxSelector = '.messages, .mail-list, .inbox, #inboxTable';
+                    await this.page.waitForSelector(inboxSelector, { timeout: 5000 });
+                    this.log(`✅ Inbox verified`);
+                } catch (e) {
+                    this.log(`⚠️ Inbox verification failed: ${e.message}`);
+                }
+                
+                return {
+                    success: true,
+                    email: email,
+                    password: null,
+                    inbox: 'https://10minutemail.com',
+                    sessionData: {
+                        serviceUrl: 'https://10minutemail.com',
+                        inboxSelector: '.messages'
+                    }
+                };
+
+            } catch (error) {
+                this.log(`❌ 10MinuteMail attempt ${emailAttempt} failed: ${error.message}`);
+                
+                if (emailAttempt === maxEmailRetries) {
+                    this.log(`❌ All 10MinuteMail attempts failed`);
+                    return {
+                        success: false,
+                        error: error.message
+                    };
+                }
+                
+                // Wait before retry
+                await this.page.waitForTimeout(1000 * emailAttempt);
+            }
         }
     }
 
@@ -634,13 +999,39 @@ class EmailAccountManager {
      * Utility methods
      */
     selectBestService() {
-        // Prefer easier services first
+        // Prioritize TempMail as it's been most reliable, then others
+        const preferredOrder = ['tempmail', 'guerrilla', 'tenminute'];
+        
+        for (const serviceMethod of preferredOrder) {
+            const service = this.supportedServices.find(s => s.method === serviceMethod);
+            if (service && service.difficulty !== 'hard') {
+                return serviceMethod;
+            }
+        }
+        
+        // Fallback to any easy service
         const easyServices = this.supportedServices.filter(s => s.difficulty === 'easy');
         if (easyServices.length > 0) {
             return easyServices[Math.floor(Math.random() * easyServices.length)].method;
         }
         
         return this.supportedServices[0].method;
+    }
+
+    /**
+     * Select best service with rotation support
+     */
+    selectBestServiceWithRotation(rotationManager) {
+        if (rotationManager) {
+            const selectedService = rotationManager.getNextEmailService();
+            if (selectedService) {
+                this.log(`🔄 Using rotated email service: ${selectedService.name}`);
+                return selectedService.method;
+            }
+        }
+        
+        // Fallback to traditional selection
+        return this.selectBestService();
     }
 
     getServiceConfig(service) {

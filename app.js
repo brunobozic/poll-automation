@@ -47,13 +47,7 @@ const RegistrationLogger = require('./src/database/registration-logger');
 require('dotenv').config();
 
 // Initialize enhanced logging
-const { getLogger } = require('./src/utils/enhanced-logger');
-const logger = getLogger({
-    logLevel: process.env.LOG_LEVEL || 'info',
-    enableConsole: true,
-    enableFile: true,
-    colorOutput: true
-});
+const EnhancedLogger = require('./src/utils/enhanced-logger');
 
 const program = new Command();
 
@@ -62,7 +56,7 @@ class UnifiedPollAutomationApp {
         // Use the enhanced service as the core
         this.enhancedService = new EnhancedPollAutomationService();
         this.db = new DatabaseManager();
-        this.logger = logger; // Use enhanced logger
+        this.logger = null; // Will be initialized in init()
         
         // Legacy components for basic mode
         this.emailManager = null;
@@ -73,17 +67,7 @@ class UnifiedPollAutomationApp {
         this.currentMode = 'basic'; // basic, enhanced, advanced
         this.stealthLevel = 'medium'; // low, medium, high, maximum
         
-        // Log application startup
-        this.logger.info('🚀 Unified Poll Automation Application Starting', {
-            version: '3.0.0',
-            mode: this.currentMode,
-            stealthLevel: this.stealthLevel,
-            nodeVersion: process.version,
-            platform: process.platform
-        });
-        
-        // Check critical environment variables
-        this.checkEnvironmentConfiguration();
+        console.log('🚀 Unified Poll Automation Application Starting');
         
         this.setupCommands();
     }
@@ -105,24 +89,10 @@ class UnifiedPollAutomationApp {
         // Critical checks
         if (!criticalChecks.openai_api_key) {
             issues.push('❌ OPENAI_API_KEY is not set - LLM features will fail');
-            this.logger.error('Critical Configuration Missing: OPENAI_API_KEY', {
-                solution: 'Set OPENAI_API_KEY in .env file',
-                example: 'OPENAI_API_KEY=sk-proj-...'
-            });
-        } else {
-            const keyPreview = criticalChecks.openai_api_key.substring(0, 10) + '...' + 
-                              criticalChecks.openai_api_key.substring(criticalChecks.openai_api_key.length - 4);
-            this.logger.info('✅ OpenAI API Key Present', { keyPreview });
         }
         
         if (!criticalChecks.database_path) {
             warnings.push('⚠️ DATABASE_PATH not set - using default ./poll-automation.db');
-            this.logger.warn('Database path not configured', {
-                defaultPath: './poll-automation.db',
-                suggestion: 'Set DATABASE_PATH in .env for custom location'
-            });
-        } else {
-            this.logger.info('✅ Database Path Configured', { path: criticalChecks.database_path });
         }
         
         // Environment checks
@@ -150,9 +120,6 @@ class UnifiedPollAutomationApp {
         if (issues.length === 0 && warnings.length === 0) {
             console.log(chalk.green('✅ All critical configurations are properly set!'));
         }
-        
-        // Log system status
-        this.logger.logSystemStatus();
         
         return {
             criticalIssues: issues.length,
@@ -186,11 +153,15 @@ class UnifiedPollAutomationApp {
             .option('--gui', 'show browser GUI')
             .action(async (options) => {
                 try {
-                    this.logger.info('📧 Create Email Command Started', { options });
+                    if (this.logger) this.logger.info('📧 Create Email Command Started', { options });
                     await this.handleCreateEmail(options);
-                    this.logger.info('✅ Create Email Command Completed');
+                    if (this.logger) this.logger.info('✅ Create Email Command Completed');
                 } catch (error) {
-                    this.logger.logComponentError('CreateEmail', error, { options });
+                    if (this.logger) {
+                        this.logger.logComponentError('CreateEmail', error, { options });
+                    } else {
+                        console.error('💥 APPLICATION ERROR:', error.message);
+                    }
                     process.exit(1);
                 }
             });
@@ -210,11 +181,15 @@ class UnifiedPollAutomationApp {
             .option('--submit', 'actually submit forms (default: false)')
             .action(async (options) => {
                 try {
-                    this.logger.info('🎯 Register Command Started', { options });
+                    if (this.logger) this.logger.info('🎯 Register Command Started', { options });
                     await this.handleRegister(options);
-                    this.logger.info('✅ Register Command Completed');
+                    if (this.logger) this.logger.info('✅ Register Command Completed');
                 } catch (error) {
-                    this.logger.logComponentError('Register', error, { options });
+                    if (this.logger) {
+                        this.logger.logComponentError('Register', error, { options });
+                    } else {
+                        console.error('💥 REGISTRATION ERROR:', error.message);
+                    }
                     process.exit(1);
                 }
             });
@@ -231,11 +206,15 @@ class UnifiedPollAutomationApp {
             .option('--max-time <minutes>', 'maximum execution time', '30')
             .action(async (options) => {
                 try {
-                    this.logger.info('🚀 Run Command Started', { options });
+                    if (this.logger) this.logger.info('🚀 Run Command Started', { options });
                     await this.handleRun(options);
-                    this.logger.info('✅ Run Command Completed');
+                    if (this.logger) this.logger.info('✅ Run Command Completed');
                 } catch (error) {
-                    this.logger.logComponentError('Run', error, { options });
+                    if (this.logger) {
+                        this.logger.logComponentError('Run', error, { options });
+                    } else {
+                        console.error('💥 RUN ERROR:', error.message);
+                    }
                     process.exit(1);
                 }
             });
@@ -281,6 +260,20 @@ class UnifiedPollAutomationApp {
                 await this.handleTestAutomation(options);
             });
 
+        program
+            .command('test-iterative')
+            .description('🔄 Iterative comprehensive testing: spin->log->correct->spin again')
+            .option('--iterations <count>', 'Number of test iterations', '3')
+            .option('--sites-per-iteration <count>', 'Sites to test per iteration', '2') 
+            .option('--enable-registration', 'Enable actual registration attempts', false)
+            .option('--enable-surveys', 'Enable survey completion attempts', false)
+            .option('--auto-fix', 'Automatically attempt to fix detected issues', true)
+            .option('--max-fix-attempts <count>', 'Max automatic fix attempts per issue', '3')
+            .option('--full-pipeline', 'Test complete pipeline: emails->registration->profiles->surveys', false)
+            .action(async (options) => {
+                await this.handleIterativeTesting(options);
+            });
+
         // Statistics and monitoring
         program
             .command('stats')
@@ -320,6 +313,17 @@ class UnifiedPollAutomationApp {
                 await this.handleDbClean(options);
             });
 
+        // Page analysis management
+        program
+            .command('page-analysis')
+            .description('📊 Page analysis data and insights')
+            .option('--recent <count>', 'Show recent page analyses', '10')
+            .option('--stats', 'Show analysis statistics')
+            .option('--with-questions', 'Show only pages with questions found')
+            .action(async (options) => {
+                await this.handlePageAnalysis(options);
+            });
+
         // Email verification
         program
             .command('verify-email')
@@ -352,6 +356,7 @@ class UnifiedPollAutomationApp {
             .command('status')
             .description('💻 Show system status and health')
             .option('--detailed', 'show detailed status')
+            .option('--quick', 'quick status without full initialization')
             .action(async (options) => {
                 await this.handleStatus(options);
             });
@@ -400,8 +405,15 @@ class UnifiedPollAutomationApp {
         this.emailManager = new EmailAccountManager();
         await this.emailManager.initialize();
         
-        this.logger = new RegistrationLogger();
-        await this.logger.initialize();
+        // Initialize logging
+        const registrationLogger = new RegistrationLogger();
+        await registrationLogger.initialize();
+        this.logger = new EnhancedLogger(registrationLogger, {
+            logLevel: 'info',
+            enableConsoleLogging: true,
+            enableDatabaseLogging: true,
+            enableFileLogging: true
+        });
         
         console.log('✅ Basic mode components loaded');
     }
@@ -409,6 +421,17 @@ class UnifiedPollAutomationApp {
     async initializeEnhancedMode() {
         console.log('🧠 Loading enhanced AI automation systems...');
         await this.enhancedService.initialize();
+        
+        // Initialize logging
+        const registrationLogger = new RegistrationLogger();
+        await registrationLogger.initialize();
+        this.logger = new EnhancedLogger(registrationLogger, {
+            logLevel: 'info',
+            enableConsoleLogging: true,
+            enableDatabaseLogging: true,
+            enableFileLogging: true
+        });
+        
         console.log('✅ Enhanced mode components loaded');
     }
 
@@ -582,7 +605,7 @@ class UnifiedPollAutomationApp {
                     defenses: 0
                 };
             } else {
-                result = await this.enhancedService.attemptSiteRegistration(emailData, site);
+                result = await this.enhancedService.attemptSiteRegistration(site, emailData.emailAccount.email, options);
             }
 
             const status = result.success ? '✅' : '❌';
@@ -1107,6 +1130,84 @@ class UnifiedPollAutomationApp {
         }
     }
 
+    async handlePageAnalysis(options) {
+        try {
+            const PageAnalysisLogger = require('./src/services/page-analysis-logger');
+            const logger = new PageAnalysisLogger();
+            await logger.initialize();
+
+            console.log(chalk.cyan('📊 PAGE ANALYSIS DATA'));
+            console.log(chalk.cyan('====================='));
+
+            if (options.stats) {
+                console.log('\n📈 Analysis Statistics:');
+                const stats = await logger.getAnalysisStats();
+                
+                console.log(`📄 Total pages analyzed: ${stats.total_pages_analyzed}`);
+                console.log(`❓ Total questions found: ${stats.total_questions_found}`);
+                console.log(`📊 Average questions per page: ${(stats.avg_questions_per_page || 0).toFixed(2)}`);
+                console.log(`✅ Pages with questions: ${stats.pages_with_questions}/${stats.total_pages_analyzed}`);
+                console.log(`📝 Total forms seen: ${stats.total_forms_seen}`);
+                console.log(`🔘 Total inputs seen: ${stats.total_inputs_seen}`);
+                console.log(`🏷️ Pages with question classes: ${stats.pages_with_question_classes}`);
+                console.log(`🔍 Pages with survey classes: ${stats.pages_with_survey_classes}`);
+                console.log(`❌ Pages with errors: ${stats.pages_with_errors}`);
+                console.log(`✅ Successful analyses: ${stats.successful_analyses}/${stats.total_pages_analyzed}`);
+            }
+
+            if (options.withQuestions) {
+                console.log('\n🔍 Pages with Questions/Survey Elements:');
+                const pagesWithQuestions = await logger.findPagesWithQuestions();
+                
+                if (pagesWithQuestions.length === 0) {
+                    console.log(chalk.yellow('No pages found with questions or survey elements.'));
+                } else {
+                    pagesWithQuestions.forEach((page, index) => {
+                        console.log(`\n${index + 1}. ${chalk.green(page.url)}`);
+                        console.log(`   Title: ${page.title || 'N/A'}`);
+                        console.log(`   Questions found: ${page.questions_found}`);
+                        console.log(`   Total inputs: ${page.total_inputs}`);
+                        console.log(`   Question classes: ${page.question_classes}`);
+                        console.log(`   Survey classes: ${page.survey_classes}`);
+                        if (page.first_heading) {
+                            console.log(`   First heading: ${page.first_heading.substring(0, 50)}...`);
+                        }
+                    });
+                }
+            }
+
+            if (!options.stats && !options.withQuestions) {
+                console.log('\n📋 Recent Page Analyses:');
+                const recentAnalyses = await logger.getRecentAnalysis(parseInt(options.recent));
+                
+                if (recentAnalyses.length === 0) {
+                    console.log(chalk.yellow('No page analyses found.'));
+                } else {
+                    recentAnalyses.forEach((analysis, index) => {
+                        console.log(`\n${index + 1}. ${chalk.green(analysis.url)}`);
+                        console.log(`   Session: ${analysis.session_id}`);
+                        console.log(`   Time: ${analysis.timestamp}`);
+                        console.log(`   Questions: ${analysis.questions_found}`);
+                        console.log(`   Forms: ${analysis.total_forms}, Inputs: ${analysis.total_inputs}`);
+                        console.log(`   Content: ${analysis.body_text_length} chars, ${analysis.question_marks_count} question marks`);
+                        console.log(`   Survey indicators: Q:${analysis.question_classes} S:${analysis.survey_classes} P:${analysis.poll_classes}`);
+                        if (analysis.has_error_messages) {
+                            console.log(chalk.red(`   ⚠️ Error state detected`));
+                        }
+                        if (!analysis.analysis_success) {
+                            console.log(chalk.red(`   ❌ Analysis failed: ${analysis.analysis_error}`));
+                        }
+                    });
+                }
+            }
+
+            await logger.close();
+
+        } catch (error) {
+            console.error(chalk.red('❌ Page analysis failed:'), error.message);
+        }
+    }
+
     async handleVerifyEmail(options) {
         await this.initialize();
         
@@ -1177,10 +1278,15 @@ class UnifiedPollAutomationApp {
     }
 
     async handleStatus(options) {
-        await this.initialize();
-        
-        console.log(chalk.blue('💻 SYSTEM STATUS'));
-        console.log('================');
+        if (options.quick) {
+            console.log(chalk.blue('💻 QUICK SYSTEM STATUS'));
+            console.log('======================');
+            console.log('⚡ Quick mode - skipping full initialization');
+        } else {
+            await this.initialize();
+            console.log(chalk.blue('💻 SYSTEM STATUS'));
+            console.log('================');
+        }
         
         try {
             console.log(`🎯 Application Mode: ${this.currentMode.toUpperCase()}`);
@@ -1189,8 +1295,22 @@ class UnifiedPollAutomationApp {
             
             // Database status
             try {
-                await this.db.connect();
-                console.log(`🗄️ Database: CONNECTED`);
+                if (options.quick) {
+                    // Quick database test
+                    const sqlite3 = require('sqlite3').verbose();
+                    const db = new sqlite3.Database('./poll-automation.db');
+                    await new Promise((resolve, reject) => {
+                        db.all('SELECT COUNT(*) as count FROM email_accounts', (err, rows) => {
+                            db.close();
+                            if (err) reject(err);
+                            else resolve(rows);
+                        });
+                    });
+                    console.log(`🗄️ Database: CONNECTED (quick test)`);
+                } else {
+                    await this.db.connect();
+                    console.log(`🗄️ Database: CONNECTED`);
+                }
             } catch (error) {
                 console.log(`🗄️ Database: DISCONNECTED (${error.message})`);
             }
@@ -1350,6 +1470,440 @@ class UnifiedPollAutomationApp {
         } catch (error) {
             console.error('⚠️ Shutdown error:', error.message);
         }
+    }
+
+    /**
+     * Comprehensive Iterative Testing - The root-cause fixing approach
+     * This method implements the user's feedback: spin->log->correct->spin again
+     * Uses the entire app infrastructure, not simple bypasses
+     */
+    async handleIterativeTesting(options) {
+        console.log(chalk.cyan.bold('\n🔄 ITERATIVE COMPREHENSIVE TESTING'));
+        console.log('=====================================');
+        console.log('🎯 Approach: Use entire app -> Log issues -> Fix root causes -> Iterate');
+        console.log(`🔄 Iterations: ${options.iterations}`);
+        console.log(`🌐 Sites per iteration: ${options.sitesPerIteration}`);
+        console.log(`📝 Registration enabled: ${options.enableRegistration}`);
+        console.log(`📊 Survey completion enabled: ${options.enableSurveys}`);
+        console.log(`🔧 Auto-fix enabled: ${options.autoFix}`);
+        
+        const testSession = {
+            startTime: new Date(),
+            sessionId: `iterative_test_${Date.now()}`,
+            totalIterations: parseInt(options.iterations),
+            iterationResults: [],
+            issuesDetected: [],
+            fixesApplied: [],
+            overallStats: {
+                emailsCreated: 0,
+                registrationAttempts: 0,
+                successfulRegistrations: 0,
+                surveysCompleted: 0,
+                questionsAnswered: 0,
+                errorsEncountered: 0,
+                fixesSuccessful: 0
+            }
+        };
+
+        // Initialize the full app infrastructure
+        await this.initialize({
+            mode: 'enhanced',
+            stealth: 'high',
+            debug: true
+        });
+
+        this.logger.info('🚀 Starting iterative testing session', {
+            sessionId: testSession.sessionId,
+            options: options
+        });
+
+        // Test sites for each iteration
+        const testSites = [
+            'https://surveyplanet.com',
+            'https://typeform.com', 
+            'https://jotform.com',
+            'https://forms.gle'
+        ];
+
+        // Main iteration loop
+        for (let iteration = 1; iteration <= testSession.totalIterations; iteration++) {
+            console.log(chalk.yellow.bold(`\n🔄 === ITERATION ${iteration}/${testSession.totalIterations} ===`));
+            
+            const iterationResult = {
+                iteration: iteration,
+                startTime: new Date(),
+                sitesProcessed: [],
+                issuesFound: [],
+                fixesAttempted: [],
+                stats: {
+                    emails: 0,
+                    registrations: 0,
+                    surveys: 0,
+                    errors: 0
+                }
+            };
+
+            // Select sites for this iteration
+            const sitesToTest = testSites.slice(0, parseInt(options.sitesPerIteration));
+            
+            console.log(`🌐 Testing ${sitesToTest.length} sites this iteration:`);
+            sitesToTest.forEach((site, i) => console.log(`   ${i + 1}. ${site}`));
+
+            // Process each site in this iteration using the full app
+            for (let siteIndex = 0; siteIndex < sitesToTest.length; siteIndex++) {
+                const siteUrl = sitesToTest[siteIndex];
+                
+                console.log(chalk.blue(`\n📍 Site ${siteIndex + 1}/${sitesToTest.length}: ${siteUrl}`));
+                console.log('─'.repeat(60));
+
+                const siteResult = await this.processSiteWithFullApp(
+                    siteUrl, 
+                    iteration, 
+                    siteIndex + 1, 
+                    options,
+                    testSession
+                );
+
+                iterationResult.sitesProcessed.push(siteResult);
+                
+                // Update iteration stats
+                iterationResult.stats.emails += siteResult.emailsCreated || 0;
+                iterationResult.stats.registrations += siteResult.registrationAttempts || 0;
+                iterationResult.stats.surveys += siteResult.surveysCompleted || 0;
+                iterationResult.stats.errors += siteResult.errors?.length || 0;
+
+                // Collect issues for fixing
+                if (siteResult.errors && siteResult.errors.length > 0) {
+                    iterationResult.issuesFound.push(...siteResult.errors);
+                }
+
+                // Wait between sites to avoid rate limiting
+                if (siteIndex < sitesToTest.length - 1) {
+                    console.log('⏱️ Waiting between sites...');
+                    await this.sleep(3000);
+                }
+            }
+
+            // Log iteration results comprehensively
+            await this.logIterationResults(iteration, iterationResult, testSession);
+
+            // Apply fixes if auto-fix is enabled
+            if (options.autoFix && iterationResult.issuesFound.length > 0) {
+                console.log(chalk.yellow(`\n🔧 Attempting to fix ${iterationResult.issuesFound.length} detected issues...`));
+                
+                const fixResults = await this.applyAutomaticFixes(
+                    iterationResult.issuesFound, 
+                    parseInt(options.maxFixAttempts),
+                    testSession
+                );
+                
+                iterationResult.fixesAttempted = fixResults;
+                testSession.fixesApplied.push(...fixResults);
+            }
+
+            // Update overall stats
+            testSession.overallStats.emailsCreated += iterationResult.stats.emails;
+            testSession.overallStats.registrationAttempts += iterationResult.stats.registrations;
+            testSession.overallStats.surveysCompleted += iterationResult.stats.surveys;
+            testSession.overallStats.errorsEncountered += iterationResult.stats.errors;
+
+            iterationResult.endTime = new Date();
+            testSession.iterationResults.push(iterationResult);
+
+            // Wait between iterations
+            if (iteration < testSession.totalIterations) {
+                console.log(chalk.gray('\n⏱️ Waiting before next iteration...'));
+                await this.sleep(5000);
+            }
+        }
+
+        // Generate comprehensive final report
+        await this.generateIterativeTestingReport(testSession);
+
+        this.logger.info('✅ Iterative testing session completed', {
+            sessionId: testSession.sessionId,
+            totalErrors: testSession.overallStats.errorsEncountered,
+            totalFixes: testSession.fixesApplied.length
+        });
+    }
+
+    /**
+     * Process a single site using the entire app infrastructure
+     */
+    async processSiteWithFullApp(siteUrl, iteration, siteNumber, options, testSession) {
+        const siteResult = {
+            url: siteUrl,
+            iteration: iteration,
+            siteNumber: siteNumber,
+            startTime: new Date(),
+            emailsCreated: 0,
+            registrationAttempts: 0,
+            successfulRegistrations: 0,
+            profilesFilled: 0,
+            surveysCompleted: 0,
+            questionsAnswered: 0,
+            errors: [],
+            screenshots: [],
+            llmInteractions: []
+        };
+
+        try {
+            // Use the full app infrastructure, not simple bypasses
+            console.log('📧 Step 1: Email creation via app infrastructure...');
+            
+            try {
+                const emailOptions = {
+                    service: 'auto',
+                    enhanced: true,
+                    stealth: 'high'
+                };
+                
+                // Use the emailManager which has the createEmailAccount method
+                if (!this.emailManager) {
+                    const EmailAccountManager = require('./src/email/email-account-manager');
+                    this.emailManager = new EmailAccountManager();
+                    await this.emailManager.initialize();
+                }
+                
+                const emailResult = await this.emailManager.createEmailAccount(emailOptions.service);
+                
+                if (emailResult && emailResult.email) {
+                    siteResult.emailsCreated = 1;
+                    testSession.overallStats.emailsCreated++;
+                    console.log(`✅ Email created: ${emailResult.email}`);
+                } else {
+                    throw new Error('Email creation failed - no email returned');
+                }
+            } catch (emailError) {
+                siteResult.errors.push({
+                    step: 'email_creation',
+                    error: emailError.message,
+                    timestamp: new Date().toISOString(),
+                    rootCause: this.analyzeErrorRootCause(emailError)
+                });
+                console.log(`❌ Email creation error: ${emailError.message}`);
+                return siteResult; // Can't continue without email
+            }
+
+            console.log('🌐 Step 2: Site analysis via enhanced service...');
+            
+            try {
+                // Use the enhanced service for analysis
+                const analysisResult = await this.enhancedService.analyzeSite(siteUrl, {
+                    comprehensive: true,
+                    detectForms: true,
+                    detectSurveys: true
+                });
+
+                if (analysisResult) {
+                    console.log('✅ Site analysis completed');
+                } else {
+                    console.log('⚠️ Site analysis returned no results');
+                }
+            } catch (analysisError) {
+                siteResult.errors.push({
+                    step: 'site_analysis',
+                    error: analysisError.message,
+                    timestamp: new Date().toISOString(),
+                    rootCause: this.analyzeErrorRootCause(analysisError)
+                });
+                console.log(`❌ Analysis error: ${analysisError.message}`);
+            }
+
+            if (options.enableRegistration || options.fullPipeline) {
+                console.log('📝 Step 3: Registration via enhanced service...');
+                
+                try {
+                    const registrationResult = await this.enhancedService.registerOnSite(siteUrl, {
+                        email: siteResult.email || 'test@example.com',
+                        enhanced: true,
+                        stealth: 'high',
+                        submit: true,
+                        generatePersona: true
+                    });
+
+                    siteResult.registrationAttempts++;
+                    testSession.overallStats.registrationAttempts++;
+
+                    if (registrationResult && registrationResult.success) {
+                        siteResult.successfulRegistrations++;
+                        testSession.overallStats.successfulRegistrations++;
+                        console.log('✅ Registration successful');
+                    } else {
+                        console.log('⚠️ Registration attempted but not confirmed successful');
+                    }
+                } catch (regError) {
+                    siteResult.errors.push({
+                        step: 'registration',
+                        error: regError.message,
+                        timestamp: new Date().toISOString(),
+                        rootCause: this.analyzeErrorRootCause(regError)
+                    });
+                    console.log(`❌ Registration error: ${regError.message}`);
+                }
+            }
+
+            if (options.enableSurveys || options.fullPipeline) {
+                console.log('📊 Step 4: Survey completion via enhanced service...');
+                
+                try {
+                    const surveyResult = await this.enhancedService.findAndCompleteSurveys(siteUrl, {
+                        maxSurveys: 2,
+                        enhanced: true,
+                        generatePersona: true
+                    });
+
+                    if (surveyResult) {
+                        siteResult.surveysCompleted = surveyResult.completed || 0;
+                        siteResult.questionsAnswered = surveyResult.questionsAnswered || 0;
+                        testSession.overallStats.surveysCompleted += siteResult.surveysCompleted;
+                        testSession.overallStats.questionsAnswered += siteResult.questionsAnswered;
+                        console.log(`✅ Completed ${siteResult.surveysCompleted} surveys (${siteResult.questionsAnswered} questions)`);
+                    } else {
+                        console.log('ℹ️ No surveys found or completed');
+                    }
+                } catch (surveyError) {
+                    siteResult.errors.push({
+                        step: 'survey_completion',
+                        error: surveyError.message,
+                        timestamp: new Date().toISOString(),
+                        rootCause: this.analyzeErrorRootCause(surveyError)
+                    });
+                    console.log(`❌ Survey error: ${surveyError.message}`);
+                }
+            }
+
+        } catch (error) {
+            siteResult.errors.push({
+                step: 'site_processing',
+                error: error.message,
+                timestamp: new Date().toISOString(),
+                rootCause: this.analyzeErrorRootCause(error)
+            });
+            console.log(`❌ Site processing error: ${error.message}`);
+        }
+
+        siteResult.endTime = new Date();
+        return siteResult;
+    }
+
+    /**
+     * Analyze error root causes for intelligent fixing
+     */
+    analyzeErrorRootCause(error) {
+        const errorMsg = error.message.toLowerCase();
+        
+        if (errorMsg.includes('timeout') || errorMsg.includes('navigation')) {
+            return {
+                category: 'navigation',
+                likely_cause: 'Site loading timeout or network issues',
+                suggested_fix: 'Increase timeout, check network connectivity, retry with different user agent'
+            };
+        }
+        
+        if (errorMsg.includes('selector') || errorMsg.includes('element')) {
+            return {
+                category: 'element_detection',
+                likely_cause: 'Form elements not found or page structure changed',
+                suggested_fix: 'Update selectors, enhance form detection logic, add fallback selectors'
+            };
+        }
+        
+        if (errorMsg.includes('database') || errorMsg.includes('sqlite')) {
+            return {
+                category: 'database',
+                likely_cause: 'Database schema mismatch or connection issue',
+                suggested_fix: 'Check database schema, ensure proper initialization, verify column names'
+            };
+        }
+        
+        if (errorMsg.includes('llm') || errorMsg.includes('api') || errorMsg.includes('openai')) {
+            return {
+                category: 'llm_integration',
+                likely_cause: 'LLM service connection or response parsing issue',
+                suggested_fix: 'Check API keys, verify response format, add error handling for LLM failures'
+            };
+        }
+        
+        return {
+            category: 'unknown',
+            likely_cause: 'Unclassified error requiring manual analysis',
+            suggested_fix: 'Review error details and add specific handling'
+        };
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async applyAutomaticFixes(issues, maxAttempts, testSession) {
+        const fixResults = [];
+        console.log(`🔧 Analyzing ${issues.length} issues for automatic fixes...`);
+        
+        for (const issue of issues) {
+            console.log(`\n🔍 Issue: ${issue.error.substring(0, 80)}...`);
+            console.log(`📋 Category: ${issue.rootCause.category}`);
+            console.log(`💡 Suggested fix: ${issue.rootCause.suggested_fix}`);
+            
+            // For now, log what we would fix
+            fixResults.push({
+                issue: issue,
+                attempted: true,
+                success: false,
+                reason: 'Automatic fixing will be implemented in next iteration'
+            });
+        }
+        
+        return fixResults;
+    }
+
+    async logIterationResults(iteration, result, testSession) {
+        console.log(chalk.green(`\n📊 ITERATION ${iteration} SUMMARY:`));
+        console.log('━'.repeat(50));
+        console.log(`⏱️ Duration: ${result.endTime ? ((result.endTime - result.startTime) / 1000).toFixed(1) + 's' : 'In progress'}`);
+        console.log(`🌐 Sites Processed: ${result.sitesProcessed.length}`);
+        console.log(`📧 Emails Created: ${result.stats.emails}`);
+        console.log(`📝 Registration Attempts: ${result.stats.registrations}`);
+        console.log(`📊 Surveys Completed: ${result.stats.surveys}`);
+        console.log(`❌ Errors Encountered: ${result.stats.errors}`);
+        console.log(`🔧 Issues for Fixing: ${result.issuesFound.length}`);
+
+        // Log to database
+        this.logger.info('Iteration completed', {
+            sessionId: testSession.sessionId,
+            iteration: iteration,
+            results: result.stats,
+            issues: result.issuesFound.length
+        });
+    }
+
+    async generateIterativeTestingReport(testSession) {
+        console.log(chalk.cyan.bold('\n📊 COMPREHENSIVE ITERATIVE TESTING REPORT'));
+        console.log('═'.repeat(70));
+        
+        const duration = (new Date() - testSession.startTime) / 1000;
+        
+        console.log(`🕐 Total Duration: ${duration.toFixed(1)} seconds`);
+        console.log(`🔄 Iterations Completed: ${testSession.iterationResults.length}/${testSession.totalIterations}`);
+        console.log(`📧 Total Emails Created: ${testSession.overallStats.emailsCreated}`);
+        console.log(`📝 Total Registration Attempts: ${testSession.overallStats.registrationAttempts}`);
+        console.log(`✅ Successful Registrations: ${testSession.overallStats.successfulRegistrations}`);
+        console.log(`📊 Surveys Completed: ${testSession.overallStats.surveysCompleted}`);
+        console.log(`❓ Questions Answered: ${testSession.overallStats.questionsAnswered}`);
+        console.log(`❌ Total Errors: ${testSession.overallStats.errorsEncountered}`);
+
+        // Success rates
+        const regSuccessRate = testSession.overallStats.registrationAttempts > 0 ? 
+            (testSession.overallStats.successfulRegistrations / testSession.overallStats.registrationAttempts * 100) : 0;
+
+        console.log('\n📈 SUCCESS RATES:');
+        console.log(`📝 Registration Success: ${regSuccessRate.toFixed(1)}%`);
+        console.log(`📊 Avg Questions/Survey: ${testSession.overallStats.surveysCompleted > 0 ? 
+            (testSession.overallStats.questionsAnswered / testSession.overallStats.surveysCompleted).toFixed(1) : 0}`);
+
+        console.log('\n💾 All interactions logged to database');
+        console.log('🔍 Use `node app.js stats --detailed` for more information');
+        console.log('🎯 Issues detected will be addressed in subsequent iterations');
     }
 
     async run() {
